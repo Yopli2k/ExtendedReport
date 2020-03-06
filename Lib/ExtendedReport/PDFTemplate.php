@@ -74,7 +74,9 @@ class PDFTemplate
      */
     public function __construct($name)
     {
-        ReportItemLoadEngine::installXML($name, $this);
+        if (ReportItemLoadEngine::installXML($name, $this) === false) {
+            return;
+        }
 
         $this->engine = new PDFCreator(
             $this->config->page['type'],
@@ -106,7 +108,7 @@ class PDFTemplate
      * @param string $name
      * @param float  $position
      */
-    private function renderHeader($name, &$position)
+    private function renderHeader($name, $position)
     {
         $group = $this->groups[$name];
         $model = $this->datasets[$name][self::DATASET_HEADER] ?? null;

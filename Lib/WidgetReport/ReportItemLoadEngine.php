@@ -33,13 +33,13 @@ class ReportItemLoadEngine extends ItemLoadEngine
             return false;
         }
 
-        $template->columns = [];
+        $template->groups = [];
         $template->config = [];
         $template->name = $name;
         foreach ($array['children'] as $value) {
             switch ($value['tag']) {
                 case 'columns':
-                    static::setGroups($value['children'], $template->columns);
+                    static::setGroups($value['children'], $template->groups);
                     break;
 
                 case 'config':
