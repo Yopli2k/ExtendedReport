@@ -8,6 +8,8 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
+use Cezpdf;
+
 /**
  * Description of ColumnItem
  *
@@ -29,21 +31,15 @@ class ColumnItem
     public $posy;
 
     /**
+     * Display object configuration
+     */
+    public $widget;
+
+    /**
      *
      * @var int
      */
     public $width;
-
-    /**
-     *
-     * @var int
-     */
-    public $height;
-
-    /**
-     * Display object configuration
-     */
-    public $widget;
 
     /**
      *
@@ -54,8 +50,21 @@ class ColumnItem
         $this->posx = isset($data['posx']) ? (int) $data['posx'] : 0;
         $this->posy = isset($data['posy']) ? (int) $data['posy'] : 0;
         $this->width = isset($data['width']) ? (int) $data['width'] : 0;
-        $this->height = isset($data['height']) ? (int) $data['height'] : 0;
-        // $this->loadWidget($data['children']);
+        $this->loadWidget($data['children']);
+    }
+
+    /**
+     * Add column to the PDF file.
+     *
+     * @param Cezpdf $pdf
+     * @param object $data
+     * @param float  $linePos
+     */
+    public function render(&$pdf, &$data, $linePos)
+    {
+        $posY = $linePos - $this->posy;
+        $this->widget->setValue($data);
+        $this->widget->render($pdf, $this->posx, $posY, $this->width);
     }
 
     /**

@@ -27,14 +27,26 @@ abstract class ModelReport
     protected static $dataBase;
 
     /**
-     * Execute the load data for report
+     *
+     * @var array
+     */
+    public $data = [];
+
+    /**
+     *
+     * @var array
+     */
+    protected $totals = [];
+
+    /**
+     * Return array with data of report.
      *
      * @param BaseFilter[] $filters
      * @param DataBaseWhere[] $where
      * @param array $order
      * @param int $offset
      * @param int $limit
-     * @return ModelReport[]
+     * @return array
      */
     abstract public function all($filters, $where, $order, $offset, $limit);
 
@@ -46,6 +58,43 @@ abstract class ModelReport
         if (self::$dataBase === null) {
             self::$dataBase = new DataBase();
         }
+    }
+
+    /**
+     * Accumulate the amount in the indicated total field.
+     *
+     * @param string $fieldName
+     * @param float $amount
+     */
+    public function accumulate($fieldName, $amount)
+    {
+        $value = $this->getTotal($fieldName);
+        $this->totals[$fieldName] = $value + $amount;
+    }
+
+    /**
+     * Returns the accumulated amount of the requested field.
+     *
+     * @param string $fieldName
+     * @return float
+     */
+    public function getTotal($fieldName)
+    {
+        return isset($this->totals[$fieldName]) ? $this->totals[$fieldName] : 0.00;
+    }
+
+    /**
+     * Execute the load data for report.
+     *
+     * @param BaseFilter[] $filters
+     * @param DataBaseWhere[] $where
+     * @param array $order
+     * @param int $offset
+     * @param int $limit
+     */
+    public function loadData($filters, $where, $order, $offset, $limit)
+    {
+        $this->data = $this->all($filters, $where, $order, $offset, $limit);
     }
 
     /**

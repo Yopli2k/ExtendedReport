@@ -10,6 +10,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedController;
 
 use FacturaScripts\Core\Lib\AssetManager;
 use FacturaScripts\Core\Lib\ExtendedController\ListView;
+use FacturaScripts\Plugins\ExtendedReport\Model\Base\ModelReport;
 
 /**
  * View definition for its use in ReportController
@@ -18,6 +19,13 @@ use FacturaScripts\Core\Lib\ExtendedController\ListView;
  */
 class ReportView extends ListView
 {
+
+    /**
+     * Model to use in this view.
+     *
+     * @var ModelReport
+     */
+    public $model;
 
     /**
      * Indicate the template to see the detail of the report data.
@@ -65,7 +73,9 @@ class ReportView extends ListView
         $this->offset = ($offset < 0) ? $this->offset : $offset;
         $this->order = empty($order) ? $this->order : $order;
         $this->where = array_merge($where, $this->where);
-        $this->cursor = $this->model->all($this->filters, $this->where, $this->order, $offset, $limit);
+
+        $this->model->loadData($this->filters, $this->where, $this->order, $offset, $limit);
+        $this->cursor = &$this->model->data; // for compatibility
         $this->count = count($this->cursor);
     }
 }

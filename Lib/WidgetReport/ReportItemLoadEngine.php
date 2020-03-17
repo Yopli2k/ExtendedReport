@@ -38,12 +38,12 @@ class ReportItemLoadEngine extends ItemLoadEngine
         $template->name = $name;
         foreach ($array['children'] as $value) {
             switch ($value['tag']) {
-                case 'columns':
-                    static::setGroups($value['children'], $template->groups);
+                case 'group':
+                    $template->groups[$value['name']] = static::groupFromArray($value);
                     break;
 
                 case 'config':
-                    static::setConfig($value['children'], $template->config);
+                    $template->config = static::configFromArray($value);
                     break;
             }
         }
@@ -69,7 +69,7 @@ class ReportItemLoadEngine extends ItemLoadEngine
      */
     protected static function xmlToArrayAux($tag, $attributes): string
     {
-        if (in_array($tag, ['page', 'font', 'default', 'header', 'detail', 'footer'])) {
+        if (in_array($tag, ['page', 'font'])) {
             return $tag;
         }
 
@@ -77,31 +77,26 @@ class ReportItemLoadEngine extends ItemLoadEngine
     }
 
     /**
-     * Load the report configuration from the ARRAY|JSON
+     * Create the report configuration from the ARRAY|JSON
      *
      * @param array $data
-     * @param array $target
+     * @return ConfigItem
      */
-    private static function setConfig($data, &$target)
+    private static function configFromArray($data)
     {
         $configClass = static::getNamespace() . 'ConfigItem';
-        $target = new $configClass($data);
+        return new $configClass($data['children']);
     }
 
     /**
      * Load the groups structure from the ARRAY|JSON
      *
      * @param array $data
-     * @param array $target
+     * @return GroupItem
      */
-    private static function setGroups($data, &$target)
+    private static function groupFromArray($data)
     {
         $groupClass = static::getNamespace() . 'GroupItem';
-        foreach ($data as $item) {
-            if ($item['tag'] === 'group') {
-                $groupItem = new $groupClass($item);
-                $target[$groupItem->name] = $groupItem;
-            }
-        }
+        return new $groupClass($data);
     }
 }

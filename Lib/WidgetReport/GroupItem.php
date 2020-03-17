@@ -16,25 +16,32 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 class GroupItem
 {
 
-    const BAND_DETAIL = 'detail';
-    const BAND_FOOTER = 'footer';
-    const BAND_HEADER = 'header';
+    private const BAND_DETAIL = 'detail';
+    private const BAND_FOOTER = 'footer';
+    private const BAND_HEADER = 'header';
+    private const BAND_GROUP  = 'group';
 
     /**
      *
-     * @var BandItem[]
+     * @var BandDetail
      */
-    public $detail = [];
+    public $detail;
 
     /**
      *
-     * @var BandItem[]
+     * @var BandFooter[]
      */
     public $footer = [];
 
     /**
      *
-     * @var BandItem[]
+     * @var GroupItem[]
+     */
+    public $groups = [];
+
+    /**
+     *
+     * @var BandHeader[]
      */
     public $header = [];
 
@@ -71,13 +78,36 @@ class GroupItem
      */
     protected function loadBands($children)
     {
-        $bandClass = ReportItemLoadEngine::getNamespace() . 'BandItem';
         foreach ($children as $child) {
             $type = $child['tag'];
-            if (\in_array($type, $this->getBandList())) {
-                $bandItem = new $bandClass($child);
-                $this->{$type} = $bandItem;
+            switch ($type) {
+                case self::BAND_DETAIL:
+                    $this->detail = $this->getBand($type, $child);
+                    break;
+
+                case self::BAND_HEADER:
+                case self::BAND_FOOTER:
+                    $band = $this->getBand($type, $child);
+                    $this->{$type}[$band->type] = $band;
+                    break;
+
+                case self::BAND_GROUP:
+                    $group = new self($child);
+                    $this->groups[$group->name] = $group;
+                    break;
             }
         }
+    }
+
+    /**
+     *
+     * @param string $type
+     * @param array $data
+     * @return BandItem
+     */
+    private function getBand($type, $data)
+    {
+        $className = ReportItemLoadEngine::getNamespace() . 'Band' . ucfirst($type);
+        return new $className($data);
     }
 }

@@ -8,13 +8,18 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
+use Cezpdf;
+
 /**
  * Description of BandItem
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class BandItem
+abstract class BandItem
 {
+
+    const BAND_TYPE_MAIN = 'main';
+    const BAND_TYPE_SECOND = 'second';
 
     /**
      *
@@ -30,12 +35,33 @@ class BandItem
 
     /**
      *
+     * @var string
+     */
+    public $type;
+
+    /**
+     *
      * @param array $data
      */
     public function __construct($data)
     {
         $this->height = isset($data['height']) ? (int) $data['height'] : 0;
+        $this->type = isset($data['type']) ? $data['type'] : self::BAND_TYPE_MAIN;
         $this->loadColumns($data['children']);
+    }
+
+    /**
+     * Add all objects in a band to the PDF file.
+     *
+     * @param Cezpdf $pdf
+     * @param object $data
+     * @param float  $linePos
+     */
+    public function render(&$pdf, $data, $linePos)
+    {
+        foreach ($this->columns as $column) {
+            $column->render($pdf, $data, $linePos);
+        }
     }
 
     /**

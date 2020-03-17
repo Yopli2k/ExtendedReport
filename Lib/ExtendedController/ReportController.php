@@ -19,7 +19,7 @@ use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\PDFTemplate;
 abstract class ReportController extends ListController
 {
 
-    const MODEL_REPORT_NAMESPACE = self::MODEL_NAMESPACE . 'Report\\';
+    const MODEL_REPORT_NAMESPACE = self::MODEL_NAMESPACE . 'ModelReport\\';
 
     /**
      * Initializes all the objects and properties.
@@ -96,10 +96,18 @@ abstract class ReportController extends ListController
 
     protected function printReport()
     {
-        $view = $this->views[$this->active];
+        $template = new PDFTemplate();
+        if (!$template->loadTemplate('ReportAttendance')) {
+            return;
+        }
 
-        $template = new PDFTemplate('ReportAttendance');
+        $view = $this->views[$this->active];
         $template->addDataset('main', PDFTemplate::DATASET_DETAIL, $view->model);
-        $template->render();
+        $pdf = $template->render();
+
+        $this->setTemplate(false);
+        $this->response->headers->set('Content-type', 'application/pdf');
+        $this->response->headers->set('Content-Disposition', 'inline;filename=prueba.pdf');
+        $this->response->setContent($pdf);
     }
 }

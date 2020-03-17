@@ -30,19 +30,12 @@ class ConfigItem
 
     /**
      *
-     * @var array
-     */
-    public $default = [];
-
-    /**
-     *
      * @param array $data
      */
     public function __construct($data)
     {
         $this->loadPageConfig($data);
         $this->loadFontConfig($data);
-        $this->loadDefaultConfig($data);
     }
 
     /**
@@ -65,16 +58,5 @@ class ConfigItem
     {
         $this->font['type'] = $data['font']['type'] ?? 'Arial';
         $this->font['size'] = $data['font']['size'] ?? 12;
-    }
-
-    /**
-     * Load default configuration from array
-     *
-     * @param array $data
-     */
-    protected function loadDefaultConfig($data)
-    {
-        $this->default['group'] = $data['default']['group'] ?? 'main';
-        $this->default['alter'] = $data['default']['alter'] ?? 'main';
     }
 }
