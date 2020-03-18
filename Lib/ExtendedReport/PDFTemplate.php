@@ -9,6 +9,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use Cezpdf;
+use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\GroupItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ConfigItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportItemLoadEngine;
@@ -25,10 +26,6 @@ class PDFTemplate
     // const PAGE_TYPE_DEFAULT = 'A4';
     // const PAGE_ORIENTATION_H = 'landscape';
     // const PAGE_ORIENTATION_V = 'portrait';
-
-    const DATASET_HEADER = 'header';
-    const DATASET_DETAIL = 'detail';
-    const DATASET_FOOTER = 'footer';
 
     /**
      * Name of the template report.
@@ -88,12 +85,11 @@ class PDFTemplate
      * Add source data for the band named.
      *
      * @param string $name
-     * @param string $band
      * @param ModelReport $model
      */
-    public function addDataset(string $name, string $band, $model)
+    public function addDataset(string $name, $model)
     {
-        $this->datasets[$name][$band] = $model;
+        $this->datasets[$name] = $model;
     }
 
     /**
@@ -131,24 +127,12 @@ class PDFTemplate
         $this->pageNum = 1;
         $position = 0.00;
 
-        $mainName = $this->getMainNameGroup();
-        $mainGroup = $this->groups[$mainName];
-        $this->renderHeader($mainGroup, $position);
-        $this->renderDetail($mainGroup, $position);
-        $this->renderFooter($mainGroup, $position);
+        foreach ($this->groups as $group) {
+            $this->renderHeader($group, $position);
+            $this->renderDetail($group, $position);
+            $this->renderFooter($group, $position);
+        }
         return $this->pdf->output();
-    }
-
-    /**
-     * Get the group set as the main group.
-     *
-     * @return string
-     */
-    private function getMainNameGroup()
-    {
-        return empty($this->config->default['group'])
-            ? (string) array_key_first($this->groups)
-            : $this->config->default['group'];
     }
 
     /**
@@ -181,12 +165,22 @@ class PDFTemplate
      */
     private function renderDetail($group, &$position)
     {
-        $model = $this->datasets[$group->name][self::DATASET_DETAIL] ?? null;
+        $model = $this->datasets[$group->name] ?? null;
         if (!isset($model)) {
             return;
         }
 
-        $subgroup = empty($group->detail->subgroup) ? null : $this->groups[$group->detail->subgroup];
+        foreach ($model->data as $row) {
+
+        }
+    }
+
+    private function renderOld($group, &$position)
+    {
+        $model = $this->datasets[$group->name] ?? null;
+        if (!isset($model)) {
+            return;
+        }
         foreach ($model->data as $row) {
             // Calculate if need detail header
             $hasDetHeader = $group->detail->hasDetailRupture($row, true);
@@ -221,14 +215,16 @@ class PDFTemplate
      *
      * @param GroupItem $group
      * @param float     $position
+     * @param strint    $type
      */
-    private function renderHeader($group, &$position)
+    private function renderHeader($group, &$position, $type = BandItem::BAND_TYPE_MAIN)
     {
-        $model = $this->datasets[$group->name][self::DATASET_HEADER] ?? null;
+        $model = $this->datasets[$group->name] ?? null;
         $data = isset($model) ? $model->data : null;
         $posY = $this->pagePosition($position);
-        $group->header->render($this->pdf, $data, $posY);
-        $position += $group->header->height;
+        $header = $group->header[$type];
+        $header->render($this->pdf, $data, $posY);
+        $position += $header->height;
     }
 
     /**
@@ -236,14 +232,16 @@ class PDFTemplate
      *
      * @param GroupItem $group
      * @param float     $position
+     * @param strint    $type
      */
-    private function renderFooter($group, &$position)
+    private function renderFooter($group, &$position, $type = BandItem::BAND_TYPE_MAIN)
     {
-        $model = $this->datasets[$group->name][self::DATASET_FOOTER] ?? null;
+        $model = $this->datasets[$group->name] ?? null;
         $data = isset($model) ? $model->data : null;
         $posY = $this->pagePosition($position);
-        $group->footer->render($this->pdf, $data, $posY);
-        $position += $group->footer->height;
+        $footer = $group->footer[$type];
+        $footer->render($this->pdf, $data, $posY);
+        $position += $footer->height;
     }
 
     /**

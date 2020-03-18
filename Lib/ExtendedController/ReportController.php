@@ -102,7 +102,8 @@ abstract class ReportController extends ListController
         }
 
         $view = $this->views[$this->active];
-        $template->addDataset('main', PDFTemplate::DATASET_DETAIL, $view->model);
+        $template->addDataset('main', $view->model);
+        $template->addDataset('detail', $view->model);
         $pdf = $template->render();
 
         $this->setTemplate(false);
