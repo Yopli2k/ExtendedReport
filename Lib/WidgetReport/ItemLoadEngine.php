@@ -12,7 +12,8 @@ use FacturaScripts\Core\Base\ToolBox;
 use SimpleXMLElement;
 
 /**
- * Description of ItemLoadEngine
+ * General class for loading an XML file with structures
+ * by groups, columns and widgets.
  *
  * @author Artex Trading sa     <jcuello@artextrading.com>
  */
@@ -25,9 +26,13 @@ abstract class ItemLoadEngine
      */
     private static $namespace = '\\FacturaScripts\\Dinamic\\Lib\\';
 
+    /**
+     * Process that converts the XML file into an object structure.
+     */
     abstract public static function installXML($name, &$model);
 
     /**
+     * Returns the namespace used by the class.
      *
      * @return string
      */
@@ -37,6 +42,7 @@ abstract class ItemLoadEngine
     }
 
     /**
+     * Loads the XML file with the structure to use.
      *
      * @param string $folder
      * @param string $name
@@ -64,6 +70,7 @@ abstract class ItemLoadEngine
     }
 
     /**
+     * Generate the error message.
      *
      * @param string $message
      * @param array  $context
@@ -74,7 +81,8 @@ abstract class ItemLoadEngine
     }
 
     /**
-     *
+     * Class with common tools.
+     * 
      * @return ToolBox
      */
     protected static function toolBox()

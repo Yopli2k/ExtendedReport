@@ -9,7 +9,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 /**
- * Description of BandHeader
+ * Specific band for the report header data.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -23,6 +23,7 @@ class BandHeader extends BandItem
     public $forceNewPage;
 
     /**
+     * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */

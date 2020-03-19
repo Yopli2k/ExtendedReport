@@ -9,7 +9,6 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use Cezpdf;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\GroupItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ConfigItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportItemLoadEngine;
@@ -22,10 +21,6 @@ use FacturaScripts\Plugins\ExtendedReport\Model\Base\ModelReport;
  */
 class PDFTemplate
 {
-
-    // const PAGE_TYPE_DEFAULT = 'A4';
-    // const PAGE_ORIENTATION_H = 'landscape';
-    // const PAGE_ORIENTATION_V = 'portrait';
 
     /**
      * Name of the template report.
@@ -136,6 +131,103 @@ class PDFTemplate
     }
 
     /**
+     * Add the group detail to the PDF file.
+     *
+     * @param GroupItem $group
+     * @param float     $position
+     */
+    protected function renderDetail($group, &$position)
+    {
+        $detail = $group->getDetail();
+        if (!isset($detail)) {
+            return;
+        }
+
+        $model = $this->datasets[$group->name] ?? null;
+        if (!isset($model)) {
+            return;
+        }
+
+        $footerHeight = $group->getFooterHeight(true);
+        foreach ($model->data as $row) {
+            // Calculate if need detail header
+            $hasRupture = $detail->hasFieldRupture($row, true);
+            $detHeaderHeight = $hasRupture ? $group->detail->getHeaderHeight(false) : 0.00;
+
+            // Calculate remaining space into page
+            $remaining = $this->pagePosition($position) - $footerHeight;
+            $required = $detail->height + $detHeaderHeight;
+            if ($remaining < $required) {
+                // Finish page and render another
+                $this->renderFooter($group, $position, $row, true);
+                $this->newPage();
+
+                $position = 0.00;
+                $hasRupture = false;
+                $this->renderHeader($group, $position, $row, true); // render all headers
+            }
+
+            // Render detail header, if its needed
+            if ($hasRupture) {
+                $this->renderHeader($group->detail, $position, $row, false); // render only detail headers
+            }
+
+            // Render detail data
+            $posY = $this->pagePosition($position);
+            $detail->render($this->pdf, $row, $posY);
+            $position += $detail->height;
+        }
+    }
+
+    /**
+     * Add the group header to the PDF file.
+     *
+     * @param GroupItem   $group
+     * @param float       $position
+     * @param Object|null $data
+     * @param bool        $second
+     */
+    protected function renderHeader($group, &$position, $data = null, $second = false)
+    {
+        $header = $group->getHeader($second);
+        if (isset($header)) {
+            if ($data == null) {
+                $model = $this->datasets[$group->name] ?? null;
+                $data = isset($model) ? $model->data[0] : null;
+            }
+            $posY = $this->pagePosition($position);
+            $header->render($this->pdf, $data, $posY);
+            $position += $header->height;
+
+            if ($group->detail instanceof GroupItem) {
+                $this->renderHeader($group->detail, $position, false);
+            }
+        }
+    }
+
+    /**
+     * Add the group footer to the PDF file.
+     *
+     * @param GroupItem   $group
+     * @param float       $position
+     * @param Object|null $data
+     * @param bool        $second
+     */
+    protected function renderFooter($group, &$position, $data = null, $second = false)
+    {
+        $footer = $group->getFooter($second);
+        if (isset($footer)) {
+            if ($data == null) {
+                $model = $this->datasets[$group->name] ?? null;
+                $data = isset($model) ? $model->data[0] : null;
+            }
+            $posY = $this->pagePosition($position);
+            $footer->render($this->pdf, $data, $posY);
+            $position += $footer->height;
+        }
+    }
+
+    /**
      * Add a new blank page to document.
      */
     private function newPage()
@@ -155,106 +247,5 @@ class PDFTemplate
     private function pagePosition($posY)
     {
         return $this->pageHeight - $posY;
-    }
-
-    /**
-     * Add the group detail to the PDF file.
-     *
-     * @param GroupItem $group
-     * @param float     $position
-     */
-    private function renderDetail($group, &$position)
-    {
-        $model = $this->datasets[$group->name] ?? null;
-        if (!isset($model)) {
-            return;
-        }
-
-        foreach ($model->data as $row) {
-
-        }
-    }
-
-    private function renderOld($group, &$position)
-    {
-        $model = $this->datasets[$group->name] ?? null;
-        if (!isset($model)) {
-            return;
-        }
-        foreach ($model->data as $row) {
-            // Calculate if need detail header
-            $hasDetHeader = $group->detail->hasDetailRupture($row, true);
-            $detHeaderHeight = $hasDetHeader ? $subgroup->header->height : 0.00;
-
-            // Calculate remaining space into page
-            $remaining = $this->pagePosition($position) - $group->footer->height;
-            $required = $group->detail->height + $detHeaderHeight;
-            if ($remaining < $required) {
-                // Finish page and render another
-                $this->renderFooter($group, $position);
-                $this->newPage();
-
-                $position = 0.00;
-                $this->renderHeader($group, $position);
-            }
-
-            // Render detail header, if its needed
-            if ($hasDetHeader) {
-                $this->renderSubgroup($subgroup, $row, $position);
-            }
-
-            // Render detail data
-            $posY = $this->pagePosition($position);
-            $group->detail->render($this->pdf, $row, $posY);
-            $position += $group->detail->height;
-        }
-    }
-
-    /**
-     * Add the group header to the PDF file.
-     *
-     * @param GroupItem $group
-     * @param float     $position
-     * @param strint    $type
-     */
-    private function renderHeader($group, &$position, $type = BandItem::BAND_TYPE_MAIN)
-    {
-        $model = $this->datasets[$group->name] ?? null;
-        $data = isset($model) ? $model->data : null;
-        $posY = $this->pagePosition($position);
-        $header = $group->header[$type];
-        $header->render($this->pdf, $data, $posY);
-        $position += $header->height;
-    }
-
-    /**
-     * Add the group footer to the PDF file.
-     *
-     * @param GroupItem $group
-     * @param float     $position
-     * @param strint    $type
-     */
-    private function renderFooter($group, &$position, $type = BandItem::BAND_TYPE_MAIN)
-    {
-        $model = $this->datasets[$group->name] ?? null;
-        $data = isset($model) ? $model->data : null;
-        $posY = $this->pagePosition($position);
-        $footer = $group->footer[$type];
-        $footer->render($this->pdf, $data, $posY);
-        $position += $footer->height;
-    }
-
-    /**
-     *
-     * @param GroupItem $group
-     * @param array     $data
-     * @param float     $position
-     */
-    private function renderSubgroup($group, $data, &$position)
-    {
-        // TODO: render footer previous rupture, if there are.
-        $posY = $this->pagePosition($position);
-        $group->header->render($this->pdf, $data, $posY);
-        $position += $group->header->height;
     }
 }

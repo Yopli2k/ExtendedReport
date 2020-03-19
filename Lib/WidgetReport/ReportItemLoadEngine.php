@@ -52,6 +52,7 @@ class ReportItemLoadEngine extends ItemLoadEngine
     }
 
     /**
+     * Returns the namespace used by the class.
      *
      * @return string
      */

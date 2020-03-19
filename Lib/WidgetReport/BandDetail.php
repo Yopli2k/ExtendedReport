@@ -9,7 +9,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 /**
- * Description of BandDetail
+ * Specific band for the report detail data.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -17,53 +17,53 @@ class BandDetail extends BandItem
 {
 
     /**
+     * Name of the field that determines the break in the data sequence.
      *
      * @var string
      */
-    public $fieldname;
+    public $fieldName;
 
     /**
-     *
-     * @var GroupItem
-     */
-    public $subgroup;
-
-    /**
+     * Last value for fieldName.
      *
      * @var string
      */
-    public $subgroupValue;
+    public $fieldValue = null;
 
     /**
+     * Class constructor. Get initial values from param array.
      *
-     * @param array $data
+     * @param type $data
      */
     public function __construct($data)
     {
         parent::__construct($data);
-        $this->fieldname = $data['fieldname'] ?? '';
-        $this->subgroup = $data['subgroup'] ?? '';
-        $this->subgroupValue = null;
+        $this->fieldName = $data['fieldname'] ?? '';
     }
 
     /**
-     * Determine if there is a break in the detail data.
+     * Determine if there is a break in the sequence detail data.
      *
      * @param object $data
      * @param bool   $update
      * @return bool
      */
-    public function hasDetailRupture($data, $update = false): bool
+    public function hasFieldRupture($data, $update = false): bool
     {
-        if (empty($this->subgroup) || empty($this->fieldname)) {
+        if (empty($this->fieldName)) {
             return false;
         }
 
         try {
-            $value = $data->{$this->fieldname};
-            $result = ($this->subgroupValue != $value);
+            $value = $data->{$this->fieldName};
+            if ($this->fieldValue == null) {
+                $this->fieldValue = $value;
+                return false;
+            }
+
+            $result = ($this->fieldValue != $value);
             if ($update && $result) {
-                $this->subgroupValue = $value;
+                $this->fieldValue = $value;
             }
         } catch (\Exception $exc) {
             $result = false;

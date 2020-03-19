@@ -9,9 +9,10 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
+use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetItem;
 
 /**
- * Description of ColumnItem
+ * Class to manage the data columns of the report.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -19,12 +20,14 @@ class ColumnItem
 {
 
     /**
+     * Position on x-axis.
      *
      * @var int
      */
     public $posx;
 
     /**
+     * Position on the y-axis.
      *
      * @var int
      */
@@ -32,16 +35,20 @@ class ColumnItem
 
     /**
      * Display object configuration
+     *
+     * @var WidgetItem
      */
     public $widget;
 
     /**
+     * Column width.
      *
      * @var int
      */
     public $width;
 
     /**
+     * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */
@@ -68,6 +75,7 @@ class ColumnItem
     }
 
     /**
+     * Create the visual structure for each column.
      *
      * @param array $children
      */

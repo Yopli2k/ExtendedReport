@@ -9,7 +9,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 /**
- * Description of BandFooter
+ * Specific band for the report footer data.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -29,6 +29,7 @@ class BandFooter extends BandItem
     public $placeBottom;
 
     /**
+     * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */

@@ -11,7 +11,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 use Cezpdf;
 
 /**
- * Description of WidgetLine
+ * Class for displaying one line in the report.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -19,12 +19,14 @@ class WidgetLine extends WidgetItem
 {
 
     /**
+     * Line height.
      *
      * @var int
      */
     protected $height;
 
     /**
+     * Class constructor. Load initials values from data array.
      *
      * @param array $data
      */

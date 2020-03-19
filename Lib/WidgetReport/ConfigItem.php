@@ -9,7 +9,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 /**
- * Description of ConfigItem
+ * Contains the structure for general report settings.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -17,18 +17,21 @@ class ConfigItem
 {
 
     /**
+     * Page setup options.
      *
      * @var array
      */
     public $page = [];
 
     /**
+     * Font setup options.
      *
      * @var array
      */
     public $font = [];
 
     /**
+     * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */

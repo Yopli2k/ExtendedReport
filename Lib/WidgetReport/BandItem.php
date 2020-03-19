@@ -11,7 +11,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 use Cezpdf;
 
 /**
- * Description of BandItem
+ * General class of the different data bands.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -22,24 +22,28 @@ abstract class BandItem
     const BAND_TYPE_SECOND = 'second';
 
     /**
+     * List of columns to display in the report.
      *
      * @var ColumnItem[]
      */
     public $columns = [];
 
     /**
+     * Band height.
      *
      * @var int
      */
     public $height;
 
     /**
+     * Indicates the type of band.
      *
      * @var string
      */
     public $type;
 
     /**
+     * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */
@@ -65,6 +69,7 @@ abstract class BandItem
     }
 
     /**
+     * Create the column structure with the array data.
      *
      * @param array $children
      */

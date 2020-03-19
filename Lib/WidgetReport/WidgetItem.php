@@ -11,7 +11,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 use FacturaScripts\Core\Base\ToolBox;
 
 /**
- * Description of WidgetItem
+ * Base class for displaying data in the report.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -19,24 +19,28 @@ abstract class WidgetItem
 {
 
     /**
+     * The color has to use when representing the data.
      *
      * @var array
      */
     protected $color;
 
     /**
+     * Name of the field from which the value to be represented is obtained.
      *
      * @var string
      */
     protected $fieldname;
 
     /**
+     * Value to be represented.
      *
      * @var string
      */
     protected $value;
 
     /**
+     * Widget type.
      *
      * @var string
      */
@@ -121,7 +125,8 @@ abstract class WidgetItem
     }
 
     /**
-     *
+     * Class with common tools.
+     * 
      * @return ToolBox
      */
     protected static function toolBox()

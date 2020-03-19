@@ -11,7 +11,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 use Cezpdf;
 
 /**
- * Description of WidgetLabel
+ * Class for displaying texts in the report.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
@@ -19,37 +19,42 @@ class WidgetLabel extends WidgetItem
 {
 
     /**
+     * Text alignment.
      *
      * @var string
      */
     protected $align;
 
     /**
+     * Indicates whether bold will be used.
      *
      * @var bool
      */
     protected $bold;
 
     /**
+     * Indicates whether italic will be used.
      *
      * @var bool
      */
     protected $italic;
 
     /**
+     * The size of the text font.
      *
      * @var int
      */
     protected $size;
 
     /**
+     * Indicates whether to translate the value into the user's language.
      *
      * @var bool
      */
     protected $translate;
 
     /**
-     *
+     * Indicates whether underline will be used.
      * @var bool
      */
     protected $underline;
@@ -103,6 +108,7 @@ class WidgetLabel extends WidgetItem
     }
 
     /**
+     * Obtain the value to be represented.
      *
      * @return string
      */
@@ -112,6 +118,7 @@ class WidgetLabel extends WidgetItem
     }
 
     /**
+     * Apply font style to value.
      *
      * @param string $value
      * @param bool   $apply
