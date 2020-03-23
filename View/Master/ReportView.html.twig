@@ -55,10 +55,7 @@
                     {% if currentView.orderOptions is not empty %}
                         {{ macros.sortButton(currentView) }}
                     {% endif %}
-                    <button type="button" class="btn btn-sm btn-success" onclick="listViewSetAction('{{ currentViewName }}', 'load');"">
-                        Ver Informe
-                        <i class="fas fa-play" aria-hidden="true"></i>
-                    </button>
+                    {{ macros.showButton(fsc, currentView, i18n) }}
                 </div>
             </div>
         </div>
@@ -161,6 +158,26 @@
                 <a class="dropdown-item{{ activeClass }}" href="#" onclick="listViewSetOrder('{{ currentView.getViewName() }}', '{{ key }}');">
                     <i class="{{ icon }} fa-fw" aria-hidden="true"></i> {{ orderby.label }}
                 </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro showButton(fsc, currentView, i18n) %}
+    <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-success" onclick="listViewSetAction('{{ currentView.getViewName() }}', 'load');">
+            <i class="far fa-list-alt fa-fw" aria-hidden="true"></i>
+            {{ i18n.trans('view-report') }}
+        </button>
+        <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">{{ i18n.trans('more') }}</span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+            {% for key, option in fsc.exportManager.options() %}
+                <button type="button" class="dropdown-item" onclick="listViewPrintAction('{{ currentView.getViewName() }}', '{{ key }}');">
+                    <i class="{{ option.icon }} fa-fw" aria-hidden="true"></i>
+                    {{ i18n.trans(option.description) }}
+                </button>
             {% endfor %}
         </div>
     </div>

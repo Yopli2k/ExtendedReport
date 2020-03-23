@@ -70,7 +70,7 @@ abstract class ReportController extends ListController
     {
         if ($this->active == $viewName) {
             $action = $this->request->get('action', '');
-            if ($action == 'load' || $action == 'print') {
+            if ($action == 'load' || $action == 'export') {
                 $view->loadData();
             }
         }
@@ -84,8 +84,17 @@ abstract class ReportController extends ListController
     protected function execAfterAction($action)
     {
         switch ($action) {
-            case 'print':
-                $this->printReport();
+            case 'export':
+                $option = $this->request->get('option', 'PDF');
+                switch ($option) {
+                    case 'PDF':
+                        $this->printReport();
+                        break;
+
+                    default:
+                        $this->toolBox()->i18nLog()->warning('option-not-available', ['%option%' => $option]);
+                        break;
+                }
                 break;
 
             default:
@@ -94,6 +103,9 @@ abstract class ReportController extends ListController
         }
     }
 
+    /**
+     * Generate PDF report from xmlreport format.
+     */
     protected function printReport()
     {
         $template = new PDFTemplate();
