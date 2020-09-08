@@ -18,12 +18,22 @@ use Cezpdf;
 class WidgetLabel extends WidgetItem
 {
 
+    private const AUTO_TEXT_DATE = '[date]';
+    private const AUTO_TEXT_DATETIME = '[datetime]';
+
     /**
      * Text alignment.
      *
      * @var string
      */
     protected $align;
+
+    /**
+     * The color for backgroud data.
+     *
+     * @var array
+     */
+    protected $bgcolor;
 
     /**
      * Indicates whether bold will be used.
@@ -73,6 +83,9 @@ class WidgetLabel extends WidgetItem
         $this->size = isset($data['size']) ? (int) $data['size'] : 10;
         $this->translate = isset($data['translate']) ? (bool) $data['translate'] : false;
         $this->underline = isset($data['underline']) ? (bool) $data['underline'] : false;
+
+        $color = isset($data['bgcolor']) ? $data['bgcolor'] : 'white';
+        $this->bgcolor = $this->rgbFromColorName($color);
     }
 
     /**
@@ -85,6 +98,9 @@ class WidgetLabel extends WidgetItem
      */
     public function render(&$pdf, $posX, $posY, $width)
     {
+        $pdf->setColor($this->bgcolor['r'], $this->bgcolor['g'], $this->bgcolor['b']);
+        $pdf->filledRectangle($posX, $posY, $width, 20);
+
         $pdf->setColor($this->color['r'], $this->color['g'], $this->color['b']);
         $pdf->addText(
             $posX,
@@ -114,7 +130,16 @@ class WidgetLabel extends WidgetItem
      */
     private function getValue()
     {
-        return $this->translate ? $this->toolBox()->i18n()->trans($this->value) : $this->value;
+        switch ($this->value) {
+            case self::AUTO_TEXT_DATE:
+                return date('d-m-Y');
+
+            case self::AUTO_TEXT_DATETIME:
+                return date('d-m-Y H:i:s');
+
+            default:
+                return $this->translate ? $this->toolBox()->i18n()->trans($this->value) : $this->value;
+        }
     }
 
     /**

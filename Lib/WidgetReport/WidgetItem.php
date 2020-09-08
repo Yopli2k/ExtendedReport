@@ -62,7 +62,7 @@ abstract class WidgetItem
         $this->fieldname = isset($data['fieldname']) ? $data['fieldname'] : '';
         $this->value = isset($data['value']) ? $data['value'] : '';
 
-        $color = isset($data['color']) ? $data['color'] : '';
+        $color = isset($data['color']) ? $data['color'] : 'black';
         $this->color = $this->rgbFromColorName($color);
     }
 
@@ -107,6 +107,9 @@ abstract class WidgetItem
             case 'yellow':
                 return ['r' => 255/255, 'g' => 255/255, 'b' => 0/255];
 
+            case 'silver':
+                return ['r' => 240/255, 'g' => 240/255, 'b' => 240/255];
+
             default:
                 return ['r' => 0/255, 'g' => 0/255, 'b' => 0/255]; // Black
         }
@@ -126,7 +129,7 @@ abstract class WidgetItem
 
     /**
      * Class with common tools.
-     * 
+     *
      * @return ToolBox
      */
     protected static function toolBox()
