@@ -19,7 +19,7 @@ use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\PDFTemplate;
 abstract class ReportController extends ListController
 {
 
-    const MODEL_REPORT_NAMESPACE = self::MODEL_NAMESPACE . 'ModelReport\\';
+    const MODEL_REPORT_NAMESPACE = self::MODEL_NAMESPACE . 'Report\\';
 
     /**
      * Initializes all the objects and properties.
