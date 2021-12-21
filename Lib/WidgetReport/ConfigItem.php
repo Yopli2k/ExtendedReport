@@ -17,6 +17,13 @@ class ConfigItem
 {
 
     /**
+     * Default setup options.
+     *
+     * @var array
+     */
+    public $default = [];
+
+    /**
      * Page setup options.
      *
      * @var array
@@ -39,6 +46,18 @@ class ConfigItem
     {
         $this->loadPageConfig($data);
         $this->loadFontConfig($data);
+        $this->loadDefaultConfig($data);
+    }
+
+    /**
+     * Load default configuration from array
+     *
+     * @param array $data
+     */
+    protected function loadDefaultConfig(array $data)
+    {
+        $this->default['group'] = $data['group'] ?? 'main';
+        $this->default['alter'] = $data['alter'] ?? 'other';
     }
 
     /**
@@ -46,7 +65,7 @@ class ConfigItem
      *
      * @param array $data
      */
-    protected function loadPageConfig($data)
+    protected function loadPageConfig(array $data)
     {
         $this->page['type'] = $data['page']['type'] ?? 'A4';
         $this->page['orientation'] = $data['page']['orientation'] ?? 'portrait';
@@ -57,7 +76,7 @@ class ConfigItem
      *
      * @param array $data
      */
-    protected function loadFontConfig($data)
+    protected function loadFontConfig(array $data)
     {
         $this->font['type'] = $data['font']['type'] ?? 'Arial';
         $this->font['size'] = $data['font']['size'] ?? 12;

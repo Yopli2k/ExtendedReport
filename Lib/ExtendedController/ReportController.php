@@ -109,7 +109,7 @@ abstract class ReportController extends ListController
     protected function printReport()
     {
         $template = new PDFTemplate();
-        if (!$template->loadTemplate('ReportAttendance')) {
+        if (!$template->loadTemplate($this->active)) {
             return;
         }
 

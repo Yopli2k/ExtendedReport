@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2018-2020 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2018-2020 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2020 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2020-2022 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program and its files are under the terms of the license specified in the LICENSE file.
  */
@@ -15,7 +15,7 @@ use SimpleXMLElement;
  * General class for loading an XML file with structures
  * by groups, columns and widgets.
  *
- * @author Artex Trading sa     <jcuello@artextrading.com>
+ * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
 abstract class ItemLoadEngine
 {
@@ -50,9 +50,10 @@ abstract class ItemLoadEngine
      */
     protected static function loadXML($folder, $name)
     {
-        $fileName = \FS_FOLDER . '/Dinamic/' . $folder . '/' . $name . '.xml';
+        /// TODO: Set final folder with templates
+        $fileName = \FS_FOLDER . '/Dinamic/XMLView/' . $folder . '/' . $name . '.xml';
         if (\FS_DEBUG && !file_exists($fileName)) {
-            $fileName = \FS_FOLDER . '/Core/' . $folder . '/' . $name . '.xml';
+            $fileName = \FS_FOLDER . '/Core/XMLView/' . $folder . '/' . $name . '.xml';
         }
 
         if (!file_exists($fileName)) {
@@ -82,7 +83,7 @@ abstract class ItemLoadEngine
 
     /**
      * Class with common tools.
-     * 
+     *
      * @return ToolBox
      */
     protected static function toolBox()
@@ -122,7 +123,7 @@ abstract class ItemLoadEngine
         }
 
         /// text
-        $text = (string) $xml;
+        $text = \trim((string) $xml);
         if ('' !== $text) {
             $array['text'] = $text;
         }
