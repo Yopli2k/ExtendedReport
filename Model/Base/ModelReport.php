@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2018-2020 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2018-2020 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2018-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2018-2022 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program and its files are under the terms of the license specified in the LICENSE file.
  */
@@ -39,16 +39,9 @@ abstract class ModelReport
     protected $totals = [];
 
     /**
-     * Return array with data of report.
-     *
-     * @param BaseFilter[] $filters
-     * @param DataBaseWhere[] $where
-     * @param array $order
-     * @param int $offset
-     * @param int $limit
-     * @return array
+     * Load report data into array data property.
      */
-    abstract public function all($filters, $where, $order, $offset, $limit);
+    abstract public function loadData();
 
     /**
      * Class constructor.
@@ -81,37 +74,6 @@ abstract class ModelReport
     public function getTotal($fieldName)
     {
         return isset($this->totals[$fieldName]) ? $this->totals[$fieldName] : 0.00;
-    }
-
-    /**
-     * Execute the load data for report.
-     *
-     * @param BaseFilter[] $filters
-     * @param DataBaseWhere[] $where
-     * @param array $order
-     * @param int $offset
-     * @param int $limit
-     */
-    public function loadData($filters, $where, $order, $offset, $limit)
-    {
-        $this->data = $this->all($filters, $where, $order, $offset, $limit);
-    }
-
-    /**
-     * Calculate DataBaseWhere from key list of filters
-     *
-     * @param BaseFilter[] $filters
-     * @param string[] $keys
-     * @return DataBaseWhere[]
-     */
-    protected function getFiltersWhere($filters, $keys = [])
-    {
-        $result = [];
-        $keys_values = empty($keys) ? array_keys($filters) : $keys;
-        foreach ($keys_values as $filterKey) {
-            $filters[$filterKey]->getDataBaseWhere($result);
-        }
-        return $result;
     }
 
     /**

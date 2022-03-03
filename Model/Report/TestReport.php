@@ -8,7 +8,6 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Model\Report;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Plugins\ExtendedReport\Model\Base\ModelReport;
 use FacturaScripts\Plugins\ExtendedReport\Model\Report\Data\TestData;
 
@@ -21,63 +20,11 @@ class TestReport extends ModelReport
 {
 
     /**
-     * Class for set test data
-     *
-     * @var TestData
+     * Load report data into array data property.
+     *   - Set random test data records into data property.
      */
-    private $testData;
-
-    /**
-     * Class constructor
-     */
-    public function __construct()
+    public function loadData()
     {
-        parent::__construct();
-        $this->testData = new TestData();
-    }
-
-    /**
-     * Execute the load data for report.
-     *
-     * For get filter from controller:
-     *     - $id = $filters['filter_name']->getValue();
-     *
-     * For get filter date period:
-     *     - $startdate = $filters['filter_name']->getValue(PeriodFilter::STARTDATE_ID);
-     *     - $enddate = $filters['filter_name']->getValue(PeriodFilter::ENDDATE_ID);
-     *
-     * @param BaseFilter[] $filters
-     * @param DataBaseWhere[] $where
-     * @param array $order
-     * @param int $offset
-     * @param int $limit
-     * @return TestData[]
-     */
-    public function all($filters, $where, $order, $offset, $limit)
-    {
-        /// Get filters values example
-        if (isset($filters['code'])) {
-            $id = $filters['code']->getValue();
-
-            /// Check values
-            if (empty($id)) {
-                $this->toolBox()->i18nLog()->warning('no-id-informed');
-                return [];
-            }
-        }
-
-        $result = $this->mainProcess();
-        return $result;
-    }
-
-    /**
-     * Process data to calculate report
-     *
-     * @return TestData[]
-     */
-    public function mainProcess(): array
-    {
-        $result = [];
         $total = \rand(5, 500);
         for ($index = 1; $index <= $total; ++$index) {
             $data = new TestData();
@@ -85,10 +32,8 @@ class TestReport extends ModelReport
             $data->name = $this->testName();
             $data->date = $this->testDate();
             $data->total = $this->testTotal();
-            $result[] = $data;
+            $this->data[] = $data;
         }
-
-        return $result;
     }
 
     private function testDate(): string

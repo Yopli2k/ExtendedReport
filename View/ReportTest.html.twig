@@ -1,0 +1,50 @@
+{#
+/**
+ * This file is part of HumanResources plugin for FacturaScripts.
+ * FacturaScripts Copyright (C) 2015-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * HumanResources Copyright (C) 2018-2022 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ *
+ * This program and its files are under the terms of the license specified in the LICENSE file.
+ *
+ * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
+*/
+#}
+{% extends "Master/MenuBghTemplate.html.twig" %}
+
+{% set pageData = fsc.getPageData() %}
+
+{% block bodyHeaderOptions %}
+    {{ parent() }}
+    <div class="container-fluid mb-3 d-print-none">
+        <div class="row">
+            <div class="col-12 text-right">
+                <h1 class="h4 mb-0 d-none d-md-inline-block">
+                    {% set title = i18n.trans(fsc.getPageData()['title']) | capitalize %}
+                    {{ title }}<i class="{{ fsc.getPageData()['icon'] }} ml-3" aria-hidden="true"></i>
+                </h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+
+    <form id="formEmployeePanel" method="post">
+        <input type="hidden" name="action" value="print" />
+        <div class="container-fluid">
+            <div class="card border-primary shadow mb-3">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <button class="btn btn-lg btn-primary" type="submit">
+                                <i class="fas fa-print fa-fw" aria-hidden="true"></i>
+                                <span class="d-none d-sm-inline-block">{{ i18n.trans('test') }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
