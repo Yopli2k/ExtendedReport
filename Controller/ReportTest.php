@@ -8,15 +8,34 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Controller;
 
-use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedController\ReportController;
+use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\PDFTemplate;
+use FacturaScripts\Plugins\ExtendedReport\Model\Report\TestReport;
 
 /**
  * Report test
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class ReportTest extends ReportController
+class ReportTest extends Controller
 {
+
+    /**
+     *
+     * @var TestReport
+     */
+    private $model;
+
+    /**
+     * Initialize all objects and properties.
+     *
+     * @param string $className
+     * @param string $uri
+     */
+    public function __construct(string $className, string $uri = '') {
+        parent::__construct($className, $uri);
+        $this->model = new TestReport();
+    }
 
     /**
      * Returns basic page attributes
@@ -27,7 +46,7 @@ class ReportTest extends ReportController
     {
         $pagedata = parent::getPageData();
         $pagedata['title'] = 'report-test';
-        $pagedata['icon'] = 'fas fa-file-alt';
+        $pagedata['icon'] = 'fas fa-print';
         $pagedata['menu'] = 'admin';
         $pagedata['showonmenu'] = true;         // change to false for production version.
 
@@ -35,10 +54,52 @@ class ReportTest extends ReportController
     }
 
     /**
-     * Add Report Views
+     * Runs the controller's private logic.
+     *
+     * @param Response $response
+     * @param User $user
+     * @param ControllerPermissions $permissions
      */
-    protected function createViews($viewName = 'ReportTest')
+    public function privateCore(&$response, $user, $permissions)
     {
-        $this->addView($viewName, 'TestReport', 'test', 'fas fa-checks');
+        parent::privateCore($response, $user, $permissions);
+        $this->loadReportData();
+        $this->execAfterAction($this->request->get('action', ''));
+    }
+
+    /**
+     * Execute the informed action.
+     *
+     * @param string $action
+     */
+    protected function execAfterAction(string $action)
+    {
+        if ($action == 'print') {
+            $this->printReport();
+        }
+    }
+
+    /**
+     * Load test data into model.
+     */
+    private function loadReportData()
+    {
+        $this->model->loadData();
+    }
+
+    private function printReport()
+    {
+        $template = new PDFTemplate();
+        if (!$template->loadTemplate('ReportTest')) {
+            return;
+        }
+
+        $template->addDataset('main', $this->model);
+        $pdf = $template->render();
+
+        $this->setTemplate(false);
+        $this->response->headers->set('Content-type', 'application/pdf');
+        $this->response->headers->set('Content-Disposition', 'inline;filename=ReportTest.pdf');
+        $this->response->setContent($pdf);
     }
 }

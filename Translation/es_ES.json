@@ -1,4 +1,4 @@
 {
-    "option-not-available": "Opción %option% no disponible",
-    "view-report": "Ver Informe"
+    "report-test": "Testear Informe",
+    "print-test": "Imprimir Test"
 }

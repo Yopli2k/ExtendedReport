@@ -126,7 +126,7 @@ class WidgetLabel extends WidgetItem
     /**
      * Obtain the value to be represented.
      *
-     * @return string
+     * @return mixed
      */
     private function getValue()
     {

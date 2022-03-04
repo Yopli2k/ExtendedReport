@@ -42,5 +42,5 @@ class TestData
      *
      * @var float
      */
-    public $total;
+    public $amount;
 }

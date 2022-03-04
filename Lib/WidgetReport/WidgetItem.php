@@ -67,11 +67,11 @@ abstract class WidgetItem
     }
 
     /**
-     * Get the widget type
+     * Get the widget type.
      *
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
