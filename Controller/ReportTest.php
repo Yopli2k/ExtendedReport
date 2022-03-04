@@ -9,6 +9,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\PDFTemplate;
 use FacturaScripts\Plugins\ExtendedReport\Model\Report\TestReport;
 
 /**
@@ -74,7 +75,7 @@ class ReportTest extends Controller
     protected function execAfterAction(string $action)
     {
         if ($action == 'print') {
-
+            $this->printReport();
         }
     }
 
@@ -84,5 +85,21 @@ class ReportTest extends Controller
     private function loadReportData()
     {
         $this->model->loadData();
+    }
+
+    private function printReport()
+    {
+        $template = new PDFTemplate();
+        if (!$template->loadTemplate('ReportTest')) {
+            return;
+        }
+
+        $template->addDataset('main', $this->model);
+        $pdf = $template->render();
+
+        $this->setTemplate(false);
+        $this->response->headers->set('Content-type', 'application/pdf');
+        $this->response->headers->set('Content-Disposition', 'inline;filename=ReportTest.pdf');
+        $this->response->setContent($pdf);
     }
 }

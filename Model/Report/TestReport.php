@@ -25,13 +25,13 @@ class TestReport extends ModelReport
      */
     public function loadData()
     {
-        $total = \rand(5, 500);
-        for ($index = 1; $index <= $total; ++$index) {
+        $records = \rand(5, 500);
+        for ($index = 1; $index <= $records; ++$index) {
             $data = new TestData();
             $data->id = $index;
             $data->name = $this->testName();
             $data->date = $this->testDate();
-            $data->total = $this->testTotal();
+            $data->amount = $this->testAmount();
             $this->data[] = $data;
         }
     }
@@ -61,7 +61,7 @@ class TestReport extends ModelReport
         return $randomString;
     }
 
-    private function testTotal(): string
+    private function testAmount(): string
     {
         return \rand(0, 5000) . '.' . \rand(0, 99);
     }
