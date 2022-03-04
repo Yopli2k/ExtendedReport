@@ -1,128 +1,165 @@
-End User License Agreement
-José Antonio Cuello Principal
+                   GNU LESSER GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
 
-FINAL USER LICENSE AGREEMENT (EULA) FOR THE PLUGIN ExtendedReport.
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
 
-IMPORTANT, PLEASE READ THE TERMS AND CONDITIONS OF THIS LICENSE AGREEMENT. FOR
-[José Antonio Cuello Principal, End User License Agreement ("EULA") is an agreement
-legal between you (either a person or a single entity) and José Antonio Cuello Principal.
-("José Antonio Cuello Principal", "we", "us") for this software product that can
-include associated software components, media, printed materials and
-online or electronic documentation (collectively referred to as SOFTWARE PRODUCT or
-SOFTWARE). This license agreement represents the complete agreement regarding the program
-between you and José Antonio Cuello Principal, "Licensor"), and replaces any proposal
-previous, representation or understanding between the parties. If you do not agree with the
-terms of this EULA, do not install or otherwise use the SOFTWARE PRODUCT.
 
-The SOFTWARE PRODUCT is protected by copyright laws and treaties
-international copyright laws, as well as other property laws and treaties
-intellectual. The SOFTWARE PRODUCT is licensed, not sold.
+  This version of the GNU Lesser General Public License incorporates
+the terms and conditions of version 3 of the GNU General Public
+License, supplemented by the additional permissions listed below.
 
-1. CONCESSION OF LICENSE
+  0. Additional Definitions.
 
-   The SOFTWARE PRODUCT, the ExtendedReport plugin, has the following license:
+  As used herein, "this License" refers to version 3 of the GNU Lesser
+General Public License, and the "GNU GPL" refers to version 3 of the GNU
+General Public License.
 
-   a. Installation and use.
+  "The Library" refers to a covered work governed by this License,
+other than an Application or a Combined Work as defined below.
 
-      José Antonio Cuello Principal grants you the right to install and use copies of the PRODUCT
-      OF SOFTWARE in ONE FacturaScripts installation, the software for which the
-      SOFTWARE PRODUCT The software is considered in use in an installation when activated
-      the plugin.
+  An "Application" is any work that makes use of an interface provided
+by the Library, but which is not otherwise based on the Library.
+Defining a subclass of a class defined by the Library is deemed a mode
+of using an interface provided by the Library.
 
-      Additionally José Antonio Cuello Principal grants you the right to install the PRODUCT
-      OF SOFTWARE in a testing facility, with the purpose that you can test the
-      FUNCTIONS OF THE SOFTWARE PRODUCT.
+  A "Combined Work" is a work produced by combining or linking an
+Application with the Library.  The particular version of the Library
+with which the Combined Work was made is also called the "Linked
+Version".
 
-2. DESCRIPTION OF OTHER RIGHTS AND LIMITATIONS.
+  The "Minimal Corresponding Source" for a Combined Work means the
+Corresponding Source for the Combined Work, excluding any source code
+for portions of the Combined Work that, considered in isolation, are
+based on the Application, and not on the Linked Version.
 
-   a. Maintenance of copyright notices.
+  The "Corresponding Application Code" for a Combined Work means the
+object code and/or source code for the Application, including any data
+and utility programs needed for reproducing the Combined Work from the
+Application, but excluding the System Libraries of the Combined Work.
 
-      You must not remove or alter any copyright notice about each and every one
-      of copies of the SOFTWARE PRODUCT.
+  1. Exception to Section 3 of the GNU GPL.
 
-   b. Modification or adaptation.
+  You may convey a covered work under sections 3 and 4 of this License
+without being bound by section 3 of the GNU GPL.
 
-      You can modify the code of this plugin for your own use in the facilities
-      that are allowed in point 1.
+  2. Conveying Modified Versions.
 
-   c. Distribution.
+  If you modify a copy of the Library, and, in your modifications, a
+facility refers to a function or data to be supplied by an Application
+that uses the facility (other than as an argument passed when the
+facility is invoked), then you may convey a copy of the modified
+version:
 
-      You may not distribute copies of the SOFTWARE PRODUCT to third parties. The versions of
-      evaluation available for download from José Antonio Cuello Principal web sites can
-      distribute freely.
+   a) under this License, provided that you make a good faith effort to
+   ensure that, in the event an Application does not supply the
+   function or data, the facility still operates, and performs
+   whatever part of its purpose remains meaningful, or
 
-   d. Prohibition of reverse engineering, decompilation and disassembly.
+   b) under the GNU GPL, with none of the additional permissions of
+   this License applicable to that copy.
 
-      You may not reverse engineer, decompile, translate or disassemble the PRODUCT
-      SOFTWARE. In addition, you will not attempt to skip the registration or license process of the PRODUCT.
-      SOFTWARE. If you are a corporation, you will prevent your employees, contractors from trying
-      reverse engineer, decompile, translate or disassemble the SOFTWARE.
+  3. Object Code Incorporating Material from Library Header Files.
 
-   e. Rental.
+  The object code form of an Application may incorporate material from
+a header file that is part of the Library.  You may convey such object
+code under terms of your choice, provided that, if the incorporated
+material is not limited to numerical parameters, data structure
+layouts and accessors, or small macros, inline functions and templates
+(ten or fewer lines in length), you do both of the following:
 
-      You may not rent, lease, loan or sell the SOFTWARE PRODUCT.
+   a) Give prominent notice with each copy of the object code that the
+   Library is used in it and that the Library and its use are
+   covered by this License.
 
-   f. Support services.
+   b) Accompany the object code with a copy of the GNU GPL and this license
+   document.
 
-      José Antonio Cuello Principal can provide support services related to the
-      SOFTWARE PRODUCT ("Support Services"). Any software supplementary code
-      provided to you as part of Support Services will be considered part of the
-      SOFTWARE PRODUCT and will be subject to the terms and conditions of this EULA.
+  4. Combined Works.
 
-3. TERMINATION
+  You may convey a Combined Work under terms of your choice that,
+taken together, effectively do not restrict modification of the
+portions of the Library contained in the Combined Work and reverse
+engineering for debugging such modifications, if you also do each of
+the following:
 
-   Without prejudice to other rights, José Antonio Cuello Principal may terminate this EULA if
-   you do not comply with the terms and conditions of this EULA. In such a case, you must destroy
-   all copies of the SOFTWARE PRODUCT in your possession.
+   a) Give prominent notice with each copy of the Combined Work that
+   the Library is used in it and that the Library and its use are
+   covered by this License.
 
-4. COPYRIGHT
+   b) Accompany the Combined Work with a copy of the GNU GPL and this license
+   document.
 
-   The SOFTWARE is licensed, not sold. The SOFTWARE PRODUCT is owned by
-   José Antonio Cuello Principal and this license does not transfer any property of the SOFTWARE
-   to you. All titles, including but not limited to copyrights, in and to
-   SOFTWARE PRODUCT and any copy thereof are the property of José Antonio Cuello Principal.
-   All titles and intellectual property rights over the content that can be
-   Access through the use of the SOFTWARE PRODUCT are the property of the respective owner
-   of the content and may be protected by the laws and treaties of copyright or
-   applicable intellectual property. This EULA does not grant you any right to use said
-   content. All rights not expressly granted are reserved by
-   José Antonio Cuello Principal.
+   c) For a Combined Work that displays copyright notices during
+   execution, include the copyright notice for the Library among
+   these notices, as well as a reference directing the user to the
+   copies of the GNU GPL and this license document.
 
-5. REFUND POLICY
+   d) Do one of the following:
 
-   The SOFTWARE is available for testing. We hope you have tried it before buying it.
-   We do not support refunds.
+       0) Convey the Minimal Corresponding Source under the terms of this
+       License, and the Corresponding Application Code in a form
+       suitable for, and under terms that permit, the user to
+       recombine or relink the Application with a modified version of
+       the Linked Version to produce a modified Combined Work, in the
+       manner specified by section 6 of the GNU GPL for conveying
+       Corresponding Source.
 
-6. NO WARRANTY
+       1) Use a suitable shared library mechanism for linking with the
+       Library.  A suitable mechanism is one that (a) uses at run time
+       a copy of the Library already present on the user's computer
+       system, and (b) will operate properly with a modified version
+       of the Library that is interface-compatible with the Linked
+       Version.
 
-   José Antonio Cuello Principal expressly waives any warranty for the SOFTWARE PRODUCT.
-   The SOFTWARE PRODUCT is provided "as is" without any express or implied warranty of any kind
-   type, including but not limited to any warranty of merchantability, non-infringement or fitness
-   of a particular purpose. José Antonio Cuello Principal does not guarantee or assume responsibility for
-   the accuracy or completeness of any information, text, graphics, links or other elements
-   contained in the SOFTWARE PRODUCT. José Antonio Cuello Principal makes no guarantees regarding any
-   damage that may be caused by the transmission of a computer virus, worm, time bomb, bomb
-   logic or another computer program of this type. José Antonio Cuello Principal expressly waives
-   expressly to any guarantee or representation to the Authorized Users or third parties.
+   e) Provide Installation Information, but only if you would otherwise
+   be required to provide such information under section 6 of the
+   GNU GPL, and only to the extent that such information is
+   necessary to install and execute a modified version of the
+   Combined Work produced by recombining or relinking the
+   Application with a modified version of the Linked Version. (If
+   you use option 4d0, the Installation Information must accompany
+   the Minimal Corresponding Source and Corresponding Application
+   Code. If you use option 4d1, you must provide the Installation
+   Information in the manner specified by section 6 of the GNU GPL
+   for conveying Corresponding Source.)
 
-7. RECOGNITION OF THIRD
+  5. Combined Libraries.
 
-   José Antonio Cuello Principal additionally uses open source software/s with license(s)
-   own/s. A copy of your license (s) is accompanied by the files of the SOFTWARE PRODUCT
-   by José Antonio Cuello Principal. For more information, check the official websites of the
-   respective projects.
+  You may place library facilities that are a work based on the
+Library side by side in a single library together with other library
+facilities that are not Applications and are not covered by this
+License, and convey such a combined library under terms of your
+choice, if you do both of the following:
 
-8. LIMITATION OF LIABILITY
+   a) Accompany the combined library with a copy of the same work based
+   on the Library, uncombined with any other library facilities,
+   conveyed under the terms of this License.
 
-   In no case will be responsible for any damage (including, without limitation, loss of benefits,
-   business interruption or loss of information) that arises from the use or inability to use the
-   SOFTWARE PRODUCT by Authorized Users, even if José Antonio Cuello Principal has
-   been informed of The possibility of such damages. In no case, José Antonio Cuello Principal will be
-   responsible for the loss of data or for indirect, special, incidental, consequential damages
-   (including lost benefits) or other damages based on a contract, tort or otherwise.
-   José Antonio Cuello Principal will not have any responsibility regarding the content of the PRODUCT
-   SOFTWARE or part of it, including but not limited to errors or omissions contained in it, slander,
-   infractions of advertising rights, privacy, trademark rights, business interruption,
-   personal injury, loss of privacy, moral rights or disclosure of confidential information.
+   b) Give prominent notice with the combined library that part of it
+   is a work based on the Library, and explaining where to find the
+   accompanying uncombined form of the same work.
 
-© 2018-2019 José Antonio Cuello Principal All rights reserved
+  6. Revised Versions of the GNU Lesser General Public License.
+
+  The Free Software Foundation may publish revised and/or new versions
+of the GNU Lesser General Public License from time to time. Such new
+versions will be similar in spirit to the present version, but may
+differ in detail to address new problems or concerns.
+
+  Each version is given a distinguishing version number. If the
+Library as you received it specifies that a certain numbered version
+of the GNU Lesser General Public License "or any later version"
+applies to it, you have the option of following the terms and
+conditions either of that published version or of any later version
+published by the Free Software Foundation. If the Library as you
+received it does not specify a version number of the GNU Lesser
+General Public License, you may choose any version of the GNU Lesser
+General Public License ever published by the Free Software Foundation.
+
+  If the Library as you received it specifies that a proxy can decide
+whether future versions of the GNU Lesser General Public License shall
+apply, that proxy's public statement of acceptance of any version is
+permanent authorization for you to choose that version for the
+Library.
