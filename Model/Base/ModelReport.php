@@ -33,12 +33,6 @@ abstract class ModelReport
     public $data = [];
 
     /**
-     *
-     * @var array
-     */
-    protected $totals = [];
-
-    /**
      * Load report data into array data property.
      */
     abstract public function loadData();
@@ -51,29 +45,6 @@ abstract class ModelReport
         if (self::$dataBase === null) {
             self::$dataBase = new DataBase();
         }
-    }
-
-    /**
-     * Accumulate the amount in the indicated total field.
-     *
-     * @param string $fieldName
-     * @param float $amount
-     */
-    public function accumulate($fieldName, $amount)
-    {
-        $value = $this->getTotal($fieldName);
-        $this->totals[$fieldName] = $value + $amount;
-    }
-
-    /**
-     * Returns the accumulated amount of the requested field.
-     *
-     * @param string $fieldName
-     * @return float
-     */
-    public function getTotal($fieldName)
-    {
-        return isset($this->totals[$fieldName]) ? $this->totals[$fieldName] : 0.00;
     }
 
     /**
