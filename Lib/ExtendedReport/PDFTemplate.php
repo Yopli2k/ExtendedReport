@@ -175,6 +175,7 @@ class PDFTemplate
             // Render detail data
             $posY = $this->pagePosition($position);
             $detail->render($this->pdf, $row, $posY);
+            $this->procesCalculateColumns($group, $row, true);
             $position += $detail->height;
         }
     }
@@ -217,8 +218,8 @@ class PDFTemplate
     {
         $footer = $group->getFooter($second);
         if (isset($footer)) {
+            $model = $this->datasets[$group->name] ?? null;
             if ($data == null) {
-                $model = $this->datasets[$group->name] ?? null;
                 $data = isset($model) ? $model->data[0] : null;
             }
             $posY = $this->pagePosition($position);
@@ -247,5 +248,19 @@ class PDFTemplate
     private function pagePosition($posY)
     {
         return $this->pageHeight - $posY;
+    }
+
+    /**
+     * Execute the calculation of special columns in the bands.
+     *
+     * @param GroupItem $group
+     * @param Object $data
+     */
+    private function procesCalculateColumns($group, $data, $second = false)
+    {
+        $footer = $group->getFooter($second);
+        if (isset($footer)) {
+            $footer->calculate($data);
+        }
     }
 }
