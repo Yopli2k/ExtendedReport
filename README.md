@@ -9,7 +9,7 @@ This software enables reports to be made using XML files and from a new data mod
 
 <ul>
     <li>General info: https://www.facturascripts.com</li>
-    <li>Plugin info:  https://www.facturascripts.com/plugins/ExtendedReport</li>
+    <li>Plugin info:  https://facturascripts.com/plugins/extendedreport</li>
 </ul>
 
 ## Documentation / Issues / Feedback
