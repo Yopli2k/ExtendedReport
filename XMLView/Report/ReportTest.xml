@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
-/**
  * This file is part of ExtendedReport plugin for FacturaScripts.
  * FacturaScripts Copyright (C) 2015-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
  * ExtendedReport Copyright (C) 2021-2022 Jose Antonio Cuello Principal <yopli2000@gmail.com>
@@ -93,7 +92,7 @@
 
             <column posx="15" posy="30" width="60" height="15">
                 <widget
-                    type="label" align="right" translate="true" bold="true" size="13"
+                    type="label" align="right" bold="true" size="13"
                     value="count"
                 />
             </column>
