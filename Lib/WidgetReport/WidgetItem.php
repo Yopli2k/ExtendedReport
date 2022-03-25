@@ -60,7 +60,7 @@ abstract class WidgetItem
     /**
      * Add object to the PDF file.
      */
-    abstract function render(&$pdf, $posX, $posY, $width);
+    abstract function render(&$pdf, $posX, $posY, $width, $height);
 
     /**
      * Class constructor. Load initials values from data array.

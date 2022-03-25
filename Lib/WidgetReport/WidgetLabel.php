@@ -29,9 +29,6 @@ use Cezpdf;
 class WidgetLabel extends WidgetItem
 {
 
-    private const AUTO_TEXT_DATE = '[date]';
-    private const AUTO_TEXT_DATETIME = '[datetime]';
-
     /**
      * Text alignment.
      *
@@ -95,8 +92,8 @@ class WidgetLabel extends WidgetItem
         $this->translate = isset($data['translate']) ? (bool) $data['translate'] : false;
         $this->underline = isset($data['underline']) ? (bool) $data['underline'] : false;
 
-        $color = isset($data['bgcolor']) ? $data['bgcolor'] : 'white';
-        $this->bgcolor = $this->rgbFromColorName($color);
+        $color = isset($data['bgcolor']) ? $data['bgcolor'] : false;
+        $this->bgcolor = $color ? $this->rgbFromColorName($color) : [];
     }
 
     /**
@@ -106,12 +103,11 @@ class WidgetLabel extends WidgetItem
      * @param float $posX
      * @param float $posY
      * @param float $width
+     * @param float $height
      */
-    public function render(&$pdf, $posX, $posY, $width)
+    public function render(&$pdf, $posX, $posY, $width, $height)
     {
-        $pdf->setColor($this->bgcolor['r'], $this->bgcolor['g'], $this->bgcolor['b']);
-        $pdf->filledRectangle($posX, $posY, $width, 20);
-
+        $this->renderBackground($pdf, $posX, $posY, $width, $height);
         $pdf->setColor($this->color['r'], $this->color['g'], $this->color['b']);
         $pdf->addText(
             $posX,
@@ -125,7 +121,7 @@ class WidgetLabel extends WidgetItem
     /**
      * Get text with format properties.
      */
-    private function getText()
+    protected function getText()
     {
         $value = $this->toolBox()->utils()->fixHtml($this->getValue());
         $this->setFontStyle($value, $this->bold, 'u');
@@ -139,18 +135,28 @@ class WidgetLabel extends WidgetItem
      *
      * @return mixed
      */
-    private function getValue()
+    protected function getValue()
     {
-        switch ($this->value) {
-            case self::AUTO_TEXT_DATE:
-                return date('d-m-Y');
+        return $this->translate ? $this->toolBox()->i18n()->trans($this->value) : $this->value;
+    }
 
-            case self::AUTO_TEXT_DATETIME:
-                return date('d-m-Y H:i:s');
-
-            default:
-                return $this->translate ? $this->toolBox()->i18n()->trans($this->value) : $this->value;
+    /**
+     * Paint background rectangre.
+     *
+     * @param Cezpdf $pdf
+     * @param float $posX
+     * @param float $posY
+     * @param float $width
+     * @param float $height
+     */
+    protected function renderBackground(&$pdf, $posX, $posY, $width, $height)
+    {
+        if (empty($this->bgcolor)) {
+            return;
         }
+
+        $pdf->setColor($this->bgcolor['r'], $this->bgcolor['g'], $this->bgcolor['b']);
+        $pdf->filledRectangle($posX-5, $posY-5, $width+5, $height+2);
     }
 
     /**
