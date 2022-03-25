@@ -32,7 +32,7 @@
             <!-- Datos Empresa -->
             <column posx="20" posy="25" width="540">
                 <widget type="default" fieldname="company.nombre"
-                        size="12" align="left" bgcolor="blue" color="white" />
+                        size="12" align="left" bgcolor="4169E1" color="white" />
             </column>
 
             <!-- Datos Usuario -->

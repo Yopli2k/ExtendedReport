@@ -93,7 +93,7 @@ class WidgetLabel extends WidgetItem
         $this->underline = isset($data['underline']) ? (bool) $data['underline'] : false;
 
         $color = isset($data['bgcolor']) ? $data['bgcolor'] : false;
-        $this->bgcolor = $color ? $this->rgbFromColorName($color) : [];
+        $this->bgcolor = $color ? $this->rgbFromColor($color) : [];
     }
 
     /**

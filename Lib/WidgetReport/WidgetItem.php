@@ -74,7 +74,7 @@ abstract class WidgetItem
         $this->value = isset($data['value']) ? $data['value'] : '';
 
         $color = isset($data['color']) ? $data['color'] : 'black';
-        $this->color = $this->rgbFromColorName($color);
+        $this->color = $this->rgbFromColor($color);
     }
 
     /**
@@ -94,7 +94,7 @@ abstract class WidgetItem
      * @param string $color
      * @return array
      */
-    public function rgbFromColorName(string $color): array
+    public function rgbFromColor(string $color): array
     {
         switch ($color) {
             case 'black':
@@ -122,8 +122,27 @@ abstract class WidgetItem
                 return ['r' => 240/255, 'g' => 240/255, 'b' => 240/255];
 
             default:
-                return ['r' => 0/255, 'g' => 0/255, 'b' => 0/255]; // Black
+                return $this->colorFromHex($color);
         }
+    }
+
+    /**
+     * Convert hex color representation to to rgb values. Range value 0 -> 1.
+     * See https://es.wikipedia.org/wiki/Colores_web?section=6#Tabla_de_colores
+     *
+     * @param string $color
+     * @return array
+     */
+    public function colorFromHex(string $color): array
+    {
+        if (substr($color, 0, 1) == '#') {
+            $color = substr($color, 1);
+        }
+
+        $red = substr($color, 0, 2) ?? '255';
+        $green = substr($color, 2, 2) ?? '255';
+        $blue = substr($color, 4, 2) ?? '255';
+        return ['r' => hexdec($red)/255, 'g' => hexdec($green)/255, 'b' => hexdec($blue)/255];
     }
 
     /**
