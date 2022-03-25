@@ -28,60 +28,78 @@
     </config>
 
     <group name="main">
-        <header height="80">
-            <column posx="20" posy="45" width="50" height="10">
-                <widget
-                    type="label" translate="true" bold="true" size="13"
-                    value="code"
-                />
+        <header height="150">
+            <!-- Datos Empresa -->
+            <column posx="20" posy="25" width="540">
+                <widget type="default" fieldname="company.nombre"
+                        size="12" align="left" bgcolor="blue" color="white" />
             </column>
 
-            <column posx="80" posy="45" width="350" height="10">
-                <widget
-                    type="label" translate="true" bold="true" size="13"
-                    value="description"
-                />
+            <!-- Datos Usuario -->
+            <column posx="20" posy="45" width="60">
+                <widget type="default" fieldname="user.nick" size="12" align="left" />
             </column>
 
-            <column posx="380" posy="45" width="60" height="10">
-                <widget
-                    type="label" translate="true" bold="true" align="center" size="13"
-                    value="date"
-                />
+            <column posx="90" posy="45" width="200">
+                <widget type="default" fieldname="user.email" size="12" align="left" />
             </column>
 
-            <column posx="460" posy="45" width="80" height="10">
-                <widget
-                    type="label" translate="true" bold="true" align="right" size="13"
-                    value="total"
-                />
+            <!-- Datos Fecha y Página -->
+            <column posx="450" posy="25" width="60">
+                <widget type="default" fieldname="date" size="12" color="white" />
             </column>
 
-            <column posx="10" posy="55" width="550" height="1"> <!-- TODO: No funciona el height de las lineas -->
+            <column posx="510" posy="25" width="60">
+                <widget type="default" fieldname="time" size="12" color="white" />
+            </column>
+
+            <column posx="450" posy="47" width="50">
+                <widget type="label" value="page" translate="true" size="12" />
+            </column>
+
+            <column posx="500" posy="47" width="60">
+                <widget type="default" fieldname="page" size="12" />
+            </column>
+
+            <!-- Titulo -->
+            <column posx="20" posy="85" width="540">
+                <widget type="label" value="report-test" translate="true" align="center" bold="true" size="18" />
+            </column>
+
+            <!-- Etiquetas de Cabecera -->
+            <column posx="20" posy="115" width="50">
+                <widget type="label" value="code" translate="true" bold="true" size="13" />
+            </column>
+
+            <column posx="80" posy="115" width="350">
+                <widget type="label" value="description" translate="true" bold="true" size="13" />
+            </column>
+
+            <column posx="380" posy="115" width="60">
+                <widget type="label" value="date" translate="true" bold="true" align="center" size="13" />
+            </column>
+
+            <column posx="460" posy="115" width="80">
+                <widget type="label" value="total" translate="true" bold="true" align="right" size="13" />
+            </column>
+
+            <column posx="10" posy="125" width="550" height="1"> <!-- TODO: No funciona el height de las lineas -->
                 <widget type="line" />
             </column>
         </header>
 
         <detail height="20">
-            <column posx="20" width="50" height="15">
-                <widget
-                    type="label" fieldname="id"
-                />
+            <column posx="20" width="50">
+                <widget type="label" fieldname="id" />
             </column>
-            <column posx="80" width="250" height="15">
-                <widget
-                    type="label" fieldname="name" italic="true"
-                />
+            <column posx="80" width="250">
+                <widget type="label" fieldname="name" italic="true" />
             </column>
-            <column posx="380" width="60" height="15">
-                <widget
-                    type="label" fieldname="date" align="center"
-                />
+            <column posx="380" width="60">
+                <widget type="label" fieldname="date" align="center" />
             </column>
-            <column posx="460" width="80" height="15">
-                <widget
-                    type="label" fieldname="amount" align="right"
-                />
+            <column posx="460" width="80">
+                <widget type="label" fieldname="amount" align="right" />
             </column>
         </detail>
 
@@ -90,92 +108,55 @@
                 <widget type="line" />
             </column>
 
-            <column posx="15" posy="30" width="60" height="15">
-                <widget
-                    type="label" align="right" bold="true" size="13"
-                    value="count"
-                />
+            <column posx="15" posy="30" width="60">
+                <widget type="label" value="count" align="right" bold="true" size="13" />
             </column>
 
-            <column posx="75" posy="30" width="10" height="15">
+            <column posx="75" posy="30" width="10">
                 <widget
                     type="label" align="center" bold="true" size="13"
                     value=":"
                 />
             </column>
 
-            <column posx="85" posy="30" width="80" height="15">
-                <widget
-                    type="calculated" operator="count"
-                    align="left" bold="true"
-                    fieldname="code"
-                />
+            <column posx="85" posy="30" width="80">
+                <widget type="calculated" operator="count" fieldname="code" align="left" bold="true" />
             </column>
 
-            <column posx="100" posy="30" width="60" height="15">
-                <widget
-                    type="label" align="right" translate="true" bold="true" size="13"
-                    value="min"
-                />
+            <column posx="100" posy="30" width="60">
+                <widget type="label" value="min" align="right" translate="true" bold="true" size="13" />
             </column>
 
-            <column posx="160" posy="30" width="10" height="15">
-                <widget
-                    type="label" align="center" bold="true" size="13"
-                    value=":"
-                />
+            <column posx="160" posy="30" width="10">
+                <widget type="label" value=":" align="center" bold="true" size="13" />
             </column>
 
-            <column posx="170" posy="30" width="80" height="15">
-                <widget
-                    type="calculated" operator="min"
-                    align="left" bold="true"
-                    fieldname="amount"
-                />
+            <column posx="170" posy="30" width="80">
+                <widget type="calculated" operator="min" fieldname="amount" align="left" bold="true" />
             </column>
 
-            <column posx="250" posy="30" width="60" height="15">
-                <widget
-                    type="label" align="right" translate="true" bold="true" size="13"
-                    value="max"
-                />
+            <column posx="250" posy="30" width="60">
+                <widget type="label" value="max" align="right" translate="true" bold="true" size="13" />
             </column>
 
-            <column posx="310" posy="30" width="10" height="15">
-                <widget
-                    type="label" align="center" bold="true" size="13"
-                    value=":"
-                />
+            <column posx="310" posy="30" width="10">
+                <widget type="label" value=":" align="center" bold="true" size="13" />
             </column>
 
-            <column posx="320" posy="30" width="80" height="15">
-                <widget
-                    type="calculated" operator="max"
-                    align="left" bold="true"
-                    fieldname="amount"
-                />
+            <column posx="320" posy="30" width="80">
+                <widget type="calculated" operator="max" fieldname="amount" align="left" bold="true" />
             </column>
 
-            <column posx="380" posy="30" width="60" height="15">
-                <widget
-                    type="label" align="right" translate="true" bold="true" size="13"
-                    value="total"
-                />
+            <column posx="380" posy="30" width="60">
+                <widget type="label" value="total" align="right" translate="true" bold="true" size="13" />
             </column>
 
-            <column posx="445" posy="30" width="10" height="15">
-                <widget
-                    type="label" align="center" bold="true" size="13"
-                    value=":"
-                />
+            <column posx="445" posy="30" width="10">
+                <widget type="label" value=":" align="center" bold="true" size="13" />
             </column>
 
-            <column posx="460" posy="30" width="80" height="15">
-                <widget
-                    type="calculated" operator="sum"
-                    align="right" bold="true"
-                    fieldname="amount"
-                />
+            <column posx="460" posy="30" width="80">
+                <widget type="calculated" operator="sum" fieldname="amount" align="right" bold="true" />
             </column>
         </footer>
     </group>
