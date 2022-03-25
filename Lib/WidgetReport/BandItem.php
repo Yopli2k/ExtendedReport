@@ -69,13 +69,14 @@ abstract class BandItem
      * Add all objects in a band to the PDF file.
      *
      * @param Cezpdf $pdf
+     * @param ReportDefaultData $default
      * @param object $data
      * @param float  $linePos
      */
-    public function render(&$pdf, $data, $linePos)
+    public function render($pdf, $default, $data, $linePos)
     {
         foreach ($this->columns as $column) {
-            $column->render($pdf, $data, $linePos);
+            $column->render($pdf, $default, $data, $linePos);
         }
     }
 

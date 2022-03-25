@@ -20,6 +20,8 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
+use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportDefaultData;
+use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetDefault;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetItem;
 
 /**
@@ -29,6 +31,8 @@ use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetItem;
  */
 class ColumnItem
 {
+
+    public $height;
 
     /**
      * Position on x-axis.
@@ -67,7 +71,8 @@ class ColumnItem
     {
         $this->posx = isset($data['posx']) ? (int) $data['posx'] : 0;
         $this->posy = isset($data['posy']) ? (int) $data['posy'] : 0;
-        $this->width = isset($data['width']) ? (int) $data['width'] : 0;
+        $this->width = isset($data['width']) ? (int) $data['width'] : 30;
+        $this->height = isset($data['height']) ? (int) $data['height'] : 15;
         $this->loadWidget($data['children']);
     }
 
@@ -75,14 +80,16 @@ class ColumnItem
      * Add column to the PDF file.
      *
      * @param Cezpdf $pdf
+     * @param ReportDefaultData $default
      * @param object $data
      * @param float  $linePos
      */
-    public function render(&$pdf, &$data, $linePos)
+    public function render($pdf, $default, $data, $linePos)
     {
         $posY = $linePos - $this->posy;
-        $this->widget->setValue($data);
-        $this->widget->render($pdf, $this->posx, $posY, $this->width);
+        $values = ($this->widget instanceof WidgetDefault) ? $default : $data;
+        $this->widget->setValue($values);
+        $this->widget->render($pdf, $this->posx, $posY, $this->width, $this->height);
     }
 
     /**

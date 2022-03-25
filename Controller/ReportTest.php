@@ -100,7 +100,7 @@ class ReportTest extends Controller
 
     private function printReport()
     {
-        $template = new PDFTemplate();
+        $template = new PDFTemplate($this->user, $this->empresa);
         if (!$template->loadTemplate('ReportTest')) {
             return;
         }

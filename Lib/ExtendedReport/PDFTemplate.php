@@ -22,6 +22,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 use Cezpdf;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\GroupItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ConfigItem;
+use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportDefaultData;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportItemLoadEngine;
 use FacturaScripts\Plugins\ExtendedReport\Model\Base\ModelReport;
 
@@ -63,16 +64,15 @@ class PDFTemplate
 
     /**
      *
-     * @var int
+     * @var PDFDefaultData
      */
-    protected $pageHeight;
+    protected $defaultData;
 
     /**
-     * Current Page Number
      *
      * @var int
      */
-    protected $pageNum;
+    protected $pageHeight;
 
     /**
      *
@@ -86,6 +86,14 @@ class PDFTemplate
      * @var Cezpdf
      */
     protected $pdf;
+
+    /**
+     *
+     * @param User $user
+     */
+    public function __construct($user, $company) {
+        $this->defaultData = new ReportDefaultData($user, $company);
+    }
 
     /**
      * Add source data for the band named.
@@ -130,7 +138,7 @@ class PDFTemplate
             return;
         }
 
-        $this->pageNum = 1;
+        $this->defaultData->setPageNum(1);
         $position = 0.00;
 
         foreach ($this->groups as $group) {
@@ -185,7 +193,7 @@ class PDFTemplate
 
             // Render detail data
             $posY = $this->pagePosition($position);
-            $detail->render($this->pdf, $row, $posY);
+            $detail->render($this->pdf, $this->defaultData, $row, $posY);
             $this->procesCalculateColumns($group, $row, true);
             $position += $detail->height;
         }
@@ -208,7 +216,7 @@ class PDFTemplate
                 $data = isset($model) ? $model->data[0] : null;
             }
             $posY = $this->pagePosition($position);
-            $header->render($this->pdf, $data, $posY);
+            $header->render($this->pdf, $this->defaultData, $data, $posY);
             $position += $header->height;
 
             if ($group->detail instanceof GroupItem) {
@@ -234,7 +242,7 @@ class PDFTemplate
                 $data = isset($model) ? $model->data[0] : null;
             }
             $posY = $this->pagePosition($position);
-            $footer->render($this->pdf, $data, $posY);
+            $footer->render($this->pdf, $this->defaultData, $data, $posY);
             $position += $footer->height;
         }
     }
@@ -245,7 +253,7 @@ class PDFTemplate
     private function newPage()
     {
         $this->pdf->newPage();
-        ++$this->pageNum;
+        $this->defaultData->addPage();
     }
 
     /**
