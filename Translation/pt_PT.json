@@ -1,4 +1,6 @@
 {
+    "landscape-test": "landscape-test",
+    "portrait-test": "portrait-test",
     "print-test": "print-test",
     "report-test": "report-test"
 }

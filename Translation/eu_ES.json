@@ -1,4 +1,6 @@
 {
-    "print-test": "print-test",
-    "report-test": "report-test"
+    "landscape-test": "landscape-test",
+    "portrait-test": "portrait-test",
+    "print-test": "Froga proba inprimatu",
+    "report-test": "Txostena frogatu"
 }

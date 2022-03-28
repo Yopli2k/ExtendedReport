@@ -1,4 +1,6 @@
 {
+    "landscape-test": "Plantilla horitzontal",
+    "portrait-test": "Plantilla vertical",
     "print-test": "Imprimeix Test de Prova",
     "report-test": "Testejar Informe"
 }

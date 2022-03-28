@@ -1,4 +1,6 @@
 {
+    "landscape-test": "Landscape Template",
+    "portrait-test": "Portrait Template",
     "print-test": "Imprimir Test de prueba",
     "report-test": "Report Test"
 }
