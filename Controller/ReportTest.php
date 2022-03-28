@@ -74,8 +74,9 @@ class ReportTest extends Controller
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
-        $this->loadReportData();
-        $this->execAfterAction($this->request->get('action', ''));
+        $action = $this->request->get('action', '');
+        $this->loadReportData($action);
+        $this->execAfterAction($action);
     }
 
     /**
@@ -85,19 +86,61 @@ class ReportTest extends Controller
      */
     protected function execAfterAction(string $action)
     {
-        if ($action == 'print') {
-            $this->printReport();
+        switch ($action) {
+            case 'print-test':
+                $this->printReport();
+            break;
+
+            case 'landscape-test':
+            case 'portrait-test':
+                $this->printColumnTemplate($action);
+            break;
         }
     }
 
     /**
      * Load test data into model.
+     *
+     * @param $action
      */
-    private function loadReportData()
+    private function loadReportData(string $action)
     {
-        $this->model->loadData();
+        switch ($action) {
+            case 'print-test':
+                $this->model->loadData();
+            break;
+
+            case 'landscape-test':
+            case 'portrait-test':
+                $max = $action == 'portrait-test' ? 800 : 560;
+                $this->model->loadDataColumns($max);
+            break;
+        }
     }
 
+    /**
+     * Print template with columns position reference.
+     */
+    private function printColumnTemplate(string $action)
+    {
+        $test = ucfirst(\explode('-', $action)[0]);
+        $template = new PDFTemplate($this->user, $this->empresa);
+        if (!$template->loadTemplate('ColumnTest' . $test)) {
+            return;
+        }
+
+        $template->addDataset('main', $this->model);
+        $pdf = $template->render();
+
+        $this->setTemplate(false);
+        $this->response->headers->set('Content-type', 'application/pdf');
+        $this->response->headers->set('Content-Disposition', 'inline;filename=ColumnTest.pdf');
+        $this->response->setContent($pdf);
+    }
+
+    /**
+     * Print report with ramdom data.
+     */
     private function printReport()
     {
         $template = new PDFTemplate($this->user, $this->empresa);

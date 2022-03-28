@@ -39,17 +39,31 @@
 {% block body %}
     {{ parent() }}
 
-    <form id="formEmployeePanel" method="post">
-        <input type="hidden" name="action" value="print" />
+    <script>
+        function printAction(value) {
+            $("#formReportTest :input[name=\"action\"]").val(value);
+            $("#formReportTest").submit();
+        }
+    </script>
+    <form id="formReportTest" method="post">
+        <input type="hidden" name="action" value="" />
         <div class="container-fluid">
             <div class="card border-primary shadow mb-3">
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12">
-                            <button class="btn btn-lg btn-primary" type="submit">
+                            <a class="btn btn-lg btn-primary" href="#" role="button" onclick="printAction('print-test');">
                                 <i class="fas fa-print fa-fw" aria-hidden="true"></i>
                                 <span class="d-none d-sm-inline-block">{{ i18n.trans('print-test') }}</span>
-                            </button>
+                            </a>
+                            <a class="btn btn-lg btn-info" href="#" role="button" onclick="printAction('portrait-test');">
+                                <i class="fas fa-print fa-fw" aria-hidden="true"></i>
+                                <span class="d-none d-sm-inline-block">{{ i18n.trans('portrait-test') }}</span>
+                            </a>
+                            <a class="btn btn-lg btn-info" href="#" role="button" onclick="printAction('landscape-test');">
+                                <i class="fas fa-print fa-fw" aria-hidden="true"></i>
+                                <span class="d-none d-sm-inline-block">{{ i18n.trans('landscape-test') }}</span>
+                            </a>
                         </div>
                     </div>
                 </div>

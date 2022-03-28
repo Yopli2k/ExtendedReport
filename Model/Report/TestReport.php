@@ -47,6 +47,19 @@ class TestReport extends ModelReport
         }
     }
 
+    /**
+     * Load report for column references.
+     */
+    public function loadDataColumns(int $max)
+    {
+        foreach (range(40, $max, 20) as $value) {
+            $data = new TestData();
+            $data->id = $value;
+            $this->data[] = $data;
+        }
+
+    }
+
     private function testDate(): string
     {
         $day = \sprintf('%02d', \rand(1, 30));
