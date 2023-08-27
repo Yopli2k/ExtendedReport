@@ -24,7 +24,8 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class WidgetCalculated extends WidgetLabel {
+class WidgetCalculated extends WidgetLabel
+{
 
     private const OPERATOR_AVG   = 'avg';
     private const OPERATOR_COUNT = 'count';
@@ -65,7 +66,7 @@ class WidgetCalculated extends WidgetLabel {
             case self::OPERATOR_MAX:
             case self::OPERATOR_MIN:
             case self::OPERATOR_SUM:
-                $newValue = (double) $data->{$this->fieldname} ?? 0.00;
+                $newValue = (double) $this->getValueForFieldName($data) ?? 0.00;
                 $this->value = $this->processNewValue($newValue);
                 break;
 

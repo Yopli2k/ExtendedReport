@@ -1,25 +1,16 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2022 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts  Copyright (C) 2015-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport  Copyright (C) 2023-2023 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * This program and its files are under the terms of the license specified in the LICENSE file.
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use Cezpdf;
+use FacturaScripts\Dinamic\Model\Empresa;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\GroupItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ConfigItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportDefaultData;
@@ -90,6 +81,7 @@ class PDFTemplate
     /**
      *
      * @param User $user
+     * @param Empresa $company
      */
     public function __construct($user, $company) {
         $this->defaultData = new ReportDefaultData($user, $company);
@@ -119,9 +111,9 @@ class PDFTemplate
         }
 
         $this->pdf = new Cezpdf($this->config->page['type'], $this->config->page['orientation']);
-        $this->pdf->addInfo('Creator', 'FacturaScripts');
-        $this->pdf->addInfo('Producer', 'FacturaScripts');
-        $this->pdf->tempPath = \FS_FOLDER . '/MyFiles/Cache';
+        $this->pdf->addInfo('Creator', 'ExtendedReport for FacturaScripts');
+        $this->pdf->addInfo('Producer', 'ExtendedReport');
+        $this->pdf->tempPath = FS_FOLDER . '/MyFiles/Cache';
         $this->pageWidth = $this->pdf->ez['pageWidth'];
         $this->pageHeight = $this->pdf->ez['pageHeight'];
         return true;

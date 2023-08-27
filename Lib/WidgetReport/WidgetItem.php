@@ -146,15 +146,40 @@ abstract class WidgetItem
     }
 
     /**
-     * Set value from dataset to widget
+     * Set value from dataset to widget if fieldname is not empty.
      *
      * @param object $data
      */
     public function setValue(&$data)
     {
-        if (!empty($this->fieldname) && isset($data)) {
-            $this->value = @$data->{$this->fieldname};
+        if (false === empty($this->fieldname)) {
+            $this->value =  $this->getValueForFieldName($data);
         }
+    }
+
+    /**
+     * Get the value of the fieldname from the data object.
+     *
+     * @param object $data
+     * @return mixed|string
+     */
+    protected function getValueForFieldName(&$data)
+    {
+        if (empty($this->fieldname) || false === isset($data)) {
+            return '';
+        }
+
+        // if fieldname is not an array
+        $pos = strpos($this->fieldname, '[');
+        if (false === $pos) {
+            return $data->{$this->fieldname} ?? '';
+        }
+
+        // if fieldname is an array
+        $len = strpos($this->fieldname, ']', $pos) - $pos - 1;
+        $index = substr($this->fieldname, $pos + 1, $len);
+        $fieldname = substr($this->fieldname, 0, $pos);
+        return $data->{$fieldname}[$index] ?? '';
     }
 
     /**

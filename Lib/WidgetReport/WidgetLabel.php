@@ -137,7 +137,9 @@ class WidgetLabel extends WidgetItem
      */
     protected function getValue()
     {
-        return $this->translate ? $this->toolBox()->i18n()->trans($this->value) : $this->value;
+        return $this->translate
+            ? $this->toolBox()->i18n()->trans($this->value)
+            : $this->value;
     }
 
     /**
