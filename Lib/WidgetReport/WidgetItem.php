@@ -169,17 +169,24 @@ abstract class WidgetItem
             return '';
         }
 
-        // if fieldname is not an array
+        // if fieldname is an array
         $pos = strpos($this->fieldname, '[');
-        if (false === $pos) {
-            return $data->{$this->fieldname} ?? '';
+        if (false !== $pos) {
+            $len = strpos($this->fieldname, ']', $pos) - $pos - 1;
+            $index = substr($this->fieldname, $pos + 1, $len);
+            $fieldname = substr($this->fieldname, 0, $pos);
+            return $data->{$fieldname}[$index] ?? '';
         }
 
-        // if fieldname is an array
-        $len = strpos($this->fieldname, ']', $pos) - $pos - 1;
-        $index = substr($this->fieldname, $pos + 1, $len);
-        $fieldname = substr($this->fieldname, 0, $pos);
-        return $data->{$fieldname}[$index] ?? '';
+        // if fieldname is a function, exec funtion for get the value
+        $pos = strpos($this->fieldname, '(');
+        if (false !== $pos) {
+            $functionName = substr($this->fieldname, 0, $pos);
+            return $data->{$functionName}() ?? '';
+        }
+
+        // fieldname is a field from data
+        return $data->{$this->fieldname} ?? '';
     }
 
     /**
