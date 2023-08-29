@@ -19,6 +19,8 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
+use Exception;
+
 /**
  * Specific band for the report detail data.
  *
@@ -76,7 +78,7 @@ class BandDetail extends BandItem
             if ($update && $result) {
                 $this->fieldValue = $value;
             }
-        } catch (\Exception $exc) {
+        } catch (Exception $exc) {
             $result = false;
         }
 

@@ -182,7 +182,10 @@ abstract class WidgetItem
         $pos = strpos($this->fieldname, '(');
         if (false !== $pos) {
             $functionName = substr($this->fieldname, 0, $pos);
-            return $data->{$functionName}() ?? '';
+            if (method_exists($data, $functionName)) {
+                return $data->{$functionName}() ?? '';
+            }
+            return '';
         }
 
         // fieldname is a field from data
