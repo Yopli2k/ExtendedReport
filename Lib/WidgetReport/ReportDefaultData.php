@@ -31,6 +31,13 @@ class ReportDefaultData
 {
 
     /**
+     * Additional data from developer for the report.
+     *
+     * @var array
+     */
+    public $additional;
+
+    /**
      *
      * @var Empresa
      */
@@ -58,6 +65,7 @@ class ReportDefaultData
      */
     public function __construct(User $user, Empresa $company)
     {
+        $this->additional = [];
         $this->company = $company;
         $this->user = $user;
         $this->pageNum = 1;

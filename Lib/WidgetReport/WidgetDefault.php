@@ -56,18 +56,18 @@ class WidgetDefault extends WidgetLabel
      */
     public function setValue(&$data)
     {
-        $values = \explode('.', $this->fieldname);
+        $values = explode('.', $this->fieldname);
         switch ($values[0]) {
             case self::AUTO_TEXT_COMPANY:
                 $this->value = $data->company->{$values[1]} ?? '';
                 break;
 
             case self::AUTO_TEXT_DATE:
-                $this->value = \date('d-m-Y');
+                $this->value = date('d-m-Y');
                 break;
 
             case self::AUTO_TEXT_TIME:
-                $this->value = \date('H:i:s');
+                $this->value = date('H:i:s');
                 break;
 
             case self::AUTO_TEXT_PAGE:
@@ -79,7 +79,9 @@ class WidgetDefault extends WidgetLabel
                 break;
 
             default:
-                $this->value = '';
+                $this->value = isset($data->additional[$values[0]])
+                    ? $data->additional[$values[0]]->{$values[1]} ?? ''
+                    : '';
         }
     }
 }

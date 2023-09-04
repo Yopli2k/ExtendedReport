@@ -66,7 +66,7 @@ class PDFTemplate
 
     /**
      *
-     * @var PDFDefaultData
+     * @var ReportDefaultData
      */
     protected $defaultData;
 
@@ -93,9 +93,14 @@ class PDFTemplate
      *
      * @param User $user
      * @param Empresa $company
+     * @param array $additional
      */
-    public function __construct($user, $company) {
+    public function __construct(User $user, Empresa $company, array $additional = [])
+    {
         $this->defaultData = new ReportDefaultData($user, $company);
+        foreach ($additional as $key => $value) {
+            $this->defaultData->additional[$key] = $value;
+        }
     }
 
     /**
@@ -223,7 +228,7 @@ class PDFTemplate
             $position += $header->height;
 
             if ($group->detail instanceof GroupItem) {
-                $this->renderHeader($group->detail, $position, false);
+                $this->renderHeader($group->detail, $position);
             }
         }
     }
@@ -261,7 +266,7 @@ class PDFTemplate
 
     /**
      * Get the vertical position for an object based
-     * on the lower left corner of the page.
+     * the lower left corner of the page.
      *
      * @param float $posLin
      * @param float $posObj
