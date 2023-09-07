@@ -24,7 +24,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class WidgetCalculated extends WidgetLabel
+class WidgetCalculated extends WidgetNumber
 {
 
     private const OPERATOR_AVG   = 'avg';
