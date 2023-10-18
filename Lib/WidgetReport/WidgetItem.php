@@ -60,7 +60,7 @@ abstract class WidgetItem
     /**
      * Add object to the PDF file.
      */
-    abstract function render(&$pdf, $posX, $posY, $width, $height);
+    abstract public function render(&$pdf, $posX, $posY, $width, $height);
 
     /**
      * Class constructor. Load initials values from data array.
@@ -183,7 +183,11 @@ abstract class WidgetItem
         if (false !== $pos) {
             $functionName = substr($this->fieldname, 0, $pos);
             if (method_exists($data, $functionName)) {
-                return $data->{$functionName}() ?? '';
+                $paramsStr = str_replace(["'", " "], '', substr($this->fieldname, $pos + 1, -1));
+                $params = explode(',', $paramsStr);
+                return false === $params
+                    ? $data->{$functionName}()
+                    : $data->{$functionName}($params);
             }
             return '';
         }

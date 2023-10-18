@@ -35,6 +35,11 @@ class WidgetNumber extends WidgetLabel
     protected $decimal;
 
     /**
+     * @var bool
+     */
+    protected $printempty;
+
+    /**
      * Class constructor. Load initials values from data array.
      *
      * @param array $data
@@ -42,22 +47,27 @@ class WidgetNumber extends WidgetLabel
     public function __construct($data)
     {
         parent::__construct($data);
-        $this->align = isset($data['align']) ? $data['align'] : 'right';
+        $this->align = $data['align'] ?? 'right';
         $this->translate = false;
         $this->decimal = isset($data['decimal']) ? (int) $data['decimal'] : FS_NF0;
+        $this->printempty = isset($data['printempty'])
+            ? filter_var($data['printempty'], FILTER_VALIDATE_BOOLEAN)
+            : true;
     }
 
     /**
      * Obtain the value to be represented.
      *
-     * @return mixed
+     * @return string
      */
-    protected function getValue()
+    protected function getValue(): string
     {
         $thousand = FS_NF2;
         if (empty(FS_NF2)) {
             $thousand = FS_NF1 === '.' ? ',' : '.';
         }
-        return number_format((float)$this->value, (int)$this->decimal, FS_NF1, $thousand);
+        return (false === $this->printempty && empty($this->value))
+            ? ''
+            : number_format((float)$this->value, $this->decimal, FS_NF1, $thousand);
     }
 }
