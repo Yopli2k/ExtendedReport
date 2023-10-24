@@ -20,35 +20,20 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Dinamic\Model\ProductoImagen;
+use FacturaScripts\Dinamic\Model\Variante;
 
 /**
- * Class for displaying one line in the report.
+ * Class for display an image from the product in the report.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class WidgetLine extends WidgetItem
+class WidgetImageproduct extends WidgetImage
 {
 
     /**
-     * Line height.
-     *
-     * @var int
-     */
-    protected $height;
-
-    /**
-     * Class constructor. Load initials values from data array.
-     *
-     * @param array $data
-     */
-    public function __construct($data)
-    {
-        parent::__construct($data);
-        $this->height = isset($data['height']) ? (int) $data['height'] : 1;
-    }
-
-    /**
-     * Add a Line to pdf document.
+     * Add an Image to pdf document.
      *
      * @param Cezpdf $pdf
      * @param float $posX
@@ -57,8 +42,28 @@ class WidgetLine extends WidgetItem
      */
     public function render(&$pdf, $posX, $posY, $width, $height)
     {
-        $pdf->setLineStyle($this->height);
-        $pdf->setStrokeColor($this->color['r'], $this->color['g'], $this->color['b']);
-        $pdf->line($posX, $posY, ($posX + $width), $posY);
+        $productImage = $this->getProductImage();
+        $file = $productImage->getThumbnail($width, $height);
+        if (false === empty($file)) {
+            $pdf->ezImage($file, $this->padding, $width, $this->resize, $this->align, $this->angle);
+        }
+    }
+
+    private function getProductImage(): ProductoImagen
+    {
+        $variant = new Variante();
+        $where = [ new DataBaseWhere('referencia', $this->value) ];
+        if (false === $variant->loadFromCode('', $where)) {
+            return new ProductoImagen();
+        }
+
+        $productImage = new ProductoImagen();
+        $where = [
+            new DataBaseWhere('idproducto', $variant->idproducto),
+            new DataBaseWhere('referencia', $variant->referencia),
+            new DataBaseWhere('referencia', null, 'IS', 'OR'),
+        ];
+        $productImage->loadFromCode('', $where, ['referencia' => 'DESC']);
+        return $productImage;
     }
 }

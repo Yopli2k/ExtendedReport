@@ -22,19 +22,42 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 use Cezpdf;
 
 /**
- * Class for displaying one line in the report.
+ * Class for display an image in the report.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class WidgetLine extends WidgetItem
+class WidgetImage extends WidgetItem
 {
 
     /**
-     * Line height.
+     * Image align.
+     * Default center.
+     *
+     * @var string
+     */
+    protected $align;
+
+    /**
+     * Image angle rotation.
+     * From 0 to 360.
+     * Default 0.
      *
      * @var int
      */
-    protected $height;
+    protected $angle;
+
+    /**
+     * Image padding.
+     * Default 5.
+     *
+     * @var int
+     */
+    protected $padding;
+
+    /**
+     * @var string
+     */
+    protected $resize;
 
     /**
      * Class constructor. Load initials values from data array.
@@ -44,11 +67,14 @@ class WidgetLine extends WidgetItem
     public function __construct($data)
     {
         parent::__construct($data);
-        $this->height = isset($data['height']) ? (int) $data['height'] : 1;
+        $this->align = $data['align'] ?? 'center';
+        $this->angle = isset($data['angle']) ? (int)$data['angle'] : 0;
+        $this->padding = isset($data['padding']) ? (int)$data['padding'] : 5;
+        $this->resize = $data['width'] ?? 'full';
     }
 
     /**
-     * Add a Line to pdf document.
+     * Add an Image to pdf document.
      *
      * @param Cezpdf $pdf
      * @param float $posX
@@ -57,8 +83,8 @@ class WidgetLine extends WidgetItem
      */
     public function render(&$pdf, $posX, $posY, $width, $height)
     {
-        $pdf->setLineStyle($this->height);
-        $pdf->setStrokeColor($this->color['r'], $this->color['g'], $this->color['b']);
-        $pdf->line($posX, $posY, ($posX + $width), $posY);
+        if (false === empty($this->value)) {
+            $pdf->ezImage($this->value, $this->padding, $width, $this->resize, $this->align, $this->angle);
+        }
     }
 }
