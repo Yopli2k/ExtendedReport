@@ -44,11 +44,15 @@ class WidgetImageproduct extends WidgetImage
     {
         $productImage = $this->getProductImage();
         $file = $productImage->getThumbnail($width, $height);
-        if (false === empty($file)) {
-            $pdf->ezImage($file, $this->padding, $width, $this->resize, $this->align, $this->angle);
+        if (empty($file)) {
+            return;
         }
+        $this->renderImage($pdf, FS_FOLDER . $file, $posX, $posY, $height);
     }
 
+    /**
+     * @return ProductoImagen
+     */
     private function getProductImage(): ProductoImagen
     {
         $variant = new Variante();

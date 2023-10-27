@@ -70,7 +70,7 @@ class WidgetImage extends WidgetItem
         $this->align = $data['align'] ?? 'center';
         $this->angle = isset($data['angle']) ? (int)$data['angle'] : 0;
         $this->padding = isset($data['padding']) ? (int)$data['padding'] : 5;
-        $this->resize = $data['width'] ?? 'full';
+        $this->resize = $data['resize'] ?? 'width';
     }
 
     /**
@@ -83,8 +83,48 @@ class WidgetImage extends WidgetItem
      */
     public function render(&$pdf, $posX, $posY, $width, $height)
     {
-        if (false === empty($this->value)) {
-            $pdf->ezImage($this->value, $this->padding, $width, $this->resize, $this->align, $this->angle);
+        if (empty($this->value)) {
+            return;
+        }
+
+        try {
+            $this->renderImage($pdf, $this->value, $posX, $posY, $height);
+        } catch (Exception $ex) {
+        }
+    }
+
+    /**
+     * Render the image.
+     *
+     * @param Cezpdf $pdf
+     * @param string $file
+     * @param float $posX
+     * @param float $posY
+     * @param float $height
+     */
+    protected function renderImage(&$pdf, $file, $posX, $posY, $height)
+    {
+        if (empty($file)) {
+            return;
+        }
+
+        $imageInfo = getimagesize($file);
+        if ($imageInfo === false) {
+            return;
+        }
+
+        switch ($imageInfo[2]) {
+            case IMAGETYPE_JPEG:
+                $pdf->addJpegFromFile($file, $posX, $posY - ($height - 15));
+                break;
+
+            case IMAGETYPE_PNG:
+                $pdf->addPngFromFile($file, $posX, $posY - ($height - 15));
+                break;
+
+            case IMAGETYPE_GIF:
+                $pdf->addGifFromFile($file, $posX, $posY - ($height - 15));
+                break;
         }
     }
 }
