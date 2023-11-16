@@ -43,11 +43,15 @@ class WidgetImageproduct extends WidgetImage
     public function render(&$pdf, $posX, $posY, $width, $height)
     {
         $productImage = $this->getProductImage();
-        $file = $productImage->getThumbnail($width, $height);
-        if (empty($file)) {
+        $file = $productImage->getFile();
+        if (false === $file->exists()) {
             return;
         }
-        $this->renderImage($pdf, FS_FOLDER . $file, $posX, $posY, $height);
+
+        $fileFull = $file->getFullPath();
+        if (file_exists($fileFull)) {
+            $this->renderImage($pdf, $fileFull, $posX, $posY, $width, $height);
+        }
     }
 
     /**

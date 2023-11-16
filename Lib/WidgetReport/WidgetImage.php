@@ -100,9 +100,10 @@ class WidgetImage extends WidgetItem
      * @param string $file
      * @param float $posX
      * @param float $posY
+     * @param float $width
      * @param float $height
      */
-    protected function renderImage(&$pdf, $file, $posX, $posY, $height)
+    protected function renderImage(&$pdf, $file, $posX, $posY, $width, $height)
     {
         if (empty($file)) {
             return;
@@ -115,15 +116,15 @@ class WidgetImage extends WidgetItem
 
         switch ($imageInfo[2]) {
             case IMAGETYPE_JPEG:
-                $pdf->addJpegFromFile($file, $posX, $posY - ($height - 15));
+                $pdf->addJpegFromFile($file, $posX, $posY - ($height - 15), $width, $height);
                 break;
 
             case IMAGETYPE_PNG:
-                $pdf->addPngFromFile($file, $posX, $posY - ($height - 15));
+                $pdf->addPngFromFile($file, $posX, $posY - ($height - 15), $width, $height);
                 break;
 
             case IMAGETYPE_GIF:
-                $pdf->addGifFromFile($file, $posX, $posY - ($height - 15));
+                $pdf->addGifFromFile($file, $posX, $posY - ($height - 15), $width, $height);
                 break;
         }
     }
