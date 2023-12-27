@@ -192,6 +192,18 @@ abstract class WidgetItem
             return '';
         }
 
+        // if fieldname is a property from an object, get the value from the object
+        $pos = strpos($this->fieldname, '.');
+        if (false !== $pos) {
+            $objectName = substr($this->fieldname, 0, $pos);
+            $property = substr($this->fieldname, $pos + 1);
+            if (property_exists($data->{$objectName}, $property)) {
+                return $data->{$objectName}->{$property} ?? '';
+            }
+
+            return '';
+        }
+        
         // fieldname is a field from data
         return $data->{$this->fieldname} ?? '';
     }
