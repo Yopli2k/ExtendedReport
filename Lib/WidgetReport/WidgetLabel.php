@@ -20,6 +20,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
+use FacturaScripts\Core\Tools;
 
 /**
  * Class for displaying texts in the report.
@@ -34,65 +35,65 @@ class WidgetLabel extends WidgetItem
      *
      * @var string
      */
-    protected $align;
+    protected string $align;
 
     /**
      * The color for backgroud data.
      *
      * @var array
      */
-    protected $bgcolor;
+    protected array $bgcolor;
 
     /**
      * Indicates whether bold will be used.
      *
      * @var bool
      */
-    protected $bold;
+    protected bool $bold;
 
     /**
      * Indicates whether italic will be used.
      *
      * @var bool
      */
-    protected $italic;
+    protected bool $italic;
 
     /**
      * The size of the text font.
      *
      * @var int
      */
-    protected $size;
+    protected int $size;
 
     /**
      * Indicates whether to translate the value into the user's language.
      *
      * @var bool
      */
-    protected $translate;
+    protected bool $translate;
 
     /**
      * Indicates whether underline will be used.
      * @var bool
      */
-    protected $underline;
+    protected bool $underline;
 
     /**
      * Class constructor. Load initials values from data array.
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         parent::__construct($data);
-        $this->align = isset($data['align']) ? $data['align'] : 'left';
-        $this->bold = isset($data['bold']) ? (bool) $data['bold'] : false;
-        $this->italic = isset($data['italic']) ? (bool) $data['italic'] : false;
+        $this->align = $data['align'] ?? 'left';
+        $this->bold = isset($data['bold']) && $data['bold'];
+        $this->italic = isset($data['italic']) && $data['italic'];
         $this->size = isset($data['size']) ? (int) $data['size'] : 10;
-        $this->translate = isset($data['translate']) ? (bool) $data['translate'] : false;
-        $this->underline = isset($data['underline']) ? (bool) $data['underline'] : false;
+        $this->translate = isset($data['translate']) && $data['translate'];
+        $this->underline = isset($data['underline']) && $data['underline'];
 
-        $color = isset($data['bgcolor']) ? $data['bgcolor'] : false;
+        $color = $data['bgcolor'] ?? false;
         $this->bgcolor = $color ? $this->rgbFromColor($color) : [];
     }
 
@@ -105,26 +106,33 @@ class WidgetLabel extends WidgetItem
      * @param float $width
      * @param float $height
      */
-    public function render(&$pdf, $posX, $posY, $width, $height)
+    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
     {
         $this->renderBackground($pdf, $posX, $posY, $width, $height);
         $pdf->setColor($this->color['r'], $this->color['g'], $this->color['b']);
-        $pdf->addText(
-            $posX,
-            $posY,
-            $this->size,
-            $this->getText(),
-            $width,
-            $this->align);
+
+        // Wrap the text for multiline
+        $textHeight = $pdf->getFontHeight($this->size);
+        $parts = preg_split('/$\R?^/m', $this->getText());
+        foreach ($parts as $text) {
+            do {
+                $text = $pdf->addText($posX, $posY, $this->size, $text, $width, $this->align);
+                $height -= $textHeight;
+                if ($height < $textHeight) {
+                    break 2;
+                }
+                $posY -= $textHeight;
+            } while (false === empty($text));
+        }
     }
 
     /**
      * Get text with format properties.
      */
-    protected function getText()
+    protected function getText(): string
     {
-        $value = $this->toolBox()->utils()->fixHtml($this->getValue());
-        $this->setFontStyle($value, $this->bold, 'u');
+        $value = Tools::fixHtml($this->getValue());
+        $this->setFontStyle($value, $this->underline, 'u');
         $this->setFontStyle($value, $this->italic, 'i');
         $this->setFontStyle($value, $this->bold, 'b');
         return $value;
@@ -138,7 +146,7 @@ class WidgetLabel extends WidgetItem
     protected function getValue()
     {
         return $this->translate
-            ? $this->toolBox()->i18n()->trans($this->value)
+            ? Tools::lang()->trans($this->value)
             : $this->value;
     }
 
@@ -151,7 +159,7 @@ class WidgetLabel extends WidgetItem
      * @param float $width
      * @param float $height
      */
-    protected function renderBackground(&$pdf, $posX, $posY, $width, $height)
+    protected function renderBackground(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
     {
         if (empty($this->bgcolor)) {
             return;
@@ -168,7 +176,7 @@ class WidgetLabel extends WidgetItem
      * @param bool   $apply
      * @param string $style
      */
-    private function setFontStyle(&$value, $apply, $style)
+    private function setFontStyle(string &$value, bool $apply, string $style)
     {
         if ($apply) {
             $value = '<' . $style . '>' . $value . '</' . $style . '>';
