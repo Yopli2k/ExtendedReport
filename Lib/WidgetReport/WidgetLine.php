@@ -55,7 +55,7 @@ class WidgetLine extends WidgetItem
      * @param float $posY
      * @param float $width
      */
-    public function render(&$pdf, $posX, $posY, $width, $height)
+    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
     {
         $pdf->setLineStyle($this->height);
         $pdf->setStrokeColor($this->color['r'], $this->color['g'], $this->color['b']);

@@ -19,7 +19,7 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
-use FacturaScripts\Core\Base\ToolBox;
+use Cezpdf;
 
 /**
  * Base class for displaying data in the report.
@@ -34,46 +34,46 @@ abstract class WidgetItem
      *
      * @var array
      */
-    protected $color;
+    protected array $color;
 
     /**
-     * Name of the field from which the value to be represented is obtained.
+     * The Name of the field from which the value to be represented is obtained.
      *
      * @var string
      */
-    protected $fieldname;
+    protected string $fieldname;
 
     /**
      * Value to be represented.
      *
      * @var string
      */
-    protected $value;
+    protected string $value;
 
     /**
      * Widget type.
      *
      * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
-     * Add object to the PDF file.
+     * Add an object to the PDF file.
      */
-    abstract public function render(&$pdf, $posX, $posY, $width, $height);
+    abstract public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height);
 
     /**
      * Class constructor. Load initials values from data array.
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->type = $data['type'];
-        $this->fieldname = isset($data['fieldname']) ? $data['fieldname'] : '';
-        $this->value = isset($data['value']) ? $data['value'] : '';
+        $this->fieldname = $data['fieldname'] ?? '';
+        $this->value = $data['value'] ?? '';
 
-        $color = isset($data['color']) ? $data['color'] : 'black';
+        $color = $data['color'] ?? 'black';
         $this->color = $this->rgbFromColor($color);
     }
 
@@ -101,22 +101,22 @@ abstract class WidgetItem
                 return ['r' => 0/255, 'g' => 0/255, 'b' => 0/255];
 
             case 'blue':
-                return ['r' => 0/255, 'g' => 0/255, 'b' => 255/255];
+                return ['r' => 0/255, 'g' => 0/255, 'b' => 1];
 
             case 'green':
                 return ['r' => 0/255, 'g' => 128/255, 'b' => 0/255];
 
             case 'orange':
-                return ['r' => 255/255, 'g' => 165/255, 'b' => 0/255];
+                return ['r' => 1, 'g' => 165/255, 'b' => 0/255];
 
             case 'red':
-                return ['r' => 255/255, 'g' => 0/255, 'b' => 0/255];
+                return ['r' => 1, 'g' => 0/255, 'b' => 0/255];
 
             case 'white':
-                return ['r' => 255/255, 'g' => 255/255, 'b' => 255/255];
+                return ['r' => 1, 'g' => 1, 'b' => 1];
 
             case 'yellow':
-                return ['r' => 255/255, 'g' => 255/255, 'b' => 0/255];
+                return ['r' => 1, 'g' => 1, 'b' => 0/255];
 
             case 'silver':
                 return ['r' => 240/255, 'g' => 240/255, 'b' => 240/255];
@@ -127,7 +127,7 @@ abstract class WidgetItem
     }
 
     /**
-     * Convert hex color representation to to rgb values. Range value 0 -> 1.
+     * Convert hex color representation to rgb values. Range value 0 -> 1.
      * See https://es.wikipedia.org/wiki/Colores_web?section=6#Tabla_de_colores
      *
      * @param string $color
@@ -148,9 +148,9 @@ abstract class WidgetItem
     /**
      * Set value from dataset to widget if fieldname is not empty.
      *
-     * @param object $data
+     * @param Object $data
      */
-    public function setValue(&$data)
+    public function setValue(Object &$data)
     {
         if (false === empty($this->fieldname)) {
             $this->value =  $this->getValueForFieldName($data);
@@ -160,10 +160,10 @@ abstract class WidgetItem
     /**
      * Get the value of the fieldname from the data object.
      *
-     * @param object $data
-     * @return mixed|string
+     * @param ?Object $data
+     * @return string
      */
-    protected function getValueForFieldName(&$data)
+    protected function getValueForFieldName(?Object $data): string
     {
         if (empty($this->fieldname) || false === isset($data)) {
             return '';
@@ -203,18 +203,8 @@ abstract class WidgetItem
 
             return '';
         }
-        
+
         // fieldname is a field from data
         return $data->{$this->fieldname} ?? '';
-    }
-
-    /**
-     * Class with common tools.
-     *
-     * @return ToolBox
-     */
-    protected static function toolBox()
-    {
-        return new ToolBox();
     }
 }

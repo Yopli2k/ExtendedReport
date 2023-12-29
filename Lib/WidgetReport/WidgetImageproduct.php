@@ -39,8 +39,9 @@ class WidgetImageproduct extends WidgetImage
      * @param float $posX
      * @param float $posY
      * @param float $width
+     * @param float $height
      */
-    public function render(&$pdf, $posX, $posY, $width, $height)
+    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
     {
         $productImage = $this->getProductImage();
         $file = $productImage->getFile();

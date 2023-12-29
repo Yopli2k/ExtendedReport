@@ -47,8 +47,8 @@ class WidgetNumber extends WidgetLabel
     public function __construct($data)
     {
         parent::__construct($data);
-        $this->align = $data['align'] ?? 'right';
         $this->translate = false;
+        $this->align = $data['align'] ?? 'right';
         $this->decimal = isset($data['decimal']) ? (int) $data['decimal'] : FS_NF0;
         $this->printempty = isset($data['printempty'])
             ? filter_var($data['printempty'], FILTER_VALIDATE_BOOLEAN)

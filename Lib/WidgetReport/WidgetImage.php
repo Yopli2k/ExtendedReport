@@ -20,6 +20,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
+use Exception;
 
 /**
  * Class for display an image in the report.
@@ -44,7 +45,7 @@ class WidgetImage extends WidgetItem
      *
      * @var int
      */
-    protected $angle;
+    protected int $angle;
 
     /**
      * Image padding.
@@ -52,7 +53,7 @@ class WidgetImage extends WidgetItem
      *
      * @var int
      */
-    protected $padding;
+    protected int $padding;
 
     /**
      * @var string
@@ -64,7 +65,7 @@ class WidgetImage extends WidgetItem
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         parent::__construct($data);
         $this->align = $data['align'] ?? 'center';
@@ -80,15 +81,16 @@ class WidgetImage extends WidgetItem
      * @param float $posX
      * @param float $posY
      * @param float $width
+     * @param float $height
      */
-    public function render(&$pdf, $posX, $posY, $width, $height)
+    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
     {
         if (empty($this->value)) {
             return;
         }
 
         try {
-            $this->renderImage($pdf, $this->value, $posX, $posY, $height);
+            $this->renderImage($pdf, $this->value, $posX, $posY, $width, $height);
         } catch (Exception $ex) {
         }
     }
@@ -103,7 +105,7 @@ class WidgetImage extends WidgetItem
      * @param float $width
      * @param float $height
      */
-    protected function renderImage(&$pdf, $file, $posX, $posY, $width, $height)
+    protected function renderImage(Cezpdf $pdf, string $file, float $posX, float $posY, float $width, float $height)
     {
         if (empty($file)) {
             return;
