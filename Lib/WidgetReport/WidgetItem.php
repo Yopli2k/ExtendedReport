@@ -197,11 +197,10 @@ abstract class WidgetItem
         if (false !== $pos) {
             $objectName = substr($this->fieldname, 0, $pos);
             $property = substr($this->fieldname, $pos + 1);
-            if (property_exists($data->{$objectName}, $property)) {
-                return $data->{$objectName}->{$property} ?? '';
-            }
-
-            return '';
+            $object = $data->{$objectName} ?? null;
+            return isset($object) && isset($object->{$property})
+                ? $object->{$property}
+                : '';
         }
 
         // fieldname is a field from data
