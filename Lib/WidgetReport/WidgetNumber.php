@@ -56,7 +56,7 @@ class WidgetNumber extends WidgetLabel
     }
 
     /**
-     * Obtain the value to be represented.
+     * Get the value to be represented.
      *
      * @return string
      */
@@ -64,7 +64,7 @@ class WidgetNumber extends WidgetLabel
     {
         $thousand = FS_NF2;
         if (empty(FS_NF2)) {
-            $thousand = FS_NF1 === '.' ? ',' : '.';
+            $thousand = (FS_NF1 === '.') ? ',' : '.';
         }
         return (false === $this->printempty && empty($this->value))
             ? ''
