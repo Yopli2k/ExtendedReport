@@ -19,7 +19,7 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
-use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Core\Model\User;
 use FacturaScripts\Dinamic\Model\Empresa;
 
 /**
@@ -41,14 +41,7 @@ class ReportDefaultData
      *
      * @var Empresa
      */
-    public $company;
-
-    /**
-     * User logged in.
-     *
-     * @var User
-     */
-    public $user;
+    protected $company;
 
     /**
      * Current Page Number
@@ -56,6 +49,13 @@ class ReportDefaultData
      * @var int
      */
     protected $pageNum;
+
+    /**
+     * User logged in.
+     *
+     * @var User
+     */
+    protected $user;
 
     /**
      * Class constructor. Set user.
@@ -87,6 +87,16 @@ class ReportDefaultData
     public function getPageNum(): int
     {
         return $this->pageNum;
+    }
+
+    /**
+     * Set new company data.
+     *
+     * @param Empresa $company
+     */
+    public function setCompany(Empresa $company)
+    {
+        $this->company = $company;
     }
 
     /**

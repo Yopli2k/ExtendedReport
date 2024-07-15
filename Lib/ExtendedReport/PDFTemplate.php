@@ -20,13 +20,12 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use Cezpdf;
+use FacturaScripts\Core\Model\User;
 use FacturaScripts\Dinamic\Model\Empresa;
-use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\GroupItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ConfigItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportDefaultData;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportItemLoadEngine;
-use FacturaScripts\Plugins\ExtendedReport\Model\Base\ModelReport;
 
 /**
  * Main class for generate PDF report from XML Report file.
