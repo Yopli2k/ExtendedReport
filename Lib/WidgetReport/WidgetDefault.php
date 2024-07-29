@@ -5,16 +5,16 @@
  * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
+ * it under the terms of the GNU Lesser General Public license as
  * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * license, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * GNU Lesser General Public license for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Lesser General Public license
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
@@ -59,7 +59,7 @@ class WidgetDefault extends WidgetLabel
         $values = explode('.', $this->fieldname);
         switch ($values[0]) {
             case self::AUTO_TEXT_COMPANY:
-                $this->value = $data->company->{$values[1]} ?? '';
+                $this->value = $data->getCompanyFieldValue($values[1]);
                 break;
 
             case self::AUTO_TEXT_DATE:
@@ -75,7 +75,7 @@ class WidgetDefault extends WidgetLabel
                 break;
 
             case self::AUTO_TEXT_USER:
-                $this->value = $data->user->{$values[1]} ?? '';
+                $this->value = $data->getUserFieldValue($values[1]);
                 break;
 
             default:
