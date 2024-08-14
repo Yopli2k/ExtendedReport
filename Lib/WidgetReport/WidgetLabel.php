@@ -109,7 +109,8 @@ class WidgetLabel extends WidgetItem
     public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
     {
         $this->renderBackground($pdf, $posX, $posY, $width, $height);
-        $pdf->setColor($this->color['r'], $this->color['g'], $this->color['b']);
+        $color = $this->getColor();
+        $pdf->setColor($color['r'], $color['g'], $color['b']);
 
         // Wrap the text for multiline
         $textHeight = $pdf->getFontHeight($this->size);
@@ -124,6 +125,17 @@ class WidgetLabel extends WidgetItem
                 $posY -= $textHeight;
             } while (false === empty($text));
         }
+    }
+
+    /**
+     * Get the colour for text data.
+     * Use this method to allow override in child classes.
+     *
+     * @return array
+     */
+    protected function getColor(): array
+    {
+        return $this->color;
     }
 
     /**
@@ -151,7 +163,7 @@ class WidgetLabel extends WidgetItem
     }
 
     /**
-     * Paint background rectangre.
+     * Paint background rectangle.
      *
      * @param Cezpdf $pdf
      * @param float $posX

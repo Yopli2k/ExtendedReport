@@ -40,6 +40,13 @@ class WidgetNumber extends WidgetLabel
     protected $printempty;
 
     /**
+     * The colour has to use when representing the negative value data.
+     *
+     * @var array
+     */
+    protected array $negativecolor;
+
+    /**
      * Class constructor. Load initials values from data array.
      *
      * @param array $data
@@ -53,6 +60,25 @@ class WidgetNumber extends WidgetLabel
         $this->printempty = isset($data['printempty'])
             ? filter_var($data['printempty'], FILTER_VALIDATE_BOOLEAN)
             : true;
+
+        $color = $data['negative'] ?? false;
+        $this->negativecolor = $color
+            ? $this->rgbFromColor($color)
+            : $this->color;
+    }
+
+    /**
+     * Get the color to be represented.
+     * If the value is negative, the negative color will be used.
+     *
+     * @return array
+     */
+    protected function getColor(): array
+    {
+        $value = (float) $this->value ?? 0.00;
+        return ($value < 0.00)
+            ? $this->negativecolor
+            : parent::getColor();
     }
 
     /**

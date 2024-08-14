@@ -30,7 +30,7 @@ abstract class WidgetItem
 {
 
     /**
-     * The color has to use when representing the data.
+     * The colour has to use when representing the data.
      *
      * @var array
      */
