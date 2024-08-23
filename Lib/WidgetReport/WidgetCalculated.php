@@ -76,9 +76,17 @@ class WidgetCalculated extends WidgetNumber
         }
     }
 
-    public function setValue(&$data)
+    /**
+     * Set value from dataset to widget if fieldname is not empty.
+     * If currency is not empty, set the currency code.
+     *
+     * @param Object $data
+     */
+    public function setValue(Object $data)
     {
-        // Nothing to do.
+        if (false === empty($this->currency)) {
+            $this->divisa = $data->{$this->currency} ?? '';
+        }
     }
 
     /**

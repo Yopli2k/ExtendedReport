@@ -19,6 +19,9 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
+use FacturaScripts\Core\DataSrc\Divisas;
+use FacturaScripts\Core\Tools;
+
 /**
  * Class for displaying texts in the report.
  *
@@ -28,6 +31,13 @@ class WidgetNumber extends WidgetLabel
 {
 
     /**
+     * If value is an amount then indicates the field name for get the currency symbol.
+     *
+     * @var string
+     */
+    protected $currency;
+
+    /**
      * the number of decimal places to display.
      *
      * @var int
@@ -35,9 +45,18 @@ class WidgetNumber extends WidgetLabel
     protected $decimal;
 
     /**
-     * @var bool
+     * The currency code to use.
+     *
+     * @var string
      */
-    protected $printempty;
+    protected string $divisa = '';
+
+    /**
+     * Indicates the symbol or icon to add to the left of the value.
+     *
+     * @var string
+     */
+    protected string $licon;
 
     /**
      * The colour has to use when representing the negative value data.
@@ -45,6 +64,18 @@ class WidgetNumber extends WidgetLabel
      * @var array
      */
     protected array $negativecolor;
+
+    /**
+     * @var bool
+     */
+    protected $printempty;
+
+    /**
+     * Indicates the symbol or icon to add to the right of the value.
+     *
+     * @var string
+     */
+    protected string $ricon;
 
     /**
      * Class constructor. Load initials values from data array.
@@ -61,10 +92,28 @@ class WidgetNumber extends WidgetLabel
             ? filter_var($data['printempty'], FILTER_VALIDATE_BOOLEAN)
             : true;
 
+        $this->currency = $data['currency'] ?? '';
+        $this->licon = $data['licon'] ?? '';
+        $this->ricon = $data['ricon'] ?? '';
+
         $color = $data['negative'] ?? false;
         $this->negativecolor = $color
             ? $this->rgbFromColor($color)
             : $this->color;
+    }
+
+    /**
+     * Set value from dataset to widget if fieldname is not empty.
+     * If the currency field is not empty, then get the currency configuration.
+     *
+     * @param Object $data
+     */
+    public function setValue(Object $data)
+    {
+        parent::setValue($data);
+        if (false === empty($this->currency)) {
+            $this->divisa = $data->{$this->currency} ?? '';
+        }
     }
 
     /**
@@ -83,6 +132,8 @@ class WidgetNumber extends WidgetLabel
 
     /**
      * Get the value to be represented.
+     * If the value is empty and printempty is false, then return an empty string.
+     * If the value is an amount, then format the value with the currency symbol.
      *
      * @return string
      */
@@ -92,8 +143,20 @@ class WidgetNumber extends WidgetLabel
         if (empty(FS_NF2)) {
             $thousand = (FS_NF1 === '.') ? ',' : '.';
         }
-        return (false === $this->printempty && empty($this->value))
-            ? ''
-            : number_format((float)$this->value, $this->decimal, FS_NF1, $thousand);
+
+        if (false === $this->printempty && empty($this->value)) {
+            return '';
+        }
+
+        $value = number_format((float)$this->value, $this->decimal, FS_NF1, $thousand);
+        if (empty($this->currency) || empty($this->divisa)) {
+            return $this->licon . $value . $this->ricon;    // it is not a currency
+        }
+
+        // it is a currency
+        $currencyPosition = Tools::settings('default', 'currency_position', 'right');
+        return $currencyPosition === 'right'
+            ? $value . ' ' . Divisas::get($this->divisa)->simbolo
+            : Divisas::get($this->divisa)->simbolo . ' ' . $value;
     }
 }
