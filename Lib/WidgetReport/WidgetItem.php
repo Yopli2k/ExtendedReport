@@ -150,7 +150,7 @@ abstract class WidgetItem
      *
      * @param Object $data
      */
-    public function setValue(Object &$data)
+    public function setValue(Object $data)
     {
         if (false === empty($this->fieldname)) {
             $this->value =  $this->getValueForFieldName($data);

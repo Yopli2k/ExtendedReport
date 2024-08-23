@@ -52,9 +52,9 @@ class WidgetDefault extends WidgetLabel
     /**
      * Set value from dataset to widget
      *
-     * @param object $data
+     * @param Object $data
      */
-    public function setValue(&$data)
+    public function setValue(Object $data)
     {
         $values = explode('.', $this->fieldname);
         switch ($values[0]) {
