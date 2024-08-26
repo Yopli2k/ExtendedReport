@@ -38,7 +38,7 @@ class WidgetLabel extends WidgetItem
     protected string $align;
 
     /**
-     * The color for backgroud data.
+     * The color for background data.
      *
      * @var array
      */

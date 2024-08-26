@@ -30,7 +30,25 @@ class WidgetLine extends WidgetItem
 {
 
     /**
+     * The color for background data.
+     *
+     * @var array
+     */
+    protected array $bgcolor;
+
+    /**
+     * Line border. Sets the thickness of the line.
+     * Default 1.
+     *
+     *
+     * @var int
+     */
+    protected $border;
+
+    /**
      * Line height.
+     * If a value is defined, the height of the box is set.
+     * Default 1.
      *
      * @var int
      */
@@ -44,11 +62,16 @@ class WidgetLine extends WidgetItem
     public function __construct($data)
     {
         parent::__construct($data);
-        $this->height = isset($data['height']) ? (int) $data['height'] : 1;
+        $this->border = isset($data['border']) ? (int) $data['border'] : 1;
+        $this->height = isset($data['height']) ? (int) $data['height'] : 0;
+
+        $color = $data['bgcolor'] ?? false;
+        $this->bgcolor = $color ? $this->rgbFromColor($color) : [];
     }
 
     /**
-     * Add a Line to pdf document.
+     * Add a Line or rectangle to PDF document.
+     * If the height is greater than twice the border, a rectangle is drawn.
      *
      * @param Cezpdf $pdf
      * @param float $posX
@@ -57,7 +80,22 @@ class WidgetLine extends WidgetItem
      */
     public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
     {
-        $pdf->setLineStyle($this->height);
+        // Is a rectangle
+        if ($this->height > ($this->border * 2)) {
+            if (false === empty($this->bgcolor)) {
+                $pdf->setColor($this->bgcolor['r'], $this->bgcolor['g'], $this->bgcolor['b']);
+                $pdf->filledRectangle($posX, ($posY - $this->height), $width, $this->height);
+            }
+            if ($this->border > 0) {
+                $pdf->setLineStyle($this->border);
+                $pdf->setStrokeColor($this->color['r'], $this->color['g'], $this->color['b']);
+                $pdf->rectangle($posX, ($posY - $this->height), $width, $this->height);
+            }
+            return;
+        }
+
+        // Is a line
+        $pdf->setLineStyle($this->border);
         $pdf->setStrokeColor($this->color['r'], $this->color['g'], $this->color['b']);
         $pdf->line($posX, $posY, ($posX + $width), $posY);
     }
