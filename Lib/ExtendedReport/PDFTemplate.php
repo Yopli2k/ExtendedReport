@@ -126,9 +126,10 @@ class PDFTemplate
         }
 
         $this->pdf = new Cezpdf($this->config->page['type'], $this->config->page['orientation']);
+        $this->pdf->tempPath = FS_FOLDER . '/MyFiles/Cache';
+        $this->pdf->selectFont($this->config->font['type']);
         $this->pdf->addInfo('Creator', 'ExtendedReport for FacturaScripts');
         $this->pdf->addInfo('Producer', 'ExtendedReport');
-        $this->pdf->tempPath = FS_FOLDER . '/MyFiles/Cache';
         $this->pageWidth = $this->pdf->ez['pageWidth'];
         $this->pageHeight = $this->pdf->ez['pageHeight'];
         return true;

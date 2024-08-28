@@ -67,8 +67,8 @@ class ConfigItem
      */
     protected function loadDefaultConfig(array $data)
     {
-        $this->default['group'] = $data['group'] ?? 'main';
-        $this->default['alter'] = $data['alter'] ?? 'other';
+        $this->default['group'] = strtolower($data['group']) ?? 'main';
+        $this->default['alter'] = strtolower($data['alter']) ?? 'other';
     }
 
     /**
@@ -78,8 +78,8 @@ class ConfigItem
      */
     protected function loadPageConfig(array $data)
     {
-        $this->page['type'] = $data['page']['type'] ?? 'A4';
-        $this->page['orientation'] = $data['page']['orientation'] ?? 'portrait';
+        $this->page['type'] = strtolower($data['page']['type']) ?? 'a4';
+        $this->page['orientation'] = strtolower($data['page']['orientation']) ?? 'portrait';
     }
 
     /**
@@ -89,7 +89,9 @@ class ConfigItem
      */
     protected function loadFontConfig(array $data)
     {
-        $this->font['type'] = $data['font']['type'] ?? 'Arial';
+        // FIXME: This is not working ... need font folder with de ttf files
+        // $this->font['type'] = $data['font']['type'] ?? 'Helvetica';
+        $this->font['type'] = 'Helvetica';
         $this->font['size'] = $data['font']['size'] ?? 12;
     }
 }
