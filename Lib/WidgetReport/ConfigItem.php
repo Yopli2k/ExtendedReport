@@ -67,8 +67,8 @@ class ConfigItem
      */
     protected function loadDefaultConfig(array $data)
     {
-        $this->default['group'] = strtolower($data['group']) ?? 'main';
-        $this->default['alter'] = strtolower($data['alter']) ?? 'other';
+        $this->default['group'] = isset($data['group']) ? strtolower($data['group']) : 'main';
+        $this->default['alter'] = isset($data['alter']) ? strtolower($data['alter']) : 'other';
     }
 
     /**
@@ -78,8 +78,14 @@ class ConfigItem
      */
     protected function loadPageConfig(array $data)
     {
-        $this->page['type'] = strtolower($data['page']['type']) ?? 'a4';
-        $this->page['orientation'] = strtolower($data['page']['orientation']) ?? 'portrait';
+        if (false === isset($data['page'])) {
+            $this->page['type'] = 'a4';
+            $this->page['orientation'] = 'portrait';
+            return;
+        }
+
+        $this->page['type'] = isset($data['page']['type']) ? strtolower($data['page']['type']) : 'a4';
+        $this->page['orientation'] = isset($data['page']['orientation']) ? strtolower($data['page']['orientation']) : 'portrait';
     }
 
     /**
