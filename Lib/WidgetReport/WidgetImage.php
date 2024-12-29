@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
 use Exception;
+use Throwable;
 
 /**
  * Class for display an image in the report.
@@ -29,6 +30,8 @@ use Exception;
  */
 class WidgetImage extends WidgetItem
 {
+
+    private const THUMBNAIL_PATH = '/MyFiles/Tmp/Thumbnails/';
 
     /**
      * Image align.
@@ -56,9 +59,9 @@ class WidgetImage extends WidgetItem
     protected int $padding;
 
     /**
-     * @var string
+     * @var bool
      */
-    protected $resize;
+    protected bool $resize;
 
     /**
      * Class constructor. Load initials values from data array.
@@ -71,7 +74,7 @@ class WidgetImage extends WidgetItem
         $this->align = $data['align'] ?? 'center';
         $this->angle = isset($data['angle']) ? (int)$data['angle'] : 0;
         $this->padding = isset($data['padding']) ? (int)$data['padding'] : 5;
-        $this->resize = $data['resize'] ?? 'width';
+        $this->resize = isset($data['resize']) ? $data['resize'] === 'true' : false;
     }
 
     /**
@@ -90,9 +93,76 @@ class WidgetImage extends WidgetItem
         }
 
         try {
-            $this->renderImage($pdf, $this->value, $posX, $posY, $width, $height);
+            $fileName = ($this->resize === true)
+                ? $this->getThumbnail($this->value, $this->resize, $width, $height)
+                : $this->value;
+
+            $this->renderImage($pdf, $fileName, $posX, $posY, $width, $height);
         } catch (Exception $ex) {
         }
+    }
+
+    /**
+     * Generate a thumbnail from the image.
+     * Return the thumbnail file path.
+     *
+     * @param string $file
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
+    protected function getThumbnail(string $file, int $width, int $height): string
+    {
+        if (false === file_exists(FS_FOLDER . self::THUMBNAIL_PATH)) {
+            mkdir(FS_FOLDER . self::THUMBNAIL_PATH, 0755, true);
+        }
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if (false === in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+            return '';
+        }
+
+        $thumbName = pathinfo($file, PATHINFO_FILENAME) . '_' . $width . 'x' . $height . '.' . $ext;
+        $thumbFile = self::THUMBNAIL_PATH . $thumbName;
+        if (file_exists(FS_FOLDER . $thumbFile)) {
+            return FS_FOLDER . $thumbFile;
+        }
+
+        try {
+            $image = imagecreatefromstring(file_get_contents($file));
+            $imageWidth = imagesx($image);
+            $imageHeight = imagesy($image);
+            $ratio = $imageWidth / $imageHeight;
+            if ($width / $height > $ratio) {
+                $width = intval($height * $ratio);
+            } else {
+                $height = intval($width / $ratio);
+            }
+            $thumb = imagecreatetruecolor($width, $height);
+            imagecopyresampled($thumb, $image, 0, 0, 0, 0, $width, $height, $imageWidth, $imageHeight);
+
+            switch ($ext) {
+                case 'jpg':
+                case 'jpeg':
+                    imagejpeg($thumb, FS_FOLDER . $thumbFile, 90);
+                    break;
+
+                case 'png':
+                    imagepng($thumb, FS_FOLDER . $thumbFile);
+                    break;
+
+                case 'gif':
+                    imagegif($thumb, FS_FOLDER . $thumbFile);
+                    break;
+            }
+
+            imagedestroy($image);
+            imagedestroy($thumb);
+        } catch (Throwable $th) {
+            return '';
+        }
+
+        return FS_FOLDER . $thumbFile;
     }
 
     /**

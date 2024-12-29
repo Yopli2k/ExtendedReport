@@ -20,6 +20,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
+use Exception;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Dinamic\Model\ProductoImagen;
 use FacturaScripts\Dinamic\Model\Variante;
@@ -41,7 +42,7 @@ class WidgetImageproduct extends WidgetImage
      * @param float $width
      * @param float $height
      */
-    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
+    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height): void
     {
         $productImage = $this->getProductImage();
         $file = $productImage->getFile();
@@ -50,8 +51,17 @@ class WidgetImageproduct extends WidgetImage
         }
 
         $fileFull = $file->getFullPath();
-        if (file_exists($fileFull)) {
+        if (false === file_exists($fileFull)) {
+            return;
+        }
+
+        try {
+            $fileFull = ($this->resize === true)
+                ? $this->getThumbnail($fileFull, $width, $height)
+                : $this->value;
+
             $this->renderImage($pdf, $fileFull, $posX, $posY, $width, $height);
+        } catch (Exception $ex) {
         }
     }
 
