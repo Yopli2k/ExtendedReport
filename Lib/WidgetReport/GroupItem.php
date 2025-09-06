@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -19,11 +19,6 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandItem;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandDetail;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandHeader;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandFooter;
-
 /**
  * Class to handle a group of bands (header, detail and footer) of the report.
  *
@@ -31,7 +26,6 @@ use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandFooter;
  */
 class GroupItem
 {
-
     private const BAND_DETAIL = 'detail';
     private const BAND_FOOTER = 'footer';
     private const BAND_HEADER = 'header';
@@ -49,28 +43,28 @@ class GroupItem
      *
      * @var BandFooter[]
      */
-    public $footer = [];
+    public array $footer = [];
 
     /**
      * Structure with headers columns.
      *
      * @var BandHeader[]
      */
-    public $header = [];
+    public array $header = [];
 
     /**
      * Name identificator
      *
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->name = $data['name'] ?? '';
         $this->loadBands($data['children']);
@@ -94,9 +88,9 @@ class GroupItem
      * Gets the band defined as header.
      *
      * @param bool $second
-     * @return BandHeader|null
+     * @return ?BandItem
      */
-    public function getHeader($second)
+    public function getHeader(bool $second): ?BandItem
     {
         return $this->getBand($this->header, $second);
     }
@@ -108,7 +102,7 @@ class GroupItem
      * @param bool $second
      * @return int
      */
-    public function getHeaderHeight($second)
+    public function getHeaderHeight(bool $second): int
     {
         $header = $this->getHeader($second);
         $height = $header->height;
@@ -125,7 +119,7 @@ class GroupItem
      * @param bool $second
      * @return BandFooter|null
      */
-    public function getFooter($second)
+    public function getFooter(bool $second)
     {
         return $this->getBand($this->footer, $second);
     }
@@ -136,7 +130,7 @@ class GroupItem
      * @param bool $second
      * @return int
      */
-    public function getFooterHeight($second)
+    public function getFooterHeight(bool $second)
     {
         $footer = $this->getFooter($second);
         return isset($footer) ? $footer->height : 0;
@@ -147,7 +141,7 @@ class GroupItem
      *
      * @return array
      */
-    protected function getBandList()
+    protected function getBandList(): array
     {
         return [ self::BAND_HEADER, self::BAND_DETAIL, self::BAND_FOOTER ];
     }
@@ -157,7 +151,7 @@ class GroupItem
      *
      * @param array $children
      */
-    protected function loadBands($children)
+    protected function loadBands(array $children): void
     {
         foreach ($children as $child) {
             $type = $child['tag'];
@@ -186,7 +180,7 @@ class GroupItem
      * @param array $data
      * @return BandItem
      */
-    private function createBand($type, $data)
+    private function createBand(string $type, array $data): BandItem
     {
         $className = ReportItemLoadEngine::getNamespace() . 'Band' . ucfirst($type);
         return new $className($data);
@@ -198,7 +192,7 @@ class GroupItem
      * @param bool       $second
      * @return BandItem
      */
-    private function getBand($bands, $second)
+    private function getBand(array $bands, bool $second): BandItem
     {
         $result = null;
         if ($second) {

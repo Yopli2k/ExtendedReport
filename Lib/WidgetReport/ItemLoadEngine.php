@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -19,9 +19,7 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
-use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Tools;
-
 use SimpleXMLElement;
 
 /**
@@ -37,19 +35,19 @@ abstract class ItemLoadEngine
      *
      * @var string
      */
-    private static $namespace = '\\FacturaScripts\\Dinamic\\Lib\\';
+    private static string $namespace = '\\FacturaScripts\\Dinamic\\Lib\\';
 
     /**
      * Process that converts the XML file into an object structure.
      */
-    abstract public static function installXML($name, &$model);
+    abstract public static function installXML(string $name, &$model): bool;
 
     /**
      * Returns the namespace used by the class.
      *
      * @return string
      */
-    public static function getNamespace()
+    public static function getNamespace(): string
     {
         return self::$namespace;
     }
@@ -61,12 +59,12 @@ abstract class ItemLoadEngine
      * @param string $name
      * @return array|false
      */
-    protected static function loadXML($folder, $name)
+    protected static function loadXML($folder, $name): bool|array
     {
         /// TODO: Set final folder with templates
-        $fileName = \FS_FOLDER . '/Dinamic/XMLView/' . $folder . '/' . $name . '.xml';
-        if (\FS_DEBUG && !file_exists($fileName)) {
-            $fileName = \FS_FOLDER . '/Core/XMLView/' . $folder . '/' . $name . '.xml';
+        $fileName = FS_FOLDER . '/Dinamic/XMLView/' . $folder . '/' . $name . '.xml';
+        if (FS_DEBUG && !file_exists($fileName)) {
+            $fileName = FS_FOLDER . '/Core/XMLView/' . $folder . '/' . $name . '.xml';
         }
 
         if (!file_exists($fileName)) {
@@ -89,26 +87,15 @@ abstract class ItemLoadEngine
      * @param string $message
      * @param array  $context
      */
-    protected static function saveError($message, $context = [])
+    protected static function saveError(string $message, array $context = []): void
     {
         Tools::log()->critical($message, $context);
     }
 
     /**
-     * Class with common tools.
-     *
-     * @return ToolBox
-     */
-    protected static function toolBox()
-    {
-        return new ToolBox();
-    }
-
-    /**
-     * Turns an xml into an array.
+     * Turns a xml into an array.
      *
      * @param SimpleXMLElement $xml
-     *
      * @return array
      */
     protected static function xmlToArray($xml): array
@@ -148,10 +135,9 @@ abstract class ItemLoadEngine
      *
      * @param string           $tag
      * @param SimpleXMLElement $attributes
-     *
      * @return string
      */
-    protected static function xmlToArrayAux($tag, $attributes)
+    protected static function xmlToArrayAux(string $tag, $attributes): string
     {
         if (isset($attributes->name)) {
             return (string) $attributes->name;

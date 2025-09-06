@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -20,10 +20,10 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use FacturaScripts\Core\Model\User;
+use FacturaScripts\Core\Response;
 use FacturaScripts\Core\Session;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Empresa;
-use FacturaScripts\Core\Response;
 
 /**
  * Main class for an executed PDF report.
@@ -33,10 +33,10 @@ use FacturaScripts\Core\Response;
 class PDFReport
 {
     /** @var PDFTemplate */
-    private $pdfTemplate;
+    private PDFTemplate $pdfTemplate;
 
     /** @var Response */
-    protected $response;
+    protected Response $response;
 
     /**
      * Class constructor
@@ -53,7 +53,8 @@ class PDFReport
      * Load the report template and report data.
      *
      * @param $model
-     * @param $template
+     * @param string $template
+     * @param string $group
      * @return bool
      */
     public function load($model, string $template, string $group = 'main'): bool
@@ -74,7 +75,7 @@ class PDFReport
      * @param string $fileName
      * @return void
      */
-    public function show(string $fileName)
+    public function show(string $fileName): void
     {
         $pdf = $this->pdfTemplate->render();
         $this->response->headers->set('Content-type', 'application/pdf');

@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -37,31 +37,31 @@ abstract class BandItem
      *
      * @var ColumnItem[]
      */
-    public $columns = [];
+    public array $columns = [];
 
     /**
      * Band height.
      *
      * @var int
      */
-    public $height;
+    public int $height;
 
     /**
      * Indicates the type of band.
      *
      * @var string
      */
-    public $type;
+    public string $type;
 
     /**
      * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->height = isset($data['height']) ? (int) $data['height'] : 0;
-        $this->type = isset($data['type']) ? $data['type'] : self::BAND_TYPE_MAIN;
+        $this->type = $data['type'] ?? self::BAND_TYPE_MAIN;
         $this->loadColumns($data['children']);
     }
 
@@ -70,10 +70,10 @@ abstract class BandItem
      *
      * @param Cezpdf $pdf
      * @param ReportDefaultData $default
-     * @param object $data
+     * @param Object $data
      * @param float  $linePos
      */
-    public function render($pdf, $default, $data, $linePos)
+    public function render(Cezpdf $pdf, ReportDefaultData $default, Object $data, float $linePos): void
     {
         foreach ($this->columns as $column) {
             $column->render($pdf, $default, $data, $linePos);
@@ -85,7 +85,7 @@ abstract class BandItem
      *
      * @param array $children
      */
-    protected function loadColumns($children)
+    protected function loadColumns(array $children): void
     {
         $columnClass = ReportItemLoadEngine::getNamespace() . 'ColumnItem';
         foreach ($children as $child) {

@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -34,21 +34,21 @@ class BandDetail extends BandItem
      *
      * @var string
      */
-    public $fieldName;
+    public string $fieldName;
 
     /**
      * Last value for fieldName.
      *
-     * @var string
+     * @var ?string
      */
-    public $fieldValue = null;
+    public ?string $fieldValue = null;
 
     /**
      * Class constructor. Get initial values from param array.
      *
-     * @param type $data
+     * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         parent::__construct($data);
         $this->fieldName = $data['fieldname'] ?? '';
@@ -57,11 +57,11 @@ class BandDetail extends BandItem
     /**
      * Determine if there is a break in the sequence detail data.
      *
-     * @param object $data
+     * @param Object $data
      * @param bool   $update
      * @return bool
      */
-    public function hasFieldRupture($data, $update = false): bool
+    public function hasFieldRupture(Object $data, bool $update = false): bool
     {
         if (empty($this->fieldName)) {
             return false;

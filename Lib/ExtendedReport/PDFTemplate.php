@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -34,59 +34,58 @@ use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportItemLoadEngine;
  */
 class PDFTemplate
 {
-
     /**
      * Name of the template report.
      *
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * Template configuration
      *
-     * @var ConfigItem
+     * @var ConfigItem|array
      */
-    public $config;
+    public ConfigItem|array $config;
 
     /**
      * Template structure
      *
      * @var GroupItem[]
      */
-    public $groups;
+    public array $groups;
 
     /**
      * List of models with the data.
      *
      * @var ModelReport[]
      */
-    protected $datasets = [];
+    protected array $datasets = [];
 
     /**
      *
      * @var ReportDefaultData
      */
-    protected $defaultData;
+    protected ReportDefaultData $defaultData;
 
     /**
      *
      * @var int
      */
-    protected $pageHeight;
+    protected int $pageHeight;
 
     /**
      *
      * @var int
      */
-    protected $pageWidth;
+    protected int $pageWidth;
 
     /**
      * PDF object.
      *
      * @var Cezpdf
      */
-    protected $pdf;
+    protected Cezpdf $pdf;
 
     /**
      *
@@ -108,7 +107,7 @@ class PDFTemplate
      * @param string $name
      * @param ModelReport $model
      */
-    public function addDataset(string $name, $model)
+    public function addDataset(string $name, ModelReport $model): void
     {
         $this->datasets[$name] = $model;
     }
@@ -140,10 +139,10 @@ class PDFTemplate
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
-        if (!isset($this->pdf) || empty($this->groups)) {
-            return;
+        if (false === isset($this->pdf) || empty($this->groups)) {
+            return '';
         }
 
         $this->defaultData->setPageNum(1);
@@ -163,7 +162,7 @@ class PDFTemplate
      * @param GroupItem $group
      * @param float     $position
      */
-    protected function renderDetail($group, &$position)
+    protected function renderDetail(GroupItem $group, float &$position): void
     {
         $detail = $group->getDetail();
         if (!isset($detail)) {
@@ -196,7 +195,7 @@ class PDFTemplate
 
             // Render detail header, if its needed
             if ($hasRupture) {
-                $this->renderHeader($group->detail, $position, $row, false); // render only detail headers
+                $this->renderHeader($group->detail, $position, $row); // render only detail headers
             }
 
             // Render detail data
@@ -212,10 +211,10 @@ class PDFTemplate
      *
      * @param GroupItem   $group
      * @param float       $position
-     * @param Object|null $data
+     * @param ?Object     $data
      * @param bool        $second
      */
-    protected function renderHeader($group, &$position, $data = null, $second = false)
+    protected function renderHeader(GroupItem $group, float &$position, ?Object $data = null, bool $second = false): void
     {
         $header = $group->getHeader($second);
         if (isset($header)) {
@@ -238,10 +237,10 @@ class PDFTemplate
      *
      * @param GroupItem   $group
      * @param float       $position
-     * @param Object|null $data
+     * @param ?Object     $data
      * @param bool        $second
      */
-    protected function renderFooter($group, &$position, $data = null, $second = false)
+    protected function renderFooter(GroupItem $group, float &$position, ?Object $data = null, bool $second = false): void
     {
         $footer = $group->getFooter($second);
         if (isset($footer)) {
@@ -258,7 +257,7 @@ class PDFTemplate
     /**
      * Add a new blank page to document.
      */
-    private function newPage()
+    private function newPage(): void
     {
         $this->pdf->newPage();
         $this->defaultData->addPage();
@@ -268,11 +267,10 @@ class PDFTemplate
      * Get the vertical position for an object based
      * the lower left corner of the page.
      *
-     * @param float $posLin
-     * @param float $posObj
+     * @param float $posY
      * @return float
      */
-    private function pagePosition($posY)
+    private function pagePosition(float $posY): float
     {
         return $this->pageHeight - $posY;
     }
@@ -282,12 +280,11 @@ class PDFTemplate
      *
      * @param GroupItem $group
      * @param Object $data
+     * @param bool $second
      */
-    private function procesCalculateColumns($group, $data, $second = false)
+    private function procesCalculateColumns(GroupItem $group, Object $data, bool $second = false): void
     {
         $footer = $group->getFooter($second);
-        if (isset($footer)) {
-            $footer->calculate($data);
-        }
+        $footer?->calculate($data);
     }
 }

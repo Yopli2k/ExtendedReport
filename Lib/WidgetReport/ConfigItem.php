@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -32,28 +32,28 @@ class ConfigItem
      *
      * @var array
      */
-    public $default = [];
+    public array $default = [];
 
     /**
      * Page setup options.
      *
      * @var array
      */
-    public $page = [];
+    public array $page = [];
 
     /**
      * Font setup options.
      *
      * @var array
      */
-    public $font = [];
+    public array $font = [];
 
     /**
      * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->loadPageConfig($data);
         $this->loadFontConfig($data);
@@ -65,7 +65,7 @@ class ConfigItem
      *
      * @param array $data
      */
-    protected function loadDefaultConfig(array $data)
+    protected function loadDefaultConfig(array $data): void
     {
         $this->default['group'] = isset($data['group']) ? strtolower($data['group']) : 'main';
         $this->default['alter'] = isset($data['alter']) ? strtolower($data['alter']) : 'other';
@@ -76,7 +76,7 @@ class ConfigItem
      *
      * @param array $data
      */
-    protected function loadPageConfig(array $data)
+    protected function loadPageConfig(array $data): void
     {
         if (false === isset($data['page'])) {
             $this->page['type'] = 'a4';
@@ -93,7 +93,7 @@ class ConfigItem
      *
      * @param array $data
      */
-    protected function loadFontConfig(array $data)
+    protected function loadFontConfig(array $data): void
     {
         // FIXME: This is not working ... need font folder with de ttf files
         // $this->font['type'] = $data['font']['type'] ?? 'Helvetica';

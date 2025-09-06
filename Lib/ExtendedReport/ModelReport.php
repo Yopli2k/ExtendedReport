@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -20,9 +20,6 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use FacturaScripts\Core\Base\DataBase;
-use FacturaScripts\Core\Base\ToolBox;
-use FacturaScripts\Core\Tools;
-
 
 /**
  * Model base for XML reports.
@@ -31,7 +28,6 @@ use FacturaScripts\Core\Tools;
  */
 abstract class ModelReport
 {
-
     /**
      * It provides direct access to the database.
      *
@@ -40,6 +36,7 @@ abstract class ModelReport
     protected static $dataBase;
 
     /**
+     * Array with data to be used in the report.
      *
      * @var array
      */
@@ -48,7 +45,7 @@ abstract class ModelReport
     /**
      * Load report data into array data property.
      */
-    abstract public function loadData();
+    abstract public function loadData(): void;
 
     /**
      * Class constructor.
@@ -58,14 +55,5 @@ abstract class ModelReport
         if (self::$dataBase === null) {
             self::$dataBase = new DataBase();
         }
-    }
-
-    /**
-     *
-     * @return ToolBox
-     */
-    protected static function toolBox()
-    {
-        return new ToolBox();
     }
 }

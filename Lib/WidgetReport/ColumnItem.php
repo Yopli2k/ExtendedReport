@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -20,9 +20,6 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use Cezpdf;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportDefaultData;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetDefault;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetItem;
 
 /**
  * Class to manage the data columns of the report.
@@ -31,43 +28,42 @@ use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetItem;
  */
 class ColumnItem
 {
-
-    public $height;
+    public int $height;
 
     /**
      * Position on x-axis.
      *
      * @var int
      */
-    public $posx;
+    public int $posx;
 
     /**
      * Position on the y-axis.
      *
      * @var int
      */
-    public $posy;
+    public int $posy;
 
     /**
      * Display object configuration
      *
      * @var WidgetItem
      */
-    public $widget;
+    public WidgetItem $widget;
 
     /**
      * Column width.
      *
      * @var int
      */
-    public $width;
+    public int $width;
 
     /**
      * Class constructor. Get initial values from param array.
      *
      * @param array $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->posx = isset($data['posx']) ? (int) $data['posx'] : 0;
         $this->posy = isset($data['posy']) ? (int) $data['posy'] : 0;
@@ -81,10 +77,10 @@ class ColumnItem
      *
      * @param Cezpdf $pdf
      * @param ReportDefaultData $default
-     * @param object $data
+     * @param Object $data
      * @param float  $linePos
      */
-    public function render($pdf, $default, $data, $linePos)
+    public function render(Cezpdf $pdf, ReportDefaultData $default, Object $data, float $linePos): void
     {
         $posY = $linePos - $this->posy;
         $values = ($this->widget instanceof WidgetDefault) ? $default : $data;
@@ -97,7 +93,7 @@ class ColumnItem
      *
      * @param array $children
      */
-    protected function loadWidget($children)
+    protected function loadWidget(array $children): void
     {
         foreach ($children as $child) {
             if ($child['tag'] !== 'widget') {

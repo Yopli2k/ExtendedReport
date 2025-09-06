@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -20,8 +20,6 @@
 namespace FacturaScripts\Plugins\ExtendedReport;
 
 use FacturaScripts\Core\Template\InitClass;
-use FacturaScripts\Core\Tools;
-
 
 /**
  * Description of Init
@@ -32,17 +30,13 @@ class Init extends InitClass
 {
     public function init(): void
     {
-        ;
     }
 
     public function update(): void
     {
-        ;
     }
-
 
     public function uninstall(): void
     {
-        // código de desinstalación aquí
     }
 }

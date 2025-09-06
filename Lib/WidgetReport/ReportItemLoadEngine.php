@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2024 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -34,10 +34,9 @@ class ReportItemLoadEngine extends ItemLoadEngine
      *
      * @param string      $name
      * @param PDFTemplate $template
-     *
-     * @return boolean
+     * @return bool
      */
-    public static function installXML($name, &$template)
+    public static function installXML(string $name, &$template): bool
     {
         $array = static::loadXML('Report', $name);
         if ($array === false) {
@@ -67,7 +66,7 @@ class ReportItemLoadEngine extends ItemLoadEngine
      *
      * @return string
      */
-    public static function getNamespace()
+    public static function getNamespace(): string
     {
         return parent::getNamespace() . 'WidgetReport\\';
     }
