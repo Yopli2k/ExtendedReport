@@ -21,6 +21,8 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\ToolBox;
+use FacturaScripts\Core\Tools;
+
 
 /**
  * Model base for XML reports.

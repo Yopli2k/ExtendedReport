@@ -22,6 +22,8 @@ namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 use Cezpdf;
 use Exception;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\Tools;
+
 use FacturaScripts\Dinamic\Model\ProductoImagen;
 use FacturaScripts\Dinamic\Model\Variante;
 
@@ -72,7 +74,7 @@ class WidgetImageproduct extends WidgetImage
     {
         $variant = new Variante();
         $where = [ new DataBaseWhere('referencia', $this->value) ];
-        if (false === $variant->loadFromCode('', $where)) {
+        if (false === $variant->loadWhere($where)) {
             return new ProductoImagen();
         }
 
@@ -82,7 +84,7 @@ class WidgetImageproduct extends WidgetImage
             new DataBaseWhere('referencia', $variant->referencia),
             new DataBaseWhere('referencia', null, 'IS', 'OR'),
         ];
-        $productImage->loadFromCode('', $where, ['referencia' => 'DESC']);
+        $productImage->loadWhere($where, ['referencia' => 'DESC']);
         return $productImage;
     }
 }

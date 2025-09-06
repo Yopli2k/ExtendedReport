@@ -20,6 +20,8 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use FacturaScripts\Core\Base\ToolBox;
+use FacturaScripts\Core\Tools;
+
 use SimpleXMLElement;
 
 /**
@@ -89,7 +91,7 @@ abstract class ItemLoadEngine
      */
     protected static function saveError($message, $context = [])
     {
-        static::toolBox()->i18nLog()->critical($message, $context);
+        Tools::log()->critical($message, $context);
     }
 
     /**

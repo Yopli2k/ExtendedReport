@@ -23,7 +23,7 @@ use FacturaScripts\Core\Model\User;
 use FacturaScripts\Core\Session;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Empresa;
-use Symfony\Component\HttpFoundation\Response;
+use FacturaScripts\Core\Response;
 
 /**
  * Main class for an executed PDF report.
@@ -91,7 +91,7 @@ class PDFReport
     {
         $idcompany = Tools::settings('default', 'idempresa');
         $company = new Empresa();
-        $company->loadFromCode($idcompany);
+        $company->load($idcompany);
         return $company;
     }
 

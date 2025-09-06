@@ -20,6 +20,8 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\Tools;
+
 use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\PDFTemplate;
 use FacturaScripts\Plugins\ExtendedReport\Model\Report\TestReport;
 
@@ -57,7 +59,7 @@ class ReportTest extends Controller
     {
         $pagedata = parent::getPageData();
         $pagedata['title'] = 'report-test';
-        $pagedata['icon'] = 'fas fa-print';
+        $pagedata['icon'] = 'fa-solid fa-print';
         $pagedata['menu'] = 'admin';
         $pagedata['showonmenu'] = true;         // change to false for production version.
 
