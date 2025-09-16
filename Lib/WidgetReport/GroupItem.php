@@ -36,7 +36,7 @@ class GroupItem
      *
      * @var BandDetail|GroupItem
      */
-    public $detail;
+    public BandDetail|GroupItem $detail;
 
     /**
      * Structure with footers columns.
@@ -53,7 +53,7 @@ class GroupItem
     public array $header = [];
 
     /**
-     * Name identificator
+     * Name identification
      *
      * @var string
      */
@@ -75,7 +75,7 @@ class GroupItem
      *
      * @return BandDetail
      */
-    public function getDetail()
+    public function getDetail(): BandDetail
     {
         if ($this->detail instanceof GroupItem) {
             return $this->detail->getDetail();
@@ -88,9 +88,9 @@ class GroupItem
      * Gets the band defined as header.
      *
      * @param bool $second
-     * @return ?BandItem
+     * @return ?BandHeader
      */
-    public function getHeader(bool $second): ?BandItem
+    public function getHeader(bool $second): ?BandHeader
     {
         return $this->getBand($this->header, $second);
     }
@@ -117,9 +117,9 @@ class GroupItem
      * Gets the band defined as footer.
      *
      * @param bool $second
-     * @return BandFooter|null
+     * @return ?BandFooter
      */
-    public function getFooter(bool $second)
+    public function getFooter(bool $second): ?BandFooter
     {
         return $this->getBand($this->footer, $second);
     }
@@ -130,7 +130,7 @@ class GroupItem
      * @param bool $second
      * @return int
      */
-    public function getFooterHeight(bool $second)
+    public function getFooterHeight(bool $second): int
     {
         $footer = $this->getFooter($second);
         return isset($footer) ? $footer->height : 0;
@@ -178,9 +178,9 @@ class GroupItem
      *
      * @param string $type
      * @param array $data
-     * @return BandItem
+     * @return BandItem|GroupItem
      */
-    private function createBand(string $type, array $data): BandItem
+    private function createBand(string $type, array $data): BandItem|GroupItem
     {
         $className = ReportItemLoadEngine::getNamespace() . 'Band' . ucfirst($type);
         return new $className($data);
@@ -190,9 +190,9 @@ class GroupItem
      *
      * @param BandItem[] $bands
      * @param bool       $second
-     * @return BandItem
+     * @return BandItem|BandHeader|BandFooter|null
      */
-    private function getBand(array $bands, bool $second): BandItem
+    private function getBand(array $bands, bool $second): BandItem|BandHeader|BandFooter|null
     {
         $result = null;
         if ($second) {
