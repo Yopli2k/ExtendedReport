@@ -61,7 +61,7 @@ abstract class ItemLoadEngine
      */
     protected static function loadXML($folder, $name): bool|array
     {
-        /// TODO: Set final folder with templates
+        // TODO: Set final folder with templates
         $fileName = FS_FOLDER . '/Dinamic/XMLView/' . $folder . '/' . $name . '.xml';
         if (FS_DEBUG && !file_exists($fileName)) {
             $fileName = FS_FOLDER . '/Core/XMLView/' . $folder . '/' . $name . '.xml';
@@ -105,12 +105,12 @@ abstract class ItemLoadEngine
             'children' => [],
         ];
 
-        /// attributes
+        // attributes
         foreach ($xml->attributes() as $name => $value) {
             $array[$name] = (string) $value;
         }
 
-        /// childs
+        // childs
         foreach ($xml->children() as $tag => $child) {
             $childAttr = $child->attributes();
             $name = static::xmlToArrayAux($tag, $childAttr);
@@ -122,7 +122,7 @@ abstract class ItemLoadEngine
             $array['children'][$name] = static::xmlToArray($child);
         }
 
-        /// text
+        // text
         $text = \trim((string) $xml);
         if ('' !== $text) {
             $array['text'] = $text;
