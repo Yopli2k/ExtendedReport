@@ -165,12 +165,12 @@ class PDFTemplate
     protected function renderDetail(GroupItem $group, float &$position): void
     {
         $detail = $group->getDetail();
-        if (!isset($detail)) {
+        if (false === isset($detail)) {
             return;
         }
 
         $model = $this->datasets[$group->name] ?? null;
-        if (!isset($model)) {
+        if (false === isset($model)) {
             return;
         }
 
@@ -220,7 +220,7 @@ class PDFTemplate
         if (isset($header)) {
             if ($data == null) {
                 $model = $this->datasets[$group->name] ?? null;
-                $data = isset($model) ? $model->data[0] : null;
+                $data = isset($model) ? reset($model->data) : null;
             }
             $posY = $this->pagePosition($position);
             $header->render($this->pdf, $this->defaultData, $data, $posY);
@@ -246,7 +246,7 @@ class PDFTemplate
         if (isset($footer)) {
             $model = $this->datasets[$group->name] ?? null;
             if ($data == null) {
-                $data = isset($model) ? $model->data[0] : null;
+                $data = isset($model) ? reset($model->data) : null;
             }
             $posY = $this->pagePosition($position);
             $footer->render($this->pdf, $this->defaultData, $data, $posY);
