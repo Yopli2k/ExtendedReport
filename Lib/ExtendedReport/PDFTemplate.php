@@ -129,8 +129,8 @@ class PDFTemplate
         $this->pdf->selectFont($this->config->font['type']);
         $this->pdf->addInfo('Creator', 'ExtendedReport for FacturaScripts');
         $this->pdf->addInfo('Producer', 'ExtendedReport');
-        $this->pageWidth = $this->pdf->ez['pageWidth'];
-        $this->pageHeight = $this->pdf->ez['pageHeight'];
+        $this->pageWidth = (int)$this->pdf->ez['pageWidth'];
+        $this->pageHeight = (int)$this->pdf->ez['pageHeight'];
         return true;
     }
 

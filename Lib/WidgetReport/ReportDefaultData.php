@@ -20,6 +20,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
 use FacturaScripts\Core\Model\User;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Empresa;
 
 /**
@@ -87,7 +88,11 @@ class ReportDefaultData
      */
     public function getCompanyFieldValue(string $field): string
     {
-        return $this->company->{$field} ?? '';
+        $result = $this->company->{$field} ?? '';
+        return match ($field) {
+            'nombre' => empty($result) ? Tools::trans('all-companies') : $result,
+            default => $result,
+        };
     }
 
     /**
