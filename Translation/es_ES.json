@@ -1,7 +1,8 @@
 {
+    "all-companies": "Todas las empresas",
     "landscape-test": "Plantilla horizontal",
+    "no-export-format": "Formato de exportación no disponible",
     "portrait-test": "Plantilla vertical",
     "print-test": "Imprimir Test de prueba",
-    "report-test": "Testear Informe",
-    "all-companies": "Todas las empresas"
+    "report-test": "Testear Informe"
 }
