@@ -1,6 +1,8 @@
 {
-    "landscape-test": "Landscape Template",
-    "portrait-test": "Portrait Template",
-    "print-test": "Imprimir Test de prueba",
-    "report-test": "Report Test"
+    "all-companies": "All companies",
+    "landscape-test": "Horizontal template",
+    "no-export-format": "Export format not available",
+    "portrait-test": "Vertical template",
+    "print-test": "Print Test",
+    "report-test": "Test Report"
 }

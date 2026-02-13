@@ -1,6 +1,8 @@
 {
-    "landscape-test": "landscape-test",
-    "portrait-test": "portrait-test",
-    "print-test": "Froga proba inprimatu",
-    "report-test": "Txostena frogatu"
+    "all-companies": "Todas las empresas",
+    "landscape-test": "Plantilla horizontal",
+    "no-export-format": "Formato de exportación no disponible",
+    "portrait-test": "Plantilla vertical",
+    "print-test": "Imprimir Test de prueba",
+    "report-test": "Testear Informe"
 }
