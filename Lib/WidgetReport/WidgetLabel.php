@@ -98,6 +98,18 @@ class WidgetLabel extends WidgetItem
     }
 
     /**
+     * Obtain the value to be represented.
+     *
+     * @return mixed
+     */
+    public function getValue(): string
+    {
+        return $this->translate
+            ? Tools::lang()->trans($this->value)
+            : $this->value;
+    }
+
+    /**
      * Add Label to pdf document.
      *
      * @param Cezpdf $pdf
@@ -106,7 +118,7 @@ class WidgetLabel extends WidgetItem
      * @param float $width
      * @param float $height
      */
-    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
+    public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height): void
     {
         $this->renderBackground($pdf, $posX, $posY, $width, $height);
         $color = $this->getColor();
@@ -128,7 +140,7 @@ class WidgetLabel extends WidgetItem
     }
 
     /**
-     * Get the colour for text data.
+     * Get the color for text data.
      * Use this method to allow override in child classes.
      *
      * @return array
@@ -151,18 +163,6 @@ class WidgetLabel extends WidgetItem
     }
 
     /**
-     * Obtain the value to be represented.
-     *
-     * @return mixed
-     */
-    protected function getValue()
-    {
-        return $this->translate
-            ? Tools::lang()->trans($this->value)
-            : $this->value;
-    }
-
-    /**
      * Paint background rectangle.
      *
      * @param Cezpdf $pdf
@@ -171,7 +171,7 @@ class WidgetLabel extends WidgetItem
      * @param float $width
      * @param float $height
      */
-    protected function renderBackground(Cezpdf $pdf, float $posX, float $posY, float $width, float $height)
+    protected function renderBackground(Cezpdf $pdf, float $posX, float $posY, float $width, float $height): void
     {
         if (empty($this->bgcolor)) {
             return;
@@ -188,7 +188,7 @@ class WidgetLabel extends WidgetItem
      * @param bool   $apply
      * @param string $style
      */
-    private function setFontStyle(string &$value, bool $apply, string $style)
+    private function setFontStyle(string &$value, bool $apply, string $style): void
     {
         if ($apply) {
             $value = '<' . $style . '>' . $value . '</' . $style . '>';

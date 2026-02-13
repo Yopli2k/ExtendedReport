@@ -87,7 +87,11 @@ class WidgetNumber extends WidgetLabel
         parent::__construct($data);
         $this->translate = false;
         $this->align = $data['align'] ?? 'right';
-        $this->decimal = isset($data['decimal']) ? (int) $data['decimal'] : FS_NF0;
+
+        $this->decimal = isset($data['decimal'])
+            ? (int) $data['decimal']
+            : Tools::settings('default', 'decimals', 2);
+
         $this->printempty = isset($data['printempty'])
             ? filter_var($data['printempty'], FILTER_VALIDATE_BOOLEAN)
             : true;
@@ -103,12 +107,43 @@ class WidgetNumber extends WidgetLabel
     }
 
     /**
+     * Get the value to be represented.
+     * If the value is empty and printempty is false, then return an empty string.
+     * If the value is an amount, then format the value with the currency symbol.
+     *
+     * @return string
+     */
+    public function getValue(): string
+    {
+        $thousand = Tools::settings('default', 'thousands_separator');
+        $decimal = Tools::settings('default', 'decimal_separator');
+        if (empty($thousand)) {
+            $thousand = ($decimal === '.') ? ',' : '.';
+        }
+
+        if (false === $this->printempty && empty($this->value)) {
+            return '';
+        }
+
+        $value = number_format((float)$this->value, $this->decimal, $decimal, $thousand);
+        if (empty($this->currency) || empty($this->divisa)) {
+            return $this->licon . $value . $this->ricon;    // it is not a currency
+        }
+
+        // it is a currency
+        $currencyPosition = Tools::settings('default', 'currency_position', 'right');
+        return $currencyPosition === 'right'
+            ? $value . ' ' . Divisas::get($this->divisa)->simbolo
+            : Divisas::get($this->divisa)->simbolo . ' ' . $value;
+    }
+
+    /**
      * Set value from dataset to widget if fieldname is not empty.
      * If the currency field is not empty, then get the currency configuration.
      *
      * @param Object $data
      */
-    public function setValue(Object $data)
+    public function setValue(Object $data): void
     {
         parent::setValue($data);
         if (false === empty($this->currency)) {
@@ -128,35 +163,5 @@ class WidgetNumber extends WidgetLabel
         return ($value < 0.00)
             ? $this->negativecolor
             : parent::getColor();
-    }
-
-    /**
-     * Get the value to be represented.
-     * If the value is empty and printempty is false, then return an empty string.
-     * If the value is an amount, then format the value with the currency symbol.
-     *
-     * @return string
-     */
-    protected function getValue(): string
-    {
-        $thousand = FS_NF2;
-        if (empty(FS_NF2)) {
-            $thousand = (FS_NF1 === '.') ? ',' : '.';
-        }
-
-        if (false === $this->printempty && empty($this->value)) {
-            return '';
-        }
-
-        $value = number_format((float)$this->value, $this->decimal, FS_NF1, $thousand);
-        if (empty($this->currency) || empty($this->divisa)) {
-            return $this->licon . $value . $this->ricon;    // it is not a currency
-        }
-
-        // it is a currency
-        $currencyPosition = Tools::settings('default', 'currency_position', 'right');
-        return $currencyPosition === 'right'
-            ? $value . ' ' . Divisas::get($this->divisa)->simbolo
-            : Divisas::get($this->divisa)->simbolo . ' ' . $value;
     }
 }

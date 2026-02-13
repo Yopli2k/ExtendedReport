@@ -20,54 +20,15 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use Cezpdf;
-use FacturaScripts\Core\Model\User;
-use FacturaScripts\Dinamic\Model\Empresa;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\GroupItem;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ConfigItem;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportDefaultData;
-use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\ReportItemLoadEngine;
 
 /**
  * Main class for generate PDF report from XML Report file.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class PDFTemplate
+class PDFTemplate extends ExportTemplate
 {
-    /**
-     * Name of the template report.
-     *
-     * @var string
-     */
-    public string $name;
-
-    /**
-     * Template configuration
-     *
-     * @var ConfigItem|array
-     */
-    public ConfigItem|array $config;
-
-    /**
-     * Template structure
-     *
-     * @var GroupItem[]
-     */
-    public array $groups;
-
-    /**
-     * List of models with the data.
-     *
-     * @var ModelReport[]
-     */
-    protected array $datasets = [];
-
-    /**
-     *
-     * @var ReportDefaultData
-     */
-    protected ReportDefaultData $defaultData;
-
     /**
      *
      * @var int
@@ -88,31 +49,6 @@ class PDFTemplate
     protected Cezpdf $pdf;
 
     /**
-     *
-     * @param User $user
-     * @param Empresa $company
-     * @param array $additional
-     */
-    public function __construct(User $user, Empresa $company, array $additional = [])
-    {
-        $this->defaultData = new ReportDefaultData($user, $company);
-        foreach ($additional as $key => $value) {
-            $this->defaultData->additional[$key] = $value;
-        }
-    }
-
-    /**
-     * Add source data for the band named.
-     *
-     * @param string $name
-     * @param ModelReport $model
-     */
-    public function addDataset(string $name, ModelReport $model): void
-    {
-        $this->datasets[$name] = $model;
-    }
-
-    /**
      * Load XML template structure.
      *
      * @param string $name
@@ -120,7 +56,7 @@ class PDFTemplate
      */
     public function loadTemplate(string $name): bool
     {
-        if (ReportItemLoadEngine::installXML($name, $this) === false) {
+        if (false === parent::loadTemplate($name)) {
             return false;
         }
 
@@ -165,10 +101,6 @@ class PDFTemplate
     protected function renderDetail(GroupItem $group, float &$position): void
     {
         $detail = $group->getDetail();
-        if (false === isset($detail)) {
-            return;
-        }
-
         $model = $this->datasets[$group->name] ?? null;
         if (false === isset($model)) {
             return;

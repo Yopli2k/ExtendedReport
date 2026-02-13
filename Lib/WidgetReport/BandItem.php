@@ -81,6 +81,25 @@ abstract class BandItem
     }
 
     /**
+     * Get the values of all objects in a band.
+     *
+     * @param ReportDefaultData $default
+     * @param Object $data
+     * @return array
+     */
+    public function values(ReportDefaultData $default, Object $data): array
+    {
+        $result = [];
+        foreach ($this->columns as $column) {
+            $name = $column->widget->getFieldName();
+            if (false === empty($name)) {
+                $result[$name] = $column->getValue($default, $data);
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Create the column structure with the array data.
      *
      * @param array $children

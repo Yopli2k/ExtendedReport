@@ -89,6 +89,20 @@ class ColumnItem
     }
 
     /**
+     * Get the value of the column.
+     *
+     * @param ReportDefaultData $default
+     * @param Object $data
+     * @return string
+     */
+    public function getValue(ReportDefaultData $default, Object $data): string
+    {
+        $values = ($this->widget instanceof WidgetDefault) ? $default : $data;
+        $this->widget->setValue($values);
+        return $this->widget->getValue();
+    }
+
+    /**
      * Create the visual structure for each column.
      *
      * @param array $children

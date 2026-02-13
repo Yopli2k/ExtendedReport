@@ -19,7 +19,8 @@
  */
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport;
 
-use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\PDFTemplate;
+use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\ExportTemplate;
+use SimpleXMLElement;
 
 /**
  * Class for management of XML Report structure
@@ -30,30 +31,30 @@ class ReportItemLoadEngine extends ItemLoadEngine
 {
 
     /**
-     * Loads an xmlreport data.
+     * Loads an XMLReport data.
      *
      * @param string      $name
-     * @param PDFTemplate $template
+     * @param ExportTemplate $model
      * @return bool
      */
-    public static function installXML(string $name, &$template): bool
+    public static function installXML(string $name, &$model): bool
     {
         $array = static::loadXML('Report', $name);
         if ($array === false) {
             return false;
         }
 
-        $template->groups = [];
-        $template->config = [];
-        $template->name = $name;
+        $model->groups = [];
+        $model->config = [];
+        $model->name = $name;
         foreach ($array['children'] as $value) {
             switch ($value['tag']) {
                 case 'group':
-                    $template->groups[$value['name']] = static::groupFromArray($value);
+                    $model->groups[$value['name']] = static::groupFromArray($value);
                     break;
 
                 case 'config':
-                    $template->config = static::configFromArray($value);
+                    $model->config = static::configFromArray($value);
                     break;
             }
         }
@@ -78,7 +79,7 @@ class ReportItemLoadEngine extends ItemLoadEngine
      *
      * @return string
      */
-    protected static function xmlToArrayAux($tag, $attributes): string
+    protected static function xmlToArrayAux(string $tag, $attributes): string
     {
         if (in_array($tag, ['page', 'font', 'default'])) {
             return $tag;
@@ -93,7 +94,7 @@ class ReportItemLoadEngine extends ItemLoadEngine
      * @param array $data
      * @return ConfigItem
      */
-    private static function configFromArray($data)
+    private static function configFromArray(array $data): ConfigItem
     {
         $configClass = static::getNamespace() . 'ConfigItem';
         return new $configClass($data['children']);
@@ -105,7 +106,7 @@ class ReportItemLoadEngine extends ItemLoadEngine
      * @param array $data
      * @return GroupItem
      */
-    private static function groupFromArray($data)
+    private static function groupFromArray(array $data): GroupItem
     {
         $groupClass = static::getNamespace() . 'GroupItem';
         return new $groupClass($data);

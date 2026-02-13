@@ -54,7 +54,7 @@ class WidgetDefault extends WidgetLabel
      *
      * @param Object $data
      */
-    public function setValue(Object $data)
+    public function setValue(Object $data): void
     {
         $values = explode('.', $this->fieldname);
         switch ($values[0]) {

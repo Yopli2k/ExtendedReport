@@ -78,6 +78,16 @@ abstract class WidgetItem
     }
 
     /**
+     * Get the field name associated to widget.
+     *
+     * @return string
+     */
+    public function getFieldName(): string
+    {
+        return $this->fieldname;
+    }
+
+    /**
      * Get the widget type.
      *
      * @return string
@@ -85,6 +95,16 @@ abstract class WidgetItem
     public function getType(): string
     {
         return $this->type;
+    }
+
+    /**
+     * Get the value to be represented.
+     *
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
     }
 
     /**
@@ -150,7 +170,7 @@ abstract class WidgetItem
      *
      * @param Object $data
      */
-    public function setValue(Object $data)
+    public function setValue(Object $data): void
     {
         if (false === empty($this->fieldname)) {
             $this->value =  $this->getValueForFieldName($data);

@@ -82,7 +82,7 @@ class WidgetCalculated extends WidgetNumber
      *
      * @param Object $data
      */
-    public function setValue(Object $data)
+    public function setValue(Object $data): void
     {
         if (false === empty($this->currency)) {
             $this->divisa = $data->{$this->currency} ?? '';
