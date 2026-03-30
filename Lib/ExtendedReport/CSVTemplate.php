@@ -76,7 +76,7 @@ class CSVTemplate extends ExportTemplate
      */
     protected function renderDetail(GroupItem $group): void
     {
-        $model = $this->datasets[$group->name] ?? null;
+        $model = $this->datasets[$group->name] ?? $this->datasets['main'] ?? null;
         if (false === isset($model)) {
             return;
         }

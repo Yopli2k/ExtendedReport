@@ -100,17 +100,21 @@ class PDFTemplate extends ExportTemplate
      */
     protected function renderDetail(GroupItem $group, float &$position): void
     {
-        $detail = $group->getDetail();
-        $model = $this->datasets[$group->name] ?? null;
+        $model = $this->datasets[$group->name] ?? $this->datasets['main'] ?? null;
         if (false === isset($model)) {
             return;
         }
 
+        $detailGroup = $group->getDetailGroup();
+        $detail = $group->getDetail();
+
         $footerHeight = $group->getFooterHeight(true);
         foreach ($model->data as $row) {
-            // Calculate if need detail header
+            // Calculate if you need detail header
             $hasRupture = $detail->hasFieldRupture($row, true);
-            $detHeaderHeight = $hasRupture ? $group->detail->getHeaderHeight(false) : 0.00;
+            $detHeaderHeight = ($hasRupture && $detailGroup)
+                ? $detailGroup->getHeaderHeight(false)
+                : 0.00;
 
             // Calculate remaining space into page
             $remaining = $this->pagePosition($position) - $footerHeight;
@@ -126,14 +130,14 @@ class PDFTemplate extends ExportTemplate
             }
 
             // Render detail header, if its needed
-            if ($hasRupture) {
-                $this->renderHeader($group->detail, $position, $row); // render only detail headers
+            if ($hasRupture && $detailGroup && $detail->hasFieldValue($row)) {
+                $this->renderHeader($detailGroup, $position, $row); // render only detail headers
             }
 
             // Render detail data
             $posY = $this->pagePosition($position);
             $detail->render($this->pdf, $this->defaultData, $row, $posY);
-            $this->procesCalculateColumns($group, $row, true);
+            $this->procesCalculateColumns($detailGroup ?? $group, $row, true);
             $position += $detail->height;
         }
     }
@@ -151,16 +155,12 @@ class PDFTemplate extends ExportTemplate
         $header = $group->getHeader($second);
         if (isset($header)) {
             if ($data == null) {
-                $model = $this->datasets[$group->name] ?? null;
+                $model = $this->datasets[$group->name] ?? $this->datasets['main'] ?? null;
                 $data = isset($model) ? reset($model->data) : null;
             }
             $posY = $this->pagePosition($position);
             $header->render($this->pdf, $this->defaultData, $data, $posY);
             $position += $header->height;
-
-            if ($group->detail instanceof GroupItem) {
-                $this->renderHeader($group->detail, $position);
-            }
         }
     }
 
@@ -176,7 +176,7 @@ class PDFTemplate extends ExportTemplate
     {
         $footer = $group->getFooter($second);
         if (isset($footer)) {
-            $model = $this->datasets[$group->name] ?? null;
+            $model = $this->datasets[$group->name] ?? $this->datasets['main'] ?? null;
             if ($data == null) {
                 $data = isset($model) ? reset($model->data) : null;
             }

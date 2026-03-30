@@ -69,7 +69,7 @@ class BandDetail extends BandItem
 
         try {
             $value = $data->{$this->fieldName};
-            if ($this->fieldValue == null) {
+            if (is_null($this->fieldValue)) {
                 $this->fieldValue = $value;
                 return false;
             }
@@ -83,5 +83,26 @@ class BandDetail extends BandItem
         }
 
         return $result;
+    }
+
+    /**
+     * Indicate if rupture field has value.
+     * Needed for print the header of subgroup.
+     *
+     * @param Object $data
+     * @return bool
+     */
+    public function hasFieldValue(Object $data): bool
+    {
+        if (empty($this->fieldName)) {
+            return false;
+        }
+
+        try {
+            $value = $data->{$this->fieldName};
+            return $value !== null && $value !== '';
+        } catch (Exception $exc) {
+            return false;
+        }
     }
 }

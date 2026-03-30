@@ -85,6 +85,16 @@ class GroupItem
     }
 
     /**
+     * Get the band group when detail is a group.
+     *
+     * @return ?GroupItem
+     */
+    public function getDetailGroup(): ?GroupItem
+    {
+        return $this->detail instanceof GroupItem ? $this->detail : null;
+    }
+
+    /**
      * Gets the band defined as header.
      *
      * @param bool $second
