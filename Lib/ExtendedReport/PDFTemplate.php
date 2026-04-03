@@ -101,7 +101,7 @@ class PDFTemplate extends ExportTemplate
     {
         return array_merge(parent::getDefaultRenderCfg(),
             [
-                'pageBreakOnRupture' => true,
+                'pageBreakOnRupture' => false,
             ]
         );
     }

@@ -117,6 +117,18 @@ abstract class ExportTemplate
     }
 
     /**
+     * Add special render configuration to template.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function setRenderCfgValue(string $key, mixed $value): void
+    {
+        $this->defaultData->setRenderCfg([$key => $value]);
+    }
+
+    /**
      * Return render configuration.
      * This method is generic for class constructor.
      * All children than needed must be overridden for add personal configuration.
