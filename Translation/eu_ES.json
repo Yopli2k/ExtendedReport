@@ -1,8 +1,7 @@
 {
-    "all-companies": "Todas las empresas",
-    "landscape-test": "Plantilla horizontal",
+    "landscape-test": "Horizontaleko txantiloia",
     "no-export-format": "Formato de exportación no disponible",
     "portrait-test": "Plantilla vertical",
-    "print-test": "Imprimir Test de prueba",
-    "report-test": "Testear Informe"
+    "print-test": "Proba-test inprimatu",
+    "report-test": "Txostena probatu"
 }

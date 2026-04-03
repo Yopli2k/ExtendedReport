@@ -1,8 +1,7 @@
 {
-    "all-companies": "Todas las empresas",
-    "landscape-test": "Plantilla horizontal",
-    "no-export-format": "Formato de exportación no disponible",
-    "portrait-test": "Plantilla vertical",
-    "print-test": "Imprimir Test de prueba",
+    "landscape-test": "Šablona na šířku",
+    "no-export-format": "Formát exportu není k dispozici",
+    "portrait-test": "Šablona na výšku",
+    "print-test": "Tisk testu",
     "report-test": "Testear Informe"
 }
