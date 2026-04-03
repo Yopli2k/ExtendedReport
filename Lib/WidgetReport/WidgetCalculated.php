@@ -77,6 +77,16 @@ class WidgetCalculated extends WidgetNumber
     }
 
     /**
+     * Reset values to initial state.
+     *
+     * @return void
+     */
+    public function reset(): void
+    {
+        $this->setInitValue();
+    }
+
+    /**
      * Set value from dataset to widget if fieldname is not empty.
      * If currency is not empty, set the currency code.
      *

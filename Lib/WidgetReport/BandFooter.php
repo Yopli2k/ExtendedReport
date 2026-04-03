@@ -52,7 +52,7 @@ class BandFooter extends BandItem
     }
 
     /**
-     *
+     * Execute the process method of all widgets in the band with the data passed as parameter.
      *
      * @param Object $data
      */
@@ -61,6 +61,20 @@ class BandFooter extends BandItem
         foreach ($this->columns as $column) {
             if (method_exists($column->widget, 'process')) {
                 $column->widget->process($data);
+            }
+        }
+    }
+
+    /**
+     * Reset values of all widgets in the band.
+     *
+     * @return void
+     */
+    public function reset(): void
+    {
+        foreach ($this->columns as $column) {
+            if (method_exists($column->widget, 'reset')) {
+                $column->widget->reset();
             }
         }
     }
