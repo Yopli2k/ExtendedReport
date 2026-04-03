@@ -85,6 +85,7 @@ abstract class ExportTemplate
     public function __construct(User $user, Empresa $company, array $additional = [])
     {
         $this->defaultData = new ReportDefaultData($user, $company);
+        $this->defaultData->setRenderCfg($this->getDefaultRenderCfg());
         foreach ($additional as $key => $value) {
             $this->defaultData->additional[$key] = $value;
         }
@@ -113,5 +114,17 @@ abstract class ExportTemplate
             return false;
         }
         return true;
+    }
+
+    /**
+     * Return render configuration.
+     * This method is generic for class constructor.
+     * All children than needed must be overridden for add personal configuration.
+     *
+     * @return array
+     */
+    protected function getDefaultRenderCfg(): array
+    {
+        return [];
     }
 }

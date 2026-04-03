@@ -93,6 +93,20 @@ class PDFTemplate extends ExportTemplate
     }
 
     /**
+     * Return render special configuration.
+     *
+     * @return array
+     */
+    protected function getDefaultRenderCfg(): array
+    {
+        return array_merge(parent::getDefaultRenderCfg(),
+            [
+                'pageBreakOnRupture' => true,
+            ]
+        );
+    }
+
+    /**
      * Add the group detail to the PDF file.
      *
      * @param GroupItem $group
@@ -107,11 +121,28 @@ class PDFTemplate extends ExportTemplate
 
         $detailGroup = $group->getDetailGroup();
         $detail = $group->getDetail();
-
         $footerHeight = $group->getFooterHeight(true);
+        $previousRow = null;
+        $firstRow = reset($model->data);
+        if ($detailGroup && $firstRow !== false && $this->hasGroupValue($detail->fieldName, $firstRow)) {
+            $this->renderHeader($detailGroup, $position, $firstRow);
+        }
+
         foreach ($model->data as $row) {
-            // Calculate if you need detail header
+            // Calculate if there are rupture
+            //  - render subgroup footer from previous row
+            //  - need detail header
             $hasRupture = $detail->hasFieldRupture($row, true);
+            if ($hasRupture && $detailGroup && $previousRow !== null) {
+                $this->renderFooter($detailGroup, $position, $previousRow);
+                $this->resetCalculateColumns($detailGroup, true);
+
+                // Force new page if page break configuration is active.
+                if ($this->defaultData->getRenderCfg('pageBreakOnRupture', false)) {
+                    $this->newPageWithBands($group, $position, $row);
+                }
+            }
+            $previousRow = $row;
             $detHeaderHeight = ($hasRupture && $detailGroup)
                 ? $detailGroup->getHeaderHeight(false)
                 : 0.00;
@@ -121,12 +152,7 @@ class PDFTemplate extends ExportTemplate
             $required = $detail->height + $detHeaderHeight;
             if ($remaining < $required) {
                 // Finish page and render another
-                $this->renderFooter($group, $position, $row, true);
-                $this->newPage();
-
-                $position = 0.00;
-                $hasRupture = false;
-                $this->renderHeader($group, $position, $row, true); // render all headers
+                $this->newPageWithBands($group, $position, $row);
             }
 
             // Render detail header, if its needed
@@ -137,8 +163,16 @@ class PDFTemplate extends ExportTemplate
             // Render detail data
             $posY = $this->pagePosition($position);
             $detail->render($this->pdf, $this->defaultData, $row, $posY);
-            $this->procesCalculateColumns($detailGroup ?? $group, $row, true);
+            $this->processCalculateColumns($group, $row, true);
+            if ($detailGroup) {
+                $this->processCalculateColumns($detailGroup, $row, true);
+            }
             $position += $detail->height;
+        }
+
+        if ($detailGroup && $previousRow !== null) {
+            $this->renderFooter($detailGroup, $position, $previousRow);
+            $this->resetCalculateColumns($detailGroup, true);
         }
     }
 
@@ -187,12 +221,43 @@ class PDFTemplate extends ExportTemplate
     }
 
     /**
+     * Indicate if field group rupture has value.
+     *
+     * @param string $field
+     * @param $row
+     * @return bool
+     */
+    private function hasGroupValue(string $field, $row): bool
+    {
+        $value = $row->{$field} ?? null;
+        return $value !== null && $value !== '';
+    }
+
+    /**
      * Add a new blank page to document.
      */
     private function newPage(): void
     {
         $this->pdf->newPage();
         $this->defaultData->addPage();
+    }
+
+    /**
+     * Make a new page render footer and new page with header.
+     *
+     * @param GroupItem $group
+     * @param float $position
+     * @param ?Object $data
+     * @return void
+     */
+    private function newPageWithBands(GroupItem $group, float &$position, ?Object $data = null): void
+    {
+        // Finish page and render another
+        $this->renderFooter($group, $position, $data, true);
+        $this->newPage();
+
+        $position = 0.00;
+        $this->renderHeader($group, $position, $data, true); // render all headers
     }
 
     /**
@@ -214,9 +279,30 @@ class PDFTemplate extends ExportTemplate
      * @param Object $data
      * @param bool $second
      */
-    private function procesCalculateColumns(GroupItem $group, Object $data, bool $second = false): void
+    private function processCalculateColumns(GroupItem $group, Object $data, bool $second = false): void
     {
         $footer = $group->getFooter($second);
         $footer?->calculate($data);
+    }
+
+    /**
+     * Reset
+     *
+     * @param GroupItem $group
+     * @param bool $second
+     * @return void
+     */
+    private function resetCalculateColumns(GroupItem $group, bool $second = false): void
+    {
+        $footer = $group->getFooter($second);
+        if ($footer === null) {
+            return;
+        }
+
+        foreach ($footer->columns as $column) {
+            if (method_exists($column->widget, 'reset')) {
+                $column->widget->reset();
+            }
+        }
     }
 }

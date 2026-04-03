@@ -30,13 +30,12 @@ use FacturaScripts\Dinamic\Model\Empresa;
  */
 class ReportDefaultData
 {
-
     /**
      * Additional data from developer for the report.
      *
      * @var array
      */
-    public $additional;
+    public array $additional;
 
     /**
      *
@@ -49,7 +48,14 @@ class ReportDefaultData
      *
      * @var int
      */
-    protected $pageNum;
+    protected int $pageNum;
+
+    /**
+     * Settings for rendering
+     *
+     * @var array
+     */
+    protected array $renderCfg;
 
     /**
      * User logged in.
@@ -67,6 +73,8 @@ class ReportDefaultData
     public function __construct(User $user, Empresa $company)
     {
         $this->additional = [];
+        $this->renderCfg = [];
+
         $this->company = $company;
         $this->user = $user;
         $this->pageNum = 1;
@@ -75,7 +83,7 @@ class ReportDefaultData
     /**
      * Increase the page counter.
      */
-    public function addPage()
+    public function addPage(): void
     {
         ++$this->pageNum;
     }
@@ -106,6 +114,18 @@ class ReportDefaultData
     }
 
     /**
+     * Return render configuration.
+     *
+     * @param string $key
+     * @param mixed|null $default
+     * @return mixed
+     */
+    public function getRenderCfg(string $key, mixed $default = null): mixed
+    {
+        return $this->renderCfg[$key] ?? $default;
+    }
+
+    /**
      * Get the value of the indicated field from the user.
      *
      * @param string $field
@@ -121,7 +141,7 @@ class ReportDefaultData
      *
      * @param Empresa $company
      */
-    public function setCompany(Empresa $company)
+    public function setCompany(Empresa $company): void
     {
         $this->company = $company;
     }
@@ -131,8 +151,19 @@ class ReportDefaultData
      *
      * @param int $pageNum
      */
-    public function setPageNum(int $pageNum)
+    public function setPageNum(int $pageNum): void
     {
         $this->pageNum = $pageNum;
+    }
+
+    /**
+     * Add an array of configuration values to render configuration.
+     *
+     * @param array $cfg
+     * @return void
+     */
+    public function setRenderCfg(array $cfg): void
+    {
+        $this->renderCfg = array_merge($this->renderCfg, $cfg);
     }
 }
