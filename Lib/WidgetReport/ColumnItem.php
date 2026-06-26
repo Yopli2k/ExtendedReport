@@ -28,7 +28,30 @@ use Cezpdf;
  */
 class ColumnItem
 {
+    /**
+     * Report area the column belongs to ('meta' for header metadata). Empty by
+     * default, meaning the column is part of the data table. Only read by the
+     * HTML render engine; the PDF ignores it.
+     *
+     * @var string
+     */
+    public string $area;
+
     public int $height;
+
+    /**
+     * Hide this column in the PDF output.
+     *
+     * @var bool
+     */
+    public bool $hideOnPdf;
+
+    /**
+     * Hide this column in the on-screen HTML output.
+     *
+     * @var bool
+     */
+    public bool $hideOnView;
 
     /**
      * Position on x-axis.
@@ -65,6 +88,9 @@ class ColumnItem
      */
     public function __construct(array $data)
     {
+        $this->area = $data['area'] ?? '';
+        $this->hideOnPdf = isset($data['hideonpdf']) && $data['hideonpdf'];
+        $this->hideOnView = isset($data['hideonview']) && $data['hideonview'];
         $this->posx = isset($data['posx']) ? (int) $data['posx'] : 0;
         $this->posy = isset($data['posy']) ? (int) $data['posy'] : 0;
         $this->width = isset($data['width']) ? (int) $data['width'] : 30;
@@ -96,6 +122,10 @@ class ColumnItem
      */
     public function render(Cezpdf $pdf, ReportDefaultData $default, Object $data, float $linePos): void
     {
+        if ($this->hideOnPdf) {
+            return;
+        }
+
         $posY = $linePos - $this->posy;
         $values = ($this->widget instanceof WidgetDefault) ? $default : $data;
         $this->widget->setValue($values);
@@ -121,6 +151,8 @@ class ColumnItem
             'posy' => $this->posy,
             'width' => $this->width,
             'fieldname' => $this->widget->getFieldName(),
+            'area' => $this->area,
+            'hideonview' => $this->hideOnView,
         ]);
     }
 

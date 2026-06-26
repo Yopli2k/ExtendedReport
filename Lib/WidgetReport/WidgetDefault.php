@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -31,11 +31,14 @@ use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\WidgetLabel;
  */
 class WidgetDefault extends WidgetLabel
 {
-
     private const AUTO_TEXT_COMPANY = 'company';
+
     private const AUTO_TEXT_DATE = 'date';
+
     private const AUTO_TEXT_PAGE = 'page';
+
     private const AUTO_TEXT_TIME = 'time';
+
     private const AUTO_TEXT_USER = 'user';
 
     /**

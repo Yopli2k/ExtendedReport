@@ -92,10 +92,11 @@ class HtmlTemplate extends ExportTemplate
             return [];
         }
 
-        // drop line widgets: the table provides its own separators.
+        // drop widgets that have no meaning on screen (lines, page number,
+        // skipped labels). The table provides its own separators.
         $columns = array_values(array_filter(
             $band->toHtmlData($this->defaultData, $data),
-            fn(array $col) => ($col['tag'] ?? '') !== 'hr'
+            fn(array $col) => false === $this->isSkipped($col)
         ));
         if (empty($columns)) {
             return [];
@@ -107,11 +108,7 @@ class HtmlTemplate extends ExportTemplate
         }
 
         // normal: one <tr> per posy sub-row.
-        $rows = [];
-        foreach ($this->bucketByPosy($columns) as $bucket) {
-            $rows[] = $this->buildRow($bucket, $tag, $grid, $rowClass);
-        }
-        return $rows;
+        return $this->columnsToRows($columns, $tag, $grid, $rowClass);
     }
 
     /**
@@ -160,17 +157,8 @@ class HtmlTemplate extends ExportTemplate
             }
             $positions[] = $column->posx;
         }
-        sort($positions);
 
-        $grid = [];
-        foreach ($positions as $posx) {
-            if (empty($grid) || $posx - end($grid) > self::POSX_TOLERANCE) {
-                $grid[] = $posx;
-            }
-        }
-
-        // a band with only lines would leave an empty grid; keep a single column.
-        return empty($grid) ? [0] : $grid;
+        return $this->gridFromPositions($positions);
     }
 
     /**
@@ -300,6 +288,51 @@ class HtmlTemplate extends ExportTemplate
     }
 
     /**
+     * Turn a flat list of columns into table rows, one per posy sub-row, mapping
+     * each column to its grid position.
+     *
+     * @param array $columns
+     * @param string $tag
+     * @param array $grid
+     * @param string $rowClass
+     * @return array
+     */
+    protected function columnsToRows(array $columns, string $tag, array $grid, string $rowClass = ''): array
+    {
+        if (empty($columns)) {
+            return [];
+        }
+
+        $rows = [];
+        foreach ($this->bucketByPosy($columns) as $bucket) {
+            $rows[] = $this->buildRow($bucket, $tag, $grid, $rowClass);
+        }
+        return $rows;
+    }
+
+    /**
+     * Build a grid (representative posx) from a list of posx positions, merging
+     * near positions (within POSX_TOLERANCE) into the same column.
+     *
+     * @param array $positions
+     * @return array
+     */
+    protected function gridFromPositions(array $positions): array
+    {
+        sort($positions);
+
+        $grid = [];
+        foreach ($positions as $posx) {
+            if (empty($grid) || $posx - end($grid) > self::POSX_TOLERANCE) {
+                $grid[] = $posx;
+            }
+        }
+
+        // keep at least one column so degenerate bands still render.
+        return empty($grid) ? [0] : $grid;
+    }
+
+    /**
      * Get the nearest grid column index for a given posx.
      *
      * @param int $posx
@@ -334,6 +367,19 @@ class HtmlTemplate extends ExportTemplate
     }
 
     /**
+     * Indicate if a column must be dropped from the HTML output: line widgets
+     * (the table draws its own separators) and columns flagged hideonview.
+     *
+     * @param array $column
+     * @return bool
+     */
+    protected function isSkipped(array $column): bool
+    {
+        return ($column['tag'] ?? '') === 'hr'
+            || ($column['hideonview'] ?? false);
+    }
+
+    /**
      * Build a single stacked line (sub-value) inside a cell.
      *
      * @param string $value
@@ -365,12 +411,14 @@ class HtmlTemplate extends ExportTemplate
         $model = $this->datasets[$group->name] ?? $this->datasets['main'] ?? null;
         $firstRow = ($model !== null && false === empty($model->data)) ? reset($model->data) : null;
 
-        $table = ['columns' => $columns, 'thead' => [], 'tbody' => [], 'tfoot' => []];
+        $table = ['columns' => $columns, 'meta' => [], 'thead' => [], 'tbody' => [], 'tfoot' => []];
 
-        // header -> thead
+        // header -> metadata block (area="meta") + column titles (thead)
         $header = $group->getHeader(false);
         if ($header !== null) {
-            $table['thead'] = $this->bandRows($header, 'th', $firstRow, $grid);
+            $split = $this->splitHeader($header, $firstRow, $grid);
+            $table['meta'] = $split['meta'];
+            $table['thead'] = $split['thead'];
         }
 
         // multiline detail (and its mirror footer) stack sub-values inside one <tr>.
@@ -447,6 +495,44 @@ class HtmlTemplate extends ExportTemplate
         }
 
         return $rows;
+    }
+
+    /**
+     * Split the header band into report metadata and column titles. Columns
+     * flagged area="meta" (company, date, filters, title...) go to a separate
+     * borderless block above the table; the rest become the table <thead>.
+     *
+     * @param BandItem $header
+     * @param object|null $data
+     * @param array $grid
+     * @return array ['meta' => rows, 'thead' => rows]
+     */
+    protected function splitHeader(BandItem $header, ?object $data, array $grid): array
+    {
+        if ($data === null) {
+            return ['meta' => [], 'thead' => []];
+        }
+
+        $meta = [];
+        $titles = [];
+        foreach ($header->toHtmlData($this->defaultData, $data) as $column) {
+            if ($this->isSkipped($column)) {
+                continue;
+            }
+            if (($column['area'] ?? '') === 'meta') {
+                $meta[] = $column;
+            } else {
+                $titles[] = $column;
+            }
+        }
+
+        // metadata uses its own grid (its posx do not match the data columns).
+        $metaGrid = $this->gridFromPositions(array_column($meta, 'posx'));
+
+        return [
+            'meta' => $this->columnsToRows($meta, 'td', $metaGrid),
+            'thead' => $this->columnsToRows($titles, 'th', $grid),
+        ];
     }
 
     /**
