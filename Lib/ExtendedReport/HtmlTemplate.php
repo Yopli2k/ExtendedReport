@@ -50,8 +50,8 @@ class HtmlTemplate extends ExportTemplate
     /** Tolerance, in XML points, to merge near columns into the same band sub-row. */
     private const POSY_TOLERANCE = 8;
 
-    /** Twig template that paints the prepared structure. */
-    private const TEMPLATE = '@PluginExtendedReport/ReportHtml.html.twig';
+    /** Twig block that paints the prepared structure (included by a view). */
+    private const TEMPLATE = '@PluginExtendedReport/Block/ReportHtml.html.twig';
 
     /**
      * Build the HTML output according to the template loaded.
