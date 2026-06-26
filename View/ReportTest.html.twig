@@ -1,8 +1,8 @@
 {#
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -43,30 +43,55 @@
 
     <script>
         function printAction(value) {
-            $("#formReportTest :input[name=\"action\"]").val(value);
-            $("#formReportTest").submit();
+            const form = document.getElementById("formReportTest");
+            form.querySelector('input[name="action"]').value = value;
+            form.target = "_blank";
+            form.submit();
         }
     </script>
     <form id="formReportTest" method="post">
         <input type="hidden" name="action" value="" />
         <div class="container-fluid">
             <div class="card border-primary shadow mb-3">
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-12">
-                            <a class="btn btn-lg btn-primary" href="#" role="button" onclick="printAction('print-test');">
-                                <i class="fa-solid fa-print fa-fw" aria-hidden="true"></i>
-                                <span class="d-none d-sm-inline-block">{{ trans('print-test') }}</span>
-                            </a>
-                            <a class="btn btn-lg btn-info" href="#" role="button" onclick="printAction('portrait-test');">
-                                <i class="fa-solid fa-print fa-fw" aria-hidden="true"></i>
-                                <span class="d-none d-sm-inline-block">{{ trans('portrait-test') }}</span>
-                            </a>
-                            <a class="btn btn-lg btn-info" href="#" role="button" onclick="printAction('landscape-test');">
-                                <i class="fa-solid fa-print fa-fw" aria-hidden="true"></i>
-                                <span class="d-none d-sm-inline-block">{{ trans('landscape-test') }}</span>
-                            </a>
-                        </div>
+                <div class="card-body text-center">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-lg btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-flask fa-fw" aria-hidden="true"></i>
+                            <span class="d-none d-sm-inline-block">{{ trans('report-test') }}</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="printAction('print-test');">
+                                    <i class="fa-solid fa-print fa-fw" aria-hidden="true"></i> {{ trans('print-test') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="printAction('portrait-test');">
+                                    <i class="fa-solid fa-print fa-fw" aria-hidden="true"></i> {{ trans('portrait-test') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="printAction('landscape-test');">
+                                    <i class="fa-solid fa-print fa-fw" aria-hidden="true"></i> {{ trans('landscape-test') }}
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="printAction('html-test');">
+                                    <i class="fa-solid fa-table fa-fw" aria-hidden="true"></i> {{ trans('html-test') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="printAction('html-grouped-test');">
+                                    <i class="fa-solid fa-layer-group fa-fw" aria-hidden="true"></i> {{ trans('html-grouped-test') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="printAction('html-multiline-test');">
+                                    <i class="fa-solid fa-bars-staggered fa-fw" aria-hidden="true"></i> {{ trans('html-multiline-test') }}
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

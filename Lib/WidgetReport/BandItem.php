@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -28,8 +28,8 @@ use Cezpdf;
  */
 abstract class BandItem
 {
-
     const BAND_TYPE_MAIN = 'main';
+
     const BAND_TYPE_SECOND = 'second';
 
     /**
@@ -78,6 +78,25 @@ abstract class BandItem
         foreach ($this->columns as $column) {
             $column->render($pdf, $default, $data, $linePos);
         }
+    }
+
+    /**
+     * Get the structured data of all columns in a band for HTML output.
+     * Unlike values(), the result is an ordered list that keeps every column
+     * (including those without fieldname) and its geometry hints, so the render
+     * engine can interpret the layout semantically.
+     *
+     * @param ReportDefaultData $default
+     * @param Object $data
+     * @return array
+     */
+    public function toHtmlData(ReportDefaultData $default, Object $data): array
+    {
+        $result = [];
+        foreach ($this->columns as $column) {
+            $result[] = $column->toHtmlData($default, $data);
+        }
+        return $result;
     }
 
     /**

@@ -1,0 +1,55 @@
+{#
+/**
+ * This file is part of ExtendedReport plugin for FacturaScripts.
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public license as
+ * published by the Free Software Foundation, either version 3 of the
+ * license, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public license for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public license
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
+*/
+#}
+{% import _self as report %}
+
+{% macro row(line) %}
+    <tr{% if line.class %} class="{{ line.class }}"{% endif %}>
+        {% for cell in line.cells %}
+            <{{ cell.tag }}{% if cell.colspan > 1 %} colspan="{{ cell.colspan }}"{% endif %} class="align-middle">
+                {%- for sub in cell.lines -%}
+                    <div{% if sub.class %} class="{{ sub.class }}"{% endif %}{% if sub.style %} style="{{ sub.style }}"{% endif %}>{{ sub.value }}</div>
+                {%- endfor -%}
+            </{{ cell.tag }}>
+        {% endfor %}
+    </tr>
+{% endmacro %}
+
+{% for table in tables %}
+    <div class="table-responsive mb-4">
+        <table class="table table-sm table-bordered table-hover mb-0">
+            {% if table.thead is not empty %}
+                <thead class="table-light">
+                    {% for line in table.thead %}{{ report.row(line) }}{% endfor %}
+                </thead>
+            {% endif %}
+            <tbody>
+                {% for line in table.tbody %}{{ report.row(line) }}{% endfor %}
+            </tbody>
+            {% if table.tfoot is not empty %}
+                <tfoot class="table-light">
+                    {% for line in table.tfoot %}{{ report.row(line) }}{% endfor %}
+                </tfoot>
+            {% endif %}
+        </table>
+    </div>
+{% endfor %}

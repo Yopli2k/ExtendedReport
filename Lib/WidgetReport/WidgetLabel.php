@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -29,7 +29,6 @@ use FacturaScripts\Core\Tools;
  */
 class WidgetLabel extends WidgetItem
 {
-
     /**
      * Text alignment.
      *
@@ -140,6 +139,21 @@ class WidgetLabel extends WidgetItem
     }
 
     /**
+     * Return the widget data in a neutral structure, ready to be rendered as HTML.
+     * Adds alignment and font styles as CSS classes and color/background as inline
+     * styles, keeping the value free of presentation markup.
+     *
+     * @return array
+     */
+    public function toHtmlData(): array
+    {
+        $data = parent::toHtmlData();
+        $data['class'] = $this->htmlClasses();
+        $data['style'] = $this->htmlStyles();
+        return $data;
+    }
+
+    /**
      * Get the color for text data.
      * Use this method to allow override in child classes.
      *
@@ -160,6 +174,54 @@ class WidgetLabel extends WidgetItem
         $this->setFontStyle($value, $this->italic, 'i');
         $this->setFontStyle($value, $this->bold, 'b');
         return $value;
+    }
+
+    /**
+     * Build the list of CSS classes (alignment and font style) for HTML output.
+     *
+     * @return string
+     */
+    protected function htmlClasses(): string
+    {
+        $classes = [];
+        if ($this->bold) {
+            $classes[] = 'fw-bold';
+        }
+        if ($this->italic) {
+            $classes[] = 'fst-italic';
+        }
+        if ($this->underline) {
+            $classes[] = 'text-decoration-underline';
+        }
+        switch ($this->align) {
+            case 'center':
+                $classes[] = 'text-center';
+                break;
+
+            case 'right':
+                $classes[] = 'text-end';
+                break;
+        }
+        return implode(' ', $classes);
+    }
+
+    /**
+     * Build the inline CSS (text color and background) for HTML output.
+     * The default black text color is omitted to keep the markup clean.
+     *
+     * @return string
+     */
+    protected function htmlStyles(): string
+    {
+        $styles = [];
+        $color = $this->cssColor($this->getColor());
+        if ($color !== '' && $color !== '#000000') {
+            $styles[] = 'color:' . $color;
+        }
+        if (false === empty($this->bgcolor)) {
+            $styles[] = 'background-color:' . $this->cssColor($this->bgcolor);
+        }
+        return implode(';', $styles);
     }
 
     /**

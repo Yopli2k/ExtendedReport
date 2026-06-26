@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -21,6 +21,7 @@ namespace FacturaScripts\Plugins\ExtendedReport\Model\Report;
 
 use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\ModelReport;
 use FacturaScripts\Plugins\ExtendedReport\Model\Report\Data\TestData;
+use FacturaScripts\Plugins\ExtendedReport\Model\Report\Data\TestMultilineData;
 
 /**
  * Class to manage and report test extended report
@@ -29,7 +30,6 @@ use FacturaScripts\Plugins\ExtendedReport\Model\Report\Data\TestData;
  */
 class TestReport extends ModelReport
 {
-
     /**
      * Load report data into array data property.
      *   - Set random test data records into data property.
@@ -60,6 +60,66 @@ class TestReport extends ModelReport
 
     }
 
+    /**
+     * Load test data grouped by category into array data property.
+     * Records are generated already sorted by category, as the rupture engine
+     * requires.
+     */
+    public function loadDataGrouped(): void
+    {
+        $categories = ['A - Electrónica', 'B - Hogar', 'C - Jardín', 'D - Oficina'];
+        $id = 0;
+        foreach ($categories as $category) {
+            $records = rand(3, 8);
+            for ($index = 1; $index <= $records; ++$index) {
+                $data = new TestData();
+                $data->id = ++$id;
+                $data->category = $category;
+                $data->name = $this->testName();
+                $data->date = $this->testDate();
+                $data->amount = $this->testAmount();
+                $this->data[] = $data;
+            }
+        }
+    }
+
+    /**
+     * Load multiline test data into array data property.
+     * Each record carries 3 periods with current/previous/difference values that
+     * the multiline report stacks into a single row (index 0 = total).
+     */
+    public function loadDataMultiline(): void
+    {
+        $periods = 3;
+        for ($index = 1; $index <= 5; ++$index) {
+            $data = new TestMultilineData();
+            $data->code = 'C' . sprintf('%03d', $index);
+            $data->name = $this->testName();
+
+            $currentTotal = 0.0;
+            $previousTotal = 0.0;
+            for ($period = 1; $period <= $periods; ++$period) {
+                $current = (float) rand(0, 5000);
+                $previous = (float) rand(0, 5000);
+                $data->current[$period] = $current;
+                $data->previous[$period] = $previous;
+                $data->difference[$period] = $current - $previous;
+                $currentTotal += $current;
+                $previousTotal += $previous;
+            }
+
+            $data->current[0] = $currentTotal;
+            $data->previous[0] = $previousTotal;
+            $data->difference[0] = $currentTotal - $previousTotal;
+            $this->data[] = $data;
+        }
+    }
+
+    private function testAmount(): string
+    {
+        return rand(0, 5000) . '.' . rand(0, 99);
+    }
+
     private function testDate(): string
     {
         $day = sprintf('%02d', rand(1, 30));
@@ -83,10 +143,5 @@ class TestReport extends ModelReport
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
-    }
-
-    private function testAmount(): string
-    {
-        return rand(0, 5000) . '.' . rand(0, 99);
     }
 }

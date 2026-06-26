@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -25,6 +25,7 @@ use FacturaScripts\Core\KernelException;
 use FacturaScripts\Core\Response;
 use FacturaScripts\Dinamic\Model\Empresa;
 use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\HtmlTemplate;
 use FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport\PDFTemplate;
 use FacturaScripts\Plugins\ExtendedReport\Model\Report\TestReport;
 
@@ -41,6 +42,13 @@ class ReportTest extends Controller
      * @var Empresa
      */
     public $empresa;
+
+    /**
+     * Rendered HTML report, shown on screen.
+     *
+     * @var string
+     */
+    public string $reportHtml = '';
 
     /**
      *
@@ -106,6 +114,21 @@ class ReportTest extends Controller
             case 'portrait-test':
                 $this->printColumnTemplate($action);
                 break;
+
+            case 'html-test':
+                $this->reportHtml = $this->renderHtml('ReportTest');
+                $this->setTemplate('ReportHtmlViewer');
+                break;
+
+            case 'html-grouped-test':
+                $this->reportHtml = $this->renderHtml('ReportTestGrouped');
+                $this->setTemplate('ReportHtmlViewer');
+                break;
+
+            case 'html-multiline-test':
+                $this->reportHtml = $this->renderHtml('ReportTestMultiline');
+                $this->setTemplate('ReportHtmlViewer');
+                break;
         }
     }
 
@@ -125,6 +148,18 @@ class ReportTest extends Controller
             case 'portrait-test':
                 $max = $action == 'portrait-test' ? 800 : 560;
                 $this->model->loadDataColumns($max);
+                break;
+
+            case 'html-test':
+                $this->model->loadData();
+                break;
+
+            case 'html-grouped-test':
+                $this->model->loadDataGrouped();
+                break;
+
+            case 'html-multiline-test':
+                $this->model->loadDataMultiline();
                 break;
         }
     }
@@ -166,5 +201,22 @@ class ReportTest extends Controller
         $this->response->headers->set('Content-type', 'application/pdf');
         $this->response->headers->set('Content-Disposition', 'inline;filename=ReportTest.pdf');
         $this->response->setContent($pdf);
+    }
+
+    /**
+     * Render a report as on-screen HTML using the loaded model data.
+     *
+     * @param string $template
+     * @return string
+     */
+    private function renderHtml(string $template): string
+    {
+        $report = new HtmlTemplate($this->user, $this->empresa);
+        if (false === $report->loadTemplate($template)) {
+            return '';
+        }
+
+        $report->addDataset('main', $this->model);
+        return $report->render();
     }
 }

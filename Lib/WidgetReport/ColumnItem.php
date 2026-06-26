@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -73,6 +73,20 @@ class ColumnItem
     }
 
     /**
+     * Get the value of the column.
+     *
+     * @param ReportDefaultData $default
+     * @param Object $data
+     * @return string
+     */
+    public function getValue(ReportDefaultData $default, Object $data): string
+    {
+        $values = ($this->widget instanceof WidgetDefault) ? $default : $data;
+        $this->widget->setValue($values);
+        return $this->widget->getValue();
+    }
+
+    /**
      * Add column to the PDF file.
      *
      * @param Cezpdf $pdf
@@ -89,17 +103,25 @@ class ColumnItem
     }
 
     /**
-     * Get the value of the column.
+     * Get the column data in a neutral structure for HTML output.
+     * Unlike getValue(), it preserves the geometry hints (posx, posy, width) and
+     * the fieldname, so the render engine can rebuild the layout semantically.
      *
      * @param ReportDefaultData $default
      * @param Object $data
-     * @return string
+     * @return array
      */
-    public function getValue(ReportDefaultData $default, Object $data): string
+    public function toHtmlData(ReportDefaultData $default, Object $data): array
     {
         $values = ($this->widget instanceof WidgetDefault) ? $default : $data;
         $this->widget->setValue($values);
-        return $this->widget->getValue();
+
+        return array_merge($this->widget->toHtmlData(), [
+            'posx' => $this->posx,
+            'posy' => $this->posy,
+            'width' => $this->width,
+            'fieldname' => $this->widget->getFieldName(),
+        ]);
     }
 
     /**

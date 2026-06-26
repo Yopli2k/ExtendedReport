@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -28,7 +28,6 @@ use Cezpdf;
  */
 abstract class WidgetItem
 {
-
     /**
      * The colour has to use when representing the data.
      *
@@ -44,13 +43,6 @@ abstract class WidgetItem
     protected string $fieldname;
 
     /**
-     * Value to be represented.
-     *
-     * @var string
-     */
-    protected string $value;
-
-    /**
      * Widget type.
      *
      * @var string
@@ -58,9 +50,11 @@ abstract class WidgetItem
     protected string $type;
 
     /**
-     * Add an object to the PDF file.
+     * Value to be represented.
+     *
+     * @var string
      */
-    abstract public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height);
+    protected string $value;
 
     /**
      * Class constructor. Load initials values from data array.
@@ -75,6 +69,46 @@ abstract class WidgetItem
 
         $color = $data['color'] ?? 'black';
         $this->color = $this->rgbFromColor($color);
+    }
+
+    /**
+     * Convert hex color representation to rgb values. Range value 0 -> 1.
+     * See https://es.wikipedia.org/wiki/Colores_web?section=6#Tabla_de_colores
+     *
+     * @param string $color
+     * @return array
+     */
+    public function colorFromHex(string $color): array
+    {
+        if (substr($color, 0, 1) == '#') {
+            $color = substr($color, 1);
+        }
+
+        $red = substr($color, 0, 2) ?? '255';
+        $green = substr($color, 2, 2) ?? '255';
+        $blue = substr($color, 4, 2) ?? '255';
+        return ['r' => hexdec($red)/255, 'g' => hexdec($green)/255, 'b' => hexdec($blue)/255];
+    }
+
+    /**
+     * Convert an internal rgb array (range 0 -> 1) to a CSS hex color string.
+     * Returns an empty string when the array is empty.
+     *
+     * @param array $rgb
+     * @return string
+     */
+    public function cssColor(array $rgb): string
+    {
+        if (empty($rgb)) {
+            return '';
+        }
+
+        return sprintf(
+            '#%02x%02x%02x',
+            (int) round(($rgb['r'] ?? 0) * 255),
+            (int) round(($rgb['g'] ?? 0) * 255),
+            (int) round(($rgb['b'] ?? 0) * 255)
+        );
     }
 
     /**
@@ -106,6 +140,11 @@ abstract class WidgetItem
     {
         return $this->value;
     }
+
+    /**
+     * Add an object to the PDF file.
+     */
+    abstract public function render(Cezpdf $pdf, float $posX, float $posY, float $width, float $height);
 
     /**
      * Convert color name to rgb values. Range value 0 -> 1.
@@ -147,25 +186,6 @@ abstract class WidgetItem
     }
 
     /**
-     * Convert hex color representation to rgb values. Range value 0 -> 1.
-     * See https://es.wikipedia.org/wiki/Colores_web?section=6#Tabla_de_colores
-     *
-     * @param string $color
-     * @return array
-     */
-    public function colorFromHex(string $color): array
-    {
-        if (substr($color, 0, 1) == '#') {
-            $color = substr($color, 1);
-        }
-
-        $red = substr($color, 0, 2) ?? '255';
-        $green = substr($color, 2, 2) ?? '255';
-        $blue = substr($color, 4, 2) ?? '255';
-        return ['r' => hexdec($red)/255, 'g' => hexdec($green)/255, 'b' => hexdec($blue)/255];
-    }
-
-    /**
      * Set value from dataset to widget if fieldname is not empty.
      *
      * @param Object $data
@@ -175,6 +195,30 @@ abstract class WidgetItem
         if (false === empty($this->fieldname)) {
             $this->value =  $this->getValueForFieldName($data);
         }
+    }
+
+    /**
+     * Return the widget data in a neutral structure, ready to be rendered as HTML.
+     * The render engine (band + Twig) decides the final markup. The value is the
+     * already-formatted text (number/currency/translate); the visual style is
+     * expressed as CSS classes and inline styles, never injected into the value.
+     *
+     * Contract:
+     *   - tag:   semantic hint of the element ('span', 'img', 'hr'...).
+     *   - value: text to print (raw, the template is responsible for escaping).
+     *   - class: space separated css classes.
+     *   - style: inline css declarations separated by ';'.
+     *
+     * @return array
+     */
+    public function toHtmlData(): array
+    {
+        return [
+            'tag' => 'span',
+            'value' => $this->getValue(),
+            'class' => '',
+            'style' => '',
+        ];
     }
 
     /**

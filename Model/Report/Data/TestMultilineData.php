@@ -20,44 +20,46 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Model\Report\Data;
 
 /**
- * Class to manage test data for extended report
+ * Class to manage multiline test data for extended report.
+ * Each record holds, per period, the current/previous/difference values that the
+ * multiline report stacks into a single row. Index 0 of each array is the total.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class TestData
+class TestMultilineData
 {
     /**
-     * Float test data
-     *
-     * @var float
-     */
-    public $amount;
-
-    /**
-     * Group test data (rupture field)
+     * Record code.
      *
      * @var string
      */
-    public $category;
+    public $code;
 
     /**
-     * Date test data
+     * Current period values. Index 0 = total, 1..n = periods.
+     *
+     * @var array
+     */
+    public array $current = [];
+
+    /**
+     * Difference (current - previous). Index 0 = total, 1..n = periods.
+     *
+     * @var array
+     */
+    public array $difference = [];
+
+    /**
+     * Record human identification.
      *
      * @var string
-     */
-    public $date;
-
-    /**
-     * Record identifier
-     *
-     * @var int
-     */
-    public $id;
-
-    /**
-     * Record human identification
-     *
-     * @var type
      */
     public $name;
+
+    /**
+     * Previous period values. Index 0 = total, 1..n = periods.
+     *
+     * @var array
+     */
+    public array $previous = [];
 }

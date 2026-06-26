@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -28,7 +28,6 @@ use Cezpdf;
  */
 class WidgetLine extends WidgetItem
 {
-
     /**
      * The color for background data.
      *
@@ -98,5 +97,20 @@ class WidgetLine extends WidgetItem
         $pdf->setLineStyle($this->border);
         $pdf->setStrokeColor($this->color['r'], $this->color['g'], $this->color['b']);
         $pdf->line($posX, $posY, ($posX + $width), $posY);
+    }
+
+    /**
+     * Return the widget data in a neutral structure, ready to be rendered as HTML.
+     * A line/rectangle has no textual value; it is exposed as a separator element.
+     *
+     * @return array
+     */
+    public function toHtmlData(): array
+    {
+        $data = parent::toHtmlData();
+        $data['tag'] = 'hr';
+        $data['value'] = '';
+        $data['style'] = empty($this->color) ? '' : 'border-color:' . $this->cssColor($this->color);
+        return $data;
     }
 }

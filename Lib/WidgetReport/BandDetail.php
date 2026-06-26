@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -28,7 +28,6 @@ use Exception;
  */
 class BandDetail extends BandItem
 {
-
     /**
      * Name of the field that determines the break in the data sequence.
      *
@@ -44,6 +43,15 @@ class BandDetail extends BandItem
     public ?string $fieldValue = null;
 
     /**
+     * Number of visual sub-rows that make up a single record (multiline reports).
+     * It is a hint only used by the HTML render to group the sub-rows of each
+     * record; the PDF/CSV render ignores it. Default 1 (one row per record).
+     *
+     * @var int
+     */
+    public int $subRows;
+
+    /**
      * Class constructor. Get initial values from param array.
      *
      * @param array $data
@@ -52,6 +60,7 @@ class BandDetail extends BandItem
     {
         parent::__construct($data);
         $this->fieldName = $data['fieldname'] ?? '';
+        $this->subRows = isset($data['subrows']) ? max(1, (int) $data['subrows']) : 1;
     }
 
     /**

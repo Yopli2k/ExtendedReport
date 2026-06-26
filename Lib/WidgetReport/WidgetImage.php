@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of ExtendedReport plugin for FacturaScripts.
- * FacturaScripts Copyright (C) 2015-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
- * ExtendedReport Copyright (C) 2021-2025 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public license as
@@ -30,7 +30,6 @@ use Throwable;
  */
 class WidgetImage extends WidgetItem
 {
-
     private const THUMBNAIL_PATH = '/MyFiles/Tmp/Thumbnails/';
 
     /**
@@ -100,6 +99,20 @@ class WidgetImage extends WidgetItem
             $this->renderImage($pdf, $fileName, $posX, $posY, $width, $height);
         } catch (Exception $ex) {
         }
+    }
+
+    /**
+     * Return the widget data in a neutral structure, ready to be rendered as HTML.
+     * The value holds the image source; resolving a server path to a public URL is
+     * left to the render engine.
+     *
+     * @return array
+     */
+    public function toHtmlData(): array
+    {
+        $data = parent::toHtmlData();
+        $data['tag'] = 'img';
+        return $data;
     }
 
     /**
