@@ -76,6 +76,42 @@ class HtmlTemplate extends ExportTemplate
     }
 
     /**
+     * Assign a set of columns to the grid columns, returning one bucket of
+     * widgets per grid column (most are empty or hold a single widget). It runs
+     * in two passes so a label that floats between two data columns (e.g. the
+     * "Totals:" caption) does not collide with the anchored values:
+     *   1. anchors: columns whose posx matches a grid column take that column.
+     *   2. floating: the rest land on the nearest still-free grid column.
+     *
+     * @param array $columns
+     * @param array $grid
+     * @return array list indexed by grid position, each item a list of columns
+     */
+    protected function assignToColumns(array $columns, array $grid): array
+    {
+        $slots = array_fill(0, count($grid), []);
+        $floating = [];
+
+        // pass 1: anchor the columns aligned with a grid column.
+        foreach ($columns as $column) {
+            $idx = $this->gridIndex($column['posx'], $grid);
+            if (abs($column['posx'] - $grid[$idx]) <= self::POSX_TOLERANCE) {
+                $slots[$idx][] = $column;
+            } else {
+                $floating[] = $column;
+            }
+        }
+
+        // pass 2: place the floating columns in the nearest free slot.
+        foreach ($floating as $column) {
+            $idx = $this->nearestFreeSlot($column['posx'], $grid, $slots);
+            $slots[$idx][] = $column;
+        }
+
+        return $slots;
+    }
+
+    /**
      * Convert a band into a list of table rows, one per posy sub-row.
      *
      * @param BandItem $band
@@ -83,7 +119,7 @@ class HtmlTemplate extends ExportTemplate
      * @param object|null $data
      * @param array $grid
      * @param string $rowClass extra css class for every generated row
-     * @param bool $stack
+     * @param bool $stack stack the posy sub-values inside a single <tr>
      * @return array
      */
     protected function bandRows(BandItem $band, string $tag, ?object $data, array $grid, string $rowClass = '', bool $stack = false): array
@@ -104,7 +140,7 @@ class HtmlTemplate extends ExportTemplate
 
         // multiline: a single <tr> per record stacking the sub-values by posy.
         if ($stack) {
-            return [$this->buildStackedRow($columns, $tag, $grid, $rowClass)];
+            return [$this->rowFromColumns($columns, $tag, $grid, $rowClass)];
         }
 
         // normal: one <tr> per posy sub-row.
@@ -162,112 +198,6 @@ class HtmlTemplate extends ExportTemplate
     }
 
     /**
-     * Build a single table row from a set of columns sharing the same posy.
-     * Columns are mapped to grid positions and the colspan is filled so the row
-     * always spans the whole table width. When the columns collide on the grid
-     * (or there are more than grid columns), the row degrades to a single
-     * full-width summary cell.
-     *
-     * @param array $columns
-     * @param string $tag
-     * @param array $grid
-     * @param string $rowClass
-     * @return array
-     */
-    protected function buildRow(array $columns, string $tag, array $grid, string $rowClass): array
-    {
-        $total = count($grid);
-        usort($columns, fn(array $a, array $b) => $a['posx'] <=> $b['posx']);
-
-        $indexes = [];
-        $seen = [];
-        $collision = false;
-        foreach ($columns as $column) {
-            $idx = $this->gridIndex($column['posx'], $grid);
-            if (isset($seen[$idx])) {
-                $collision = true;
-            }
-            $seen[$idx] = true;
-            $indexes[] = $idx;
-        }
-
-        if ($collision || count($columns) > $total) {
-            return $this->summaryRow($columns, $tag, $total, $rowClass);
-        }
-
-        $cells = [];
-        $prev = 0;
-        $count = count($columns);
-        foreach ($columns as $i => $column) {
-            $idx = max($indexes[$i], $prev);
-            if ($idx > $prev) {
-                $cells[] = $this->cell($tag, [], $idx - $prev);
-            }
-
-            $next = ($i + 1 < $count) ? max($indexes[$i + 1], $idx + 1) : $total;
-            $line = $this->line($column['value'], $column['class'], $column['style']);
-            $cells[] = $this->cell($tag, [$line], $next - $idx);
-            $prev = $next;
-        }
-        if ($prev < $total) {
-            $cells[] = $this->cell($tag, [], $total - $prev);
-        }
-
-        return ['class' => $rowClass, 'cells' => $cells];
-    }
-
-    /**
-     * Build a single table row for a multiline record: one <tr> where each grid
-     * column stacks (by posy) all its sub-values. This avoids one <tr> per
-     * sub-row, so the table draws separators only between records.
-     *
-     * @param array $columns
-     * @param string $tag
-     * @param array $grid
-     * @param string $rowClass
-     * @return array
-     */
-    protected function buildStackedRow(array $columns, string $tag, array $grid, string $rowClass): array
-    {
-        $total = count($grid);
-
-        // group the columns by grid index, ordered by posy inside each cell.
-        $stacks = [];
-        foreach ($columns as $column) {
-            $idx = $this->gridIndex($column['posx'], $grid);
-            $stacks[$idx][] = $column;
-        }
-        ksort($stacks);
-        foreach ($stacks as &$stack) {
-            usort($stack, fn(array $a, array $b) => $a['posy'] <=> $b['posy']);
-        }
-        unset($stack);
-
-        $cells = [];
-        $prev = 0;
-        $occupied = array_keys($stacks);
-        foreach ($occupied as $i => $idx) {
-            if ($idx > $prev) {
-                $cells[] = $this->cell($tag, [], $idx - $prev);
-            }
-
-            $lines = [];
-            foreach ($stacks[$idx] as $column) {
-                $lines[] = $this->line($column['value'], $column['class'], $column['style']);
-            }
-
-            $next = isset($occupied[$i + 1]) ? max($occupied[$i + 1], $idx + 1) : $total;
-            $cells[] = $this->cell($tag, $lines, $next - $idx);
-            $prev = $next;
-        }
-        if ($prev < $total) {
-            $cells[] = $this->cell($tag, [], $total - $prev);
-        }
-
-        return ['class' => $rowClass, 'cells' => $cells];
-    }
-
-    /**
      * Build a table cell structure. A cell holds one or more stacked lines
      * (sub-values); a normal cell has a single line, a multiline record cell
      * stacks several. This keeps one <tr> per data record (no separator lines
@@ -305,7 +235,7 @@ class HtmlTemplate extends ExportTemplate
 
         $rows = [];
         foreach ($this->bucketByPosy($columns) as $bucket) {
-            $rows[] = $this->buildRow($bucket, $tag, $grid, $rowClass);
+            $rows[] = $this->rowFromColumns($bucket, $tag, $grid, $rowClass);
         }
         return $rows;
     }
@@ -394,6 +324,33 @@ class HtmlTemplate extends ExportTemplate
             'class' => $class,
             'style' => $style,
         ];
+    }
+
+    /**
+     * Find the nearest free grid slot for a given posx. When every slot is
+     * already taken it falls back to the nearest column (the widget will stack).
+     *
+     * @param int $posx
+     * @param array $grid
+     * @param array $slots
+     * @return int
+     */
+    protected function nearestFreeSlot(int $posx, array $grid, array $slots): int
+    {
+        $best = null;
+        $bestDiff = PHP_INT_MAX;
+        foreach ($grid as $index => $gridPosx) {
+            if (false === empty($slots[$index])) {
+                continue;
+            }
+            $diff = abs($posx - $gridPosx);
+            if ($diff < $bestDiff) {
+                $bestDiff = $diff;
+                $best = $index;
+            }
+        }
+
+        return $best ?? $this->gridIndex($posx, $grid);
     }
 
     /**
@@ -498,6 +455,39 @@ class HtmlTemplate extends ExportTemplate
     }
 
     /**
+     * Build a single table row from a set of columns, one cell per grid column
+     * (empty cells fill the gaps so every band aligns to the detail grid). A
+     * lone value spans the whole row (report title, section header). When a cell
+     * holds several columns (a multiline record) they stack by posy.
+     *
+     * @param array $columns
+     * @param string $tag
+     * @param array $grid
+     * @param string $rowClass
+     * @return array
+     */
+    protected function rowFromColumns(array $columns, string $tag, array $grid, string $rowClass): array
+    {
+        // a lone value spans the whole row (report title, section header...).
+        if (count($columns) === 1) {
+            $line = $this->line($columns[0]['value'], $columns[0]['class'], $columns[0]['style']);
+            return ['class' => $rowClass, 'cells' => [$this->cell($tag, [$line], max(1, count($grid)))]];
+        }
+
+        $cells = [];
+        foreach ($this->assignToColumns($columns, $grid) as $widgets) {
+            usort($widgets, fn(array $a, array $b) => $a['posy'] <=> $b['posy']);
+            $lines = [];
+            foreach ($widgets as $column) {
+                $lines[] = $this->line($column['value'], $column['class'], $column['style']);
+            }
+            $cells[] = $this->cell($tag, $lines, 1);
+        }
+
+        return ['class' => $rowClass, 'cells' => $cells];
+    }
+
+    /**
      * Split the header band into report metadata and column titles. Columns
      * flagged area="meta" (company, date, filters, title...) go to a separate
      * borderless block above the table; the rest become the table <thead>.
@@ -533,28 +523,5 @@ class HtmlTemplate extends ExportTemplate
             'meta' => $this->columnsToRows($meta, 'td', $metaGrid),
             'thead' => $this->columnsToRows($titles, 'th', $grid),
         ];
-    }
-
-    /**
-     * Build a single full-width cell row joining all the column values.
-     *
-     * @param array $columns
-     * @param string $tag
-     * @param int $total
-     * @param string $rowClass
-     * @return array
-     */
-    protected function summaryRow(array $columns, string $tag, int $total, string $rowClass): array
-    {
-        $values = [];
-        foreach ($columns as $column) {
-            if ($column['value'] !== '') {
-                $values[] = $column['value'];
-            }
-        }
-
-        $line = $this->line(implode(' ', $values), $columns[0]['class'] ?? '', $columns[0]['style'] ?? '');
-        $cell = $this->cell($tag, [$line], max(1, $total));
-        return ['class' => $rowClass, 'cells' => [$cell]];
     }
 }

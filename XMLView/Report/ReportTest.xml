@@ -46,11 +46,11 @@
 
             <!-- Datos Fecha y Página -->
             <column posx="450" posy="25" width="60" area="meta">
-                <widget type="default" fieldname="date" size="12" color="white" />
+                <widget type="default" fieldname="date" size="12" color="white" bgcolor="4169E1" />
             </column>
 
             <column posx="510" posy="25" width="60" area="meta">
-                <widget type="default" fieldname="time" size="12" color="white" />
+                <widget type="default" fieldname="time" size="12" color="white" bgcolor="4169E1" />
             </column>
 
             <column posx="450" posy="47" width="50" hideonview="true">

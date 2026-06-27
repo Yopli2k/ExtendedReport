@@ -59,7 +59,7 @@ class WidgetNumber extends WidgetLabel
     protected string $licon;
 
     /**
-     * The colour has to use when representing the negative value data.
+     * The color has to use when representing the negative value data.
      *
      * @var array
      */

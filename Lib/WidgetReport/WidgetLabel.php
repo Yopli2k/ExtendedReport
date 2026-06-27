@@ -202,6 +202,9 @@ class WidgetLabel extends WidgetItem
                 $classes[] = 'text-end';
                 break;
         }
+        if ($this->cssClass !== '') {
+            $classes[] = $this->cssClass;
+        }
         return implode(' ', $classes);
     }
 

@@ -36,6 +36,14 @@ abstract class WidgetItem
     protected array $color;
 
     /**
+     * Extra CSS classes for the HTML output, declared in the XML 'class' attribute.
+     * Ignored by the PDF. Lets the report author apply Bootstrap utilities (e.g. h2, fs-4).
+     *
+     * @var string
+     */
+    protected string $cssClass;
+
+    /**
      * The Name of the field from which the value to be represented is obtained.
      *
      * @var string
@@ -64,6 +72,7 @@ abstract class WidgetItem
     public function __construct(array $data)
     {
         $this->type = $data['type'];
+        $this->cssClass = $data['class'] ?? '';
         $this->fieldname = $data['fieldname'] ?? '';
         $this->value = $data['value'] ?? '';
 
@@ -216,7 +225,7 @@ abstract class WidgetItem
         return [
             'tag' => 'span',
             'value' => $this->getValue(),
-            'class' => '',
+            'class' => $this->cssClass,
             'style' => '',
         ];
     }
