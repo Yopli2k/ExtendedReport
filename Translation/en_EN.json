@@ -1,4 +1,7 @@
 {
+    "html-grouped-test": "Grouped HTML view",
+    "html-multiline-test": "Multiline HTML view",
+    "html-test": "HTML View",
     "landscape-test": "Horizontal template",
     "no-export-format": "Export format not available",
     "portrait-test": "Vertical template",

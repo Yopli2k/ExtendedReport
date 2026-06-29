@@ -1,4 +1,7 @@
 {
+    "html-grouped-test": "Vista HTML agrupada",
+    "html-multiline-test": "Vista HTML multilínea",
+    "html-test": "Vista HTML",
     "landscape-test": "Horizontale Vorlage",
     "no-export-format": "Exportformat nicht verfügbar",
     "portrait-test": "Hochformatvorlage",

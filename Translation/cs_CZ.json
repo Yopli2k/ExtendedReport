@@ -1,7 +1,10 @@
 {
+    "html-grouped-test": "Vista HTML agrupada",
+    "html-multiline-test": "Vista HTML multilínea",
+    "html-test": "Vista HTML",
     "landscape-test": "Šablona na šířku",
     "no-export-format": "Formát exportu není k dispozici",
     "portrait-test": "Šablona na výšku",
     "print-test": "Tisk testu",
-    "report-test": "Testear Informe"
+    "report-test": "Testovací zpráva"
 }
