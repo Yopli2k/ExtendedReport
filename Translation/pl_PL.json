@@ -1,4 +1,7 @@
 {
+    "html-grouped-test": "Vista HTML agrupada",
+    "html-multiline-test": "Vista HTML multilínea",
+    "html-test": "Vista HTML",
     "landscape-test": "Szablon poziomy",
     "no-export-format": "Format eksportu niedostępny",
     "portrait-test": "Szablon pionowy",

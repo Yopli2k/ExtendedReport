@@ -1,4 +1,7 @@
 {
+    "html-grouped-test": "Vista HTML agrupada",
+    "html-multiline-test": "Vista HTML multilínea",
+    "html-test": "Vista HTML",
     "landscape-test": "Modelo horizontal",
     "no-export-format": "Formato de exportação não disponível",
     "portrait-test": "Modelo vertical",

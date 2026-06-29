@@ -1,7 +1,10 @@
 {
+    "html-grouped-test": "Vista HTML agrupada",
+    "html-multiline-test": "Vista HTML multilínea",
+    "html-test": "Vista HTML",
     "landscape-test": "Horizontaleko txantiloia",
     "no-export-format": "Formato de exportación no disponible",
-    "portrait-test": "Plantilla vertical",
-    "print-test": "Proba-test inprimatu",
+    "portrait-test": "Bertikaleko txantiloia",
+    "print-test": "Probako test inprimatu",
     "report-test": "Txostena probatu"
 }
