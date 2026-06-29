@@ -1,7 +1,10 @@
 {
+    "html-grouped-test": "Vista HTML agrupada",
+    "html-multiline-test": "Vista HTML multilínea",
+    "html-test": "Vista HTML",
     "landscape-test": "Plantilla horitzontal",
     "no-export-format": "Format d'exportació no disponible",
     "portrait-test": "Plantilla vertical",
     "print-test": "Imprimir test de prova",
-    "report-test": "Testear Informe"
+    "report-test": "Provar informe"
 }
