@@ -28,6 +28,8 @@ La herencia importa porque los atributos se **acumulan**: un `number` admite tod
 - **`fieldname`** (por defecto `''`) — campo del dato cuyo valor se muestra (ver resolución abajo).
 - **`color`** (por defecto `black`) — color del texto/trazo. Nombre predefinido o hexadecimal.
 - **`class`** (por defecto `''`) — clases CSS adicionales que se añaden al elemento en la salida **HTML**. Pensado para usar utilidades de Bootstrap (p. ej. `class="h2"` para que el título aparezca con tamaño de encabezado, `class="fw-bold text-end"` para negrita alineada a la derecha). El PDF ignora este atributo completamente.
+- **`title`** (por defecto `''`) — solo **HTML**. Título de la tarjeta resumen cuando la columna se marca con `area="cards"` (ver [Estructura del XML → Tarjetas resumen](02-estructura-xml.md#tarjetas-resumen-areacards)). Pasa por `Tools::trans`. El PDF lo ignora.
+- **`cardcolor`** (por defecto `secondary`) — solo **HTML**. Color contextual de Bootstrap de la tarjeta resumen (`primary`, `secondary`, `success`, `info`, `warning`, `danger`); se pinta en su variante pastel `bg-*-subtle`. No confundir con `color` (color del texto/trazo). El PDF lo ignora.
 
 ### Colores admitidos
 
@@ -156,6 +158,8 @@ Cómo funciona:
 - El motor llama al `process()` del widget por cada fila del detalle, acumulando el total.
 - Al pintar el pie, muestra el acumulado.
 - En informes con **ruptura de subgrupo**, los totales del subgrupo se **reinician** (`reset()`) tras pintar cada pie de subgrupo, de modo que cada bloque tiene sus propios subtotales. Ver [04 - Grupos y rupturas](04-grupos-y-rupturas.md).
+
+En el **visor HTML**, un total del pie puede destacarse como **tarjeta resumen** marcando su columna con `area="cards"` y dándole `title`/`cardcolor` al widget. Ver [Estructura del XML → Tarjetas resumen](02-estructura-xml.md#tarjetas-resumen-areacards).
 
 
 ## `line` — líneas y rectángulos (`WidgetLine`)

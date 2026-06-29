@@ -2,6 +2,17 @@
 
 All significant changes to this project will be documented in this file.
 
+## [2.11] - 2026-06-29
+
+### New Features and Improvements
+
+- New summary cards (statistics header) in the HTML report viewer. Any footer total can be highlighted as a pastel card above the table, so key figures (totals, counts…) are visible at a glance without scrolling to the footer.
+    - New column area `area="cards"`: marks a footer total to be rendered as a summary card. It is additive — the total keeps showing in the footer row unless the column is also flagged `hideonview="true"` (then it appears only as a card).
+    - New widget attribute `title` — caption of the card (translated via `Tools::trans`), so the figure always has a label.
+    - New widget attribute `cardcolor` — Bootstrap contextual color of the card (`primary`, `secondary`, `success`, `info`, `warning`, `danger`), painted with its pastel `bg-*-subtle` variant, which also respects the theme's dark mode. Defaults to `secondary`.
+    - No JavaScript involved: footer totals are already accumulated when the HTML is generated (the footer is evaluated after iterating every row), so the cards are painted on top with the final values in a single server-side pass.
+    - `area`, `title` and `cardcolor` are ignored by the PDF and CSV outputs.
+
 ## [2.10] - 2026-06-27
 
 ### New Features and Improvements

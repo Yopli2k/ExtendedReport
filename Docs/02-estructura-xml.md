@@ -130,6 +130,23 @@ Se pinta al final del grupo y al pie de cada página. Es donde van los totales (
 | `newpage` | Si es `true`, fuerza salto de página tras el pie. |
 | `placebottom` | Si es `true`, ancla el pie a la parte baja de la página. |
 
+#### Tarjetas resumen (`area="cards"`)
+
+Solo en el **visor HTML**. Marca un total del pie con `area="cards"` para que, además de aparecer en la fila del pie, se muestre como una **tarjeta de color pastel** sobre la tabla (a modo de cabecera estadística). El título y el color se declaran en el `widget`:
+
+```xml
+<column posx="460" posy="30" width="80" area="cards">
+    <widget type="calculated" operator="sum" fieldname="amount"
+            title="total" cardcolor="success" />
+</column>
+```
+
+- **`title`** (widget) — título de la tarjeta; pasa por `Tools::trans`, así que admite clave de traducción. Imprescindible para que el importe tenga contexto.
+- **`cardcolor`** (widget) — color contextual de Bootstrap: `primary`, `secondary` (por defecto), `success`, `info`, `warning`, `danger`. Se pinta con su variante pastel (`bg-*-subtle`), que además respeta el modo oscuro del tema.
+- No hace falta JavaScript: el total ya está calculado cuando se genera el HTML (el pie se evalúa tras recorrer todas las filas), así que la tarjeta se pinta arriba con el valor final.
+- Para mostrar el total **solo** como tarjeta (y no en la fila del pie), añade `hideonview="true"` a la columna.
+- En PDF y CSV, `area`, `title` y `cardcolor` se ignoran por completo.
+
 
 ## La etiqueta `<column>`
 
@@ -145,7 +162,10 @@ Cada columna es una **celda posicionada** dentro de la banda. Contiene exactamen
 - **`posy`** (por defecto `0`) — posición vertical relativa al inicio de la banda (hacia abajo).
 - **`width`** (por defecto `30`) — ancho de la celda.
 - **`height`** (por defecto `15`) — alto de la celda.
-- **`area`** — agrupa la columna en una zona semántica especial. El único valor activo es `"meta"`: las columnas marcadas con `area="meta"` en la cabecera se renderizan en el **bloque de información superior** del visor HTML (nombre del informe, empresa, fecha…) en lugar de en la tabla de datos. En PDF se ignora y la columna se pinta en su posición normal.
+- **`area`** — agrupa la columna en una zona semántica especial del **visor HTML** (en PDF/CSV se ignora siempre y la columna se pinta en su posición normal). Valores:
+    - `"meta"` — en la **cabecera**: la columna se renderiza en el **bloque de información superior** del visor HTML (nombre del informe, empresa, fecha…) en lugar de en la tabla de datos.
+    - `"cards"` — en el **pie**: el total de la columna se muestra además como **tarjeta resumen** (card pastel) sobre la tabla. Ver [Tarjetas resumen](#tarjetas-resumen-areacards). Es aditivo: la columna sigue apareciendo en la fila del pie salvo que añadas `hideonview="true"`.
+    - El valor de `area` solo se interpreta en la banda que le corresponde (cabecera para `meta`, pie para `cards`); en cualquier otra banda es inocuo.
 - **`hideonview`** — si es `true`, la columna **no se muestra en el visor HTML**. Útil para columnas que solo tienen sentido en papel (número de página, saltos de página decorativos…).
 - **`hideonpdf`** — si es `true`, la columna **no se pinta en el PDF**. Útil para columnas pensadas exclusivamente para la vista HTML.
 
