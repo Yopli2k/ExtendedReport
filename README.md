@@ -1,12 +1,23 @@
-# FacturaScripts
-Software de código abierto de facturación y contabilidad para Pequeñas y Medianas Empresas.
-Software ERP de código abierto. Construido sobre PHP, componentes Symfony y bootstrap. Fácil y potente.
+# ExtendedReport
 
-# Extended Report
-Este software permite realizar informes utilizando archivos XML y a partir de un nuevo modelo de datos.
+Plugin para **FacturaScripts** que proporciona el motor necesario para crear informes a medida dentro de otros plugins.
+
+Permite generar documentos en **PDF**, exportarlos en **CSV** y visualizarlos en pantalla como **HTML**, a partir de dos piezas que el desarrollador crea en su propio plugin:
+
+- Un **modelo de datos PHP** que obtiene las filas a representar.
+- Un **diseño XML** que describe cómo se presenta la información.
+
+## ⚠️ A quién va dirigido
+
+Este plugin **no está pensado para el usuario final**. No añade ninguna opción de menú ni funcionalidad directamente usable. Es una herramienta para **desarrolladores** que crean plugins y quieren incluir informes propios sin partir de cero.
+Para usarlo necesitas conocimientos de:
+- Creación de plugins en FacturaScripts.
+- PHP orientado a objetos.
+- Estructura básica de los archivos XML del core (XMLView).
 
 ## Nombre de carpeta
 Como con todos los plugins, la carpeta se debe llamar igual que el plugin. En este caso **ExtendedReport**.
+
 
 ## Más información
 <ul>
@@ -14,12 +25,17 @@ Como con todos los plugins, la carpeta se debe llamar igual que el plugin. En es
     <li>Plugin info:  https://facturascripts.com/plugins/extendedreport</li>
 </ul>
 
-## Documentation / Issues / Feedback
+## Documentación / Issues / Feedback
 https://www.facturascripts.com
 
-## Enlaces de interés
-- [Cómo instalar plugins en FacturaScripts](https://facturascripts.com/publicaciones/como-instalar-un-plugin-en-facturascripts)
-- [Curso de FacturaScripts](https://youtube.com/playlist?list=PLNxcJ5CWZ8V6nfeVu6vieKI_d8a_ObLfY)
-- [Programa para hacer facturas gratis](https://facturascripts.com/programa-para-hacer-facturas)
-- [Cómo instalar FacturaScripts en Windows](https://facturascripts.com/instalar-windows)
-- [Programa para imprimir tickets gratis](https://facturascripts.com/remote-printer)
+## Otros plugins del mismo autor
+<ul>
+    <li>Amortización de Inmovilizados: https://facturascripts.com/plugins/amortizaciones</li>
+    <li>Documentos Recurrentes: https://facturascripts.com/plugins/documentosrecurrentes</li>
+    <li>Recursos Humanos: https://facturascripts.com/plugins/humanresources</li>
+    <li>Producción: https://facturascripts.com/plugins/produccion</li>
+    <li>Producto Pack: https://facturascripts.com/plugins/productopack</li>
+    <li>Pagos Múltiples: https://facturascripts.com/plugins/pagosmultiples</li>
+    <li>LawFirm: Solución sectorial para despachos de abogacía</li>
+    <li>CourseManagement: Solución sectorial para gestión de cursos de formación subvencionados</li>
+</ul>
