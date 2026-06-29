@@ -69,9 +69,10 @@ Atributos (además de los comunes):
 | `underline` | `false` | Subrayado. |
 | `translate` | `false` | Si es `true`, traduce el `value` con el idioma del usuario (útil para etiquetas fijas). |
 | `bgcolor` | — | Color de fondo de la celda (mismo formato que `color`). |
+| `prewrap` | `false` | Si es `true`, preserva los saltos de línea (`\n`) en la salida **HTML** (`white-space: pre-line`), de modo que un único valor multilínea se apile en pantalla. El PDF lo ignora (ya ajusta multilínea por sí mismo). |
 
 Notas:
-- El texto admite **multilínea**: se ajusta al `width` de la columna y salta de línea respetando la altura disponible.
+- El texto admite **multilínea**: se ajusta al `width` de la columna y salta de línea respetando la altura disponible. En HTML, para que un valor con `\n` se vea apilado, añade `prewrap="true"`.
 - Las marcas de estilo se aplican como etiquetas `<b>`, `<i>`, `<u>` sobre el texto ya escapado.
 - El atributo `bgcolor` también aplica en la salida HTML, generando un `background-color` inline sobre la celda.
 
@@ -96,6 +97,7 @@ Muestra datos "de contexto" que no vienen de la fila, sino del entorno (empresa,
 | `time` | Hora actual (`H:i:s`). |
 | `page` | Número de página actual. |
 | `<clave>.<campo>` | Cualquier dato extra pasado al construir la plantilla en el array `additional`. |
+| `<clave>.<metodo>()` | Resultado de invocar un **método sin argumentos** sobre el dato extra `additional['<clave>']` (p. ej. `filters.reportFiltersText()`). Útil para que el objeto adicional calcule su propio texto. |
 
 > El número de página se gestiona automáticamente: el motor lo incrementa al crear páginas nuevas, así que un `default` con `fieldname="page"` en la cabecera o el pie numera el documento sin esfuerzo.
 

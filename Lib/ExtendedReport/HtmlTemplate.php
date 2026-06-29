@@ -20,6 +20,7 @@
 namespace FacturaScripts\Plugins\ExtendedReport\Lib\ExtendedReport;
 
 use FacturaScripts\Core\Html;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\BandItem;
 use FacturaScripts\Plugins\ExtendedReport\Lib\WidgetReport\GroupItem;
 use Twig\Error\LoaderError;
@@ -218,6 +219,42 @@ class HtmlTemplate extends ExportTemplate
     }
 
     /**
+     * Build the summary cards from the footer columns flagged area="cards". Each
+     * card pairs the widget title (its caption) with the already accumulated
+     * value, so a numeric total is never shown without a label. The cards are
+     * collected independently of hideonview: a card column keeps showing in the
+     * tfoot row unless the author also flags it hideonview (then it is a card
+     * only). The cardcolor is a Bootstrap contextual color (success, info...)
+     * the template turns into the pastel '-subtle' variant; it defaults to
+     * 'secondary'.
+     *
+     * @param BandItem $footer
+     * @param object|null $data
+     * @return array
+     */
+    protected function collectStats(BandItem $footer, ?object $data): array
+    {
+        if ($data === null) {
+            return [];
+        }
+
+        $stats = [];
+        foreach ($footer->toHtmlData($this->defaultData, $data) as $column) {
+            if (($column['area'] ?? '') !== 'cards') {
+                continue;
+            }
+
+            $stats[] = [
+                'title' => Tools::trans($column['title'] ?? ''),
+                'value' => $column['value'] ?? '',
+                'color' => empty($column['cardcolor']) ? 'secondary' : $column['cardcolor'],
+            ];
+        }
+
+        return $stats;
+    }
+
+    /**
      * Turn a flat list of columns into table rows, one per posy sub-row, mapping
      * each column to its grid position.
      *
@@ -368,7 +405,7 @@ class HtmlTemplate extends ExportTemplate
         $model = $this->datasets[$group->name] ?? $this->datasets['main'] ?? null;
         $firstRow = ($model !== null && false === empty($model->data)) ? reset($model->data) : null;
 
-        $table = ['columns' => $columns, 'meta' => [], 'thead' => [], 'tbody' => [], 'tfoot' => []];
+        $table = ['columns' => $columns, 'meta' => [], 'stats' => [], 'thead' => [], 'tbody' => [], 'tfoot' => []];
 
         // header -> metadata block (area="meta") + column titles (thead)
         $header = $group->getHeader(false);
@@ -393,10 +430,13 @@ class HtmlTemplate extends ExportTemplate
             }
         }
 
-        // footer -> tfoot (calculated columns already accumulated above)
+        // footer -> tfoot (calculated columns already accumulated above) + summary
+        // cards (area="cards") shown above the table. Both read the same already
+        // accumulated footer band, so the totals are final on this single pass.
         $footer = $group->getFooter(false);
         if ($footer !== null) {
             $table['tfoot'] = $this->bandRows($footer, 'td', $firstRow, $grid, 'fw-bold', $stack);
+            $table['stats'] = $this->collectStats($footer, $firstRow);
         }
 
         return $table;

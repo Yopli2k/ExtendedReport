@@ -82,9 +82,29 @@ class WidgetDefault extends WidgetLabel
                 break;
 
             default:
-                $this->value = isset($data->additional[$values[0]])
-                    ? $data->additional[$values[0]]->{$values[1]} ?? ''
-                    : '';
+                $object = $data->additional[$values[0]] ?? null;
+                if (false === isset($object) || false === isset($values[1])) {
+                    $this->value = '';
+                    break;
+                }
+
+                // method call: fieldname like "filters.method()" or "filters.method('a','b')"
+                if (str_ends_with($values[1], ')')) {
+                    $open = strpos($values[1], '(');
+                    $method = substr($values[1], 0, $open);
+                    if (false === method_exists($object, $method)) {
+                        $this->value = '';
+                        break;
+                    }
+
+                    $paramsStr = str_replace(["'", ' '], '', substr($values[1], $open + 1, -1));
+                    $this->value = $paramsStr === ''
+                        ? (string)$object->{$method}()
+                        : (string)$object->{$method}(explode(',', $paramsStr));
+                    break;
+                }
+
+                $this->value = $object->{$values[1]} ?? '';
         }
     }
 }

@@ -119,8 +119,9 @@
                 />
             </column>
 
-            <column posx="85" posy="30" width="80">
-                <widget type="calculated" operator="count" fieldname="code" align="left" bold="true" />
+            <column posx="85" posy="30" width="80" area="cards">
+                <widget type="calculated" operator="count" fieldname="code" align="left" bold="true"
+                    title="count" cardcolor="info" />
             </column>
 
             <column posx="100" posy="30" width="60">
@@ -155,8 +156,9 @@
                 <widget type="label" value=":" align="center" bold="true" size="13" />
             </column>
 
-            <column posx="460" posy="30" width="80">
-                <widget type="calculated" operator="sum" fieldname="amount" align="right" bold="true" />
+            <column posx="460" posy="30" width="80" area="cards">
+                <widget type="calculated" operator="sum" fieldname="amount" align="right" bold="true"
+                    title="total" cardcolor="success" />
             </column>
         </footer>
     </group>

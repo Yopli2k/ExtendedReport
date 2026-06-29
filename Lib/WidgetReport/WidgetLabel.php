@@ -58,6 +58,15 @@ class WidgetLabel extends WidgetItem
     protected bool $italic;
 
     /**
+     * Preserve line breaks in the HTML output (white-space: pre-line). Lets a
+     * single multiline value (e.g. the filters block) stack its lines on screen.
+     * Ignored by the PDF, which already wraps multiline values by itself.
+     *
+     * @var bool
+     */
+    protected bool $prewrap;
+
+    /**
      * The size of the text font.
      *
      * @var int
@@ -88,6 +97,7 @@ class WidgetLabel extends WidgetItem
         $this->align = $data['align'] ?? 'left';
         $this->bold = isset($data['bold']) && $data['bold'];
         $this->italic = isset($data['italic']) && $data['italic'];
+        $this->prewrap = isset($data['prewrap']) && $data['prewrap'];
         $this->size = isset($data['size']) ? (int) $data['size'] : 10;
         $this->translate = isset($data['translate']) && $data['translate'];
         $this->underline = isset($data['underline']) && $data['underline'];
@@ -223,6 +233,9 @@ class WidgetLabel extends WidgetItem
         }
         if (false === empty($this->bgcolor)) {
             $styles[] = 'background-color:' . $this->cssColor($this->bgcolor);
+        }
+        if ($this->prewrap) {
+            $styles[] = 'white-space:pre-line';
         }
         return implode(';', $styles);
     }

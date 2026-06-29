@@ -29,6 +29,15 @@ use Cezpdf;
 abstract class WidgetItem
 {
     /**
+     * Bootstrap contextual color (success, info, warning...) for the summary card
+     * built from this widget when its column is placed in the 'cards' area. Empty
+     * means the render engine assigns a pastel from its rotating palette. HTML only.
+     *
+     * @var string
+     */
+    protected string $cardColor;
+
+    /**
      * The colour has to use when representing the data.
      *
      * @var array
@@ -49,6 +58,15 @@ abstract class WidgetItem
      * @var string
      */
     protected string $fieldname;
+
+    /**
+     * Caption shown as the title of the summary card built from this widget when
+     * its column is placed in the 'cards' area. Translated by the render engine.
+     * HTML only; the PDF ignores it.
+     *
+     * @var string
+     */
+    protected string $title;
 
     /**
      * Widget type.
@@ -72,8 +90,10 @@ abstract class WidgetItem
     public function __construct(array $data)
     {
         $this->type = $data['type'];
+        $this->cardColor = $data['cardcolor'] ?? '';
         $this->cssClass = $data['class'] ?? '';
         $this->fieldname = $data['fieldname'] ?? '';
+        $this->title = $data['title'] ?? '';
         $this->value = $data['value'] ?? '';
 
         $color = $data['color'] ?? 'black';
@@ -227,6 +247,8 @@ abstract class WidgetItem
             'value' => $this->getValue(),
             'class' => $this->cssClass,
             'style' => '',
+            'title' => $this->title,
+            'cardcolor' => $this->cardColor,
         ];
     }
 
