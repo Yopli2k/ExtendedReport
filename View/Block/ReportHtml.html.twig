@@ -46,7 +46,7 @@
         <div class="row g-3 mb-3 er-report-stats">
             {% for stat in table.stats %}
                 <div class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="card border-0 bg-{{ stat.color }}-subtle text-{{ stat.color }}-emphasis h-100">
+                    <div class="card border-0 bg-gradient bg-{{ stat.color }}-subtle text-{{ stat.color }}-emphasis shadow h-100">
                         <div class="card-body text-center py-3">
                             {% if stat.title %}<div class="small text-uppercase opacity-75 mb-1">{{ stat.title }}</div>{% endif %}
                             <div class="h4 fw-bold mb-0">{{ stat.value }}</div>
