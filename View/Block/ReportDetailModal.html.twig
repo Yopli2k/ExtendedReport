@@ -109,7 +109,7 @@
             data.rows.forEach(row => tbody.appendChild(detailRow(row, headers, 'td')));
             table.appendChild(tbody);
 
-            if (Array.isArray(data.total)) {
+            if (data.rows.length > 1 && Array.isArray(data.total)) {
                 const tfoot = document.createElement('tfoot');
                 tfoot.className = 'table-light fw-bold';
                 tfoot.appendChild(detailRow(data.total, headers, 'td'));

@@ -96,7 +96,7 @@ Al hacer clic, el visor añade a esa URL los parámetros `detailcode` (el `data-
 - `title`: título del modal. Opcional (por defecto, *Detalle*).
 - `headers`: cabeceras de columna, con clase CSS opcional que se aplica a toda la columna (p. ej. `text-end` para importes).
 - `rows`: filas con los valores **ya formateados** por el servidor.
-- `total`: fila de totales al pie. Opcional.
+- `total`: fila de totales al pie. Opcional. El visor no la pinta si `rows` solo tiene un registro, ya que coincidiría con esa única fila y sería redundante.
 - `note`: texto informativo bajo la tabla (p. ej. aviso de truncado). Opcional.
 
 La tabla del desglose se envuelve en su propio contenedor con scroll acotado (`max-height: 60vh; overflow-y: auto`) y cabecera fija (`position: sticky` en cada `<th>`), en vez de apoyarse en `modal-dialog-scrollable`/`modal-body`: al ser `.modal-body` un elemento flex dentro de `.modal-content`, no siempre se ajusta a un alto concreto, por lo que el scroll y el elemento sticky pueden terminar enganchados a un ancestro distinto (el modal completo o la página) y las filas acaban pintándose sobre la cabecera. El contenedor propio de la tabla evita esa ambigüedad. Aun así, es responsabilidad del servidor **limitar el número de filas** e indicarlo en `note`.
