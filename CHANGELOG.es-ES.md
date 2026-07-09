@@ -2,6 +2,19 @@
 
 Todos los cambios notables en este proyecto se documentarán en este archivo.
 
+## [2.12] - 2026-07-09
+
+### Nuevas funcionalidades y mejoras
+
+- Nuevo desglose de celdas (`detailclick`) en el visor de informes HTML. Las celdas del detalle marcadas con `detailclick="true"` se vuelven clicables y abren un modal con el listado de registros que componen ese valor (por ejemplo, los documentos detrás de un total).
+    - Nuevo atributo de columna `detailclick="true"` — el motor HTML emite `data-code` y `data-field` en la celda para que el visor pueda pedir el desglose al servidor.
+    - Nuevo modal genérico (`View/Block/ReportDetailModal.html.twig`) con el JavaScript que solicita el desglose a la URL definida por el controlador y pinta la tabla de resultado (cabeceras, filas, total y nota opcional). Solo se activa si el controlador define la propiedad pública `detailClickUrl`.
+    - Si el desglose solo tiene un registro, no se pinta la fila de totales, ya que coincidiría con esa única fila y sería redundante.
+    - La cabecera de la tabla del visor y del modal de desglose pasa a usar el color `table-primary` en vez de `table-light`.
+
+- Nuevo botón de impresión del PDF real desde el visor de informes HTML. Si el controlador define la propiedad pública `printUrl`, el botón "Imprimir" abre en una pestaña nueva el PDF generado por `PDFTemplate`, en lugar de imprimir la propia página HTML con `window.print()` del navegador.
+    - Conectado en el controlador de ejemplo `ReportTest` (acción `html-test`) y en `EditStatisticController` del plugin InformesEstadisticos.
+
 ## [2.11] - 2026-06-29
 
 ### Nuevas funcionalidades y mejoras
