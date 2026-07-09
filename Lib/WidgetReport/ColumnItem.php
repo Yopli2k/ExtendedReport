@@ -29,14 +29,26 @@ use Cezpdf;
 class ColumnItem
 {
     /**
-     * Report area the column belongs to ('meta' for header metadata). Empty by
-     * default, meaning the column is part of the data table. Only read by the
-     * HTML render engine; the PDF ignores it.
+     * Report area the column belongs to. HTML render engine; the PDF ignores it.
+     *   - 'meta' for header metadata
+     *   - 'cards' for header total cards
      *
      * @var string
      */
     public string $area;
 
+    /**
+     * Mark this column as detail clickable in the on-screen HTML output.
+     *
+     * @var bool
+     */
+    public bool $detailClick;
+
+    /**
+     * Set the height for the column.
+     *
+     * @var int
+     */
     public int $height;
 
     /**
@@ -89,6 +101,7 @@ class ColumnItem
     public function __construct(array $data)
     {
         $this->area = $data['area'] ?? '';
+        $this->detailClick = isset($data['detailclick']) && $data['detailclick'];
         $this->hideOnPdf = isset($data['hideonpdf']) && $data['hideonpdf'];
         $this->hideOnView = isset($data['hideonview']) && $data['hideonview'];
         $this->posx = isset($data['posx']) ? (int) $data['posx'] : 0;
@@ -152,6 +165,7 @@ class ColumnItem
             'width' => $this->width,
             'fieldname' => $this->widget->getFieldName(),
             'area' => $this->area,
+            'detailclick' => $this->detailClick,
             'hideonview' => $this->hideOnView,
         ]);
     }

@@ -26,9 +26,13 @@
     <tr{% if line.class %} class="{{ line.class }}"{% endif %}>
         {% for cell in line.cells %}
             <{{ cell.tag }}{% if cell.colspan > 1 %} colspan="{{ cell.colspan }}"{% endif %} class="align-middle">
-                {%- for sub in cell.lines -%}
-                    <div{% if sub.class %} class="{{ sub.class }}"{% endif %}{% if sub.style %} style="{{ sub.style }}"{% endif %}>{{ sub.value }}</div>
-                {%- endfor -%}
+                {% for sub in cell.lines %}
+                    {% if sub.detailclick|default(false) %}
+                        <div class="er-detailclick{% if sub.class %} {{ sub.class }}{% endif %}"{% if sub.style %} style="{{ sub.style }}"{% endif %} data-code="{{ sub.code }}" data-field="{{ sub.field }}" role="button" tabindex="0">{{ sub.value }}</div>
+                    {% else %}
+                        <div{% if sub.class %} class="{{ sub.class }}"{% endif %}{% if sub.style %} style="{{ sub.style }}"{% endif %}>{{ sub.value }}</div>
+                    {% endif %}
+                {% endfor %}
             </{{ cell.tag }}>
         {% endfor %}
     </tr>
@@ -59,7 +63,7 @@
     <div class="table-responsive mb-4">
         <table class="table table-sm table-bordered table-hover mb-0">
             {% if table.thead is not empty %}
-                <thead class="table-light">
+                <thead class="table-primary">
                     {% for line in table.thead %}{{ report.row(line) }}{% endfor %}
                 </thead>
             {% endif %}

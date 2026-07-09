@@ -1,0 +1,177 @@
+{#
+/**
+ * This file is part of ExtendedReport plugin for FacturaScripts.
+ * FacturaScripts Copyright (C) 2015-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * ExtendedReport Copyright (C) 2021-2026 Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public license as
+ * published by the Free Software Foundation, either version 3 of the
+ * license, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public license for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public license
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
+*/
+#}
+{#
+    Generic detailclick modal: fed by the JSON endpoint at `detailUrl`.
+    Requires a required variable in the including template:
+      - detailUrl: string, the URL that resolves a POST with detailcode/detailfield to a DetailData JSON.
+#}
+<style>
+    .er-detailclick {
+        cursor: pointer;
+        text-decoration: underline dotted;
+        text-underline-offset: 2px;
+    }
+    .er-detailclick:hover, .er-detailclick:focus {
+        text-decoration-style: solid;
+    }
+    .er-detail-scroll {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    .er-detail-scroll table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .er-detail-scroll thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+</style>
+<div class="modal fade d-print-none" id="erDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="erDetailModalTitle">{{ trans('detail') }}</h5>
+            </div>
+            <div class="modal-body" id="erDetailModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ trans('close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        const detailUrl = '{{ detailUrl|e('js') }}';
+        const texts = {
+            detail: '{{ trans('detail')|e('js') }}',
+            error: '{{ trans('detail-load-error')|e('js') }}',
+            loading: '{{ trans('loading')|e('js') }}',
+            noData: '{{ trans('no-data')|e('js') }}'
+        };
+        const modalEl = document.getElementById('erDetailModal');
+        const titleEl = document.getElementById('erDetailModalTitle');
+        const bodyEl = document.getElementById('erDetailModalBody');
+        const modal = new bootstrap.Modal(modalEl);
+
+        function detailRow(values, headers, cellTag) {
+            const tr = document.createElement('tr');
+            values.forEach(function (value, index) {
+                const cell = document.createElement(cellTag);
+                cell.textContent = value;
+                cell.className = (headers[index] && headers[index].class) ? headers[index].class : '';
+                tr.appendChild(cell);
+            });
+            return tr;
+        }
+
+        function renderDetail(data) {
+            titleEl.textContent = data.title || texts.detail;
+            bodyEl.replaceChildren();
+            if (!Array.isArray(data.rows) || data.rows.length === 0) {
+                bodyEl.textContent = texts.noData;
+                return;
+            }
+
+            const headers = data.headers || [];
+            const table = document.createElement('table');
+            table.className = 'table table-sm table-bordered table-hover mb-0';
+
+            if (headers.length > 0) {
+                const thead = document.createElement('thead');
+                thead.className = 'table-primary';
+                thead.appendChild(detailRow(headers.map(h => h.title), headers, 'th'));
+                table.appendChild(thead);
+            }
+
+            const tbody = document.createElement('tbody');
+            data.rows.forEach(row => tbody.appendChild(detailRow(row, headers, 'td')));
+            table.appendChild(tbody);
+
+            if (Array.isArray(data.total)) {
+                const tfoot = document.createElement('tfoot');
+                tfoot.className = 'table-light fw-bold';
+                tfoot.appendChild(detailRow(data.total, headers, 'td'));
+                table.appendChild(tfoot);
+            }
+
+            const scrollWrap = document.createElement('div');
+            scrollWrap.className = 'er-detail-scroll';
+            scrollWrap.appendChild(table);
+            bodyEl.appendChild(scrollWrap);
+
+            if (data.note) {
+                const note = document.createElement('div');
+                note.className = 'small text-body-secondary mt-2';
+                note.textContent = data.note;
+                bodyEl.appendChild(note);
+            }
+        }
+
+        function openDetail(cell) {
+            titleEl.textContent = texts.detail;
+            bodyEl.innerHTML = '<div class="text-center py-4">'
+                + '<div class="spinner-border" role="status" aria-hidden="true"></div>'
+                + '<div class="mt-2">' + texts.loading + '</div></div>';
+            modal.show();
+
+            const data = new FormData();
+            data.append('detailcode', cell.dataset.code);
+            data.append('detailfield', cell.dataset.field);
+
+            fetch(detailUrl, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error(response.status);
+                    }
+                    return response.json();
+                })
+                .then(renderDetail)
+                .catch(function () {
+                    bodyEl.innerHTML = '<div class="alert alert-warning mb-0">' + texts.error + '</div>';
+                });
+        }
+
+        document.addEventListener('click', function (event) {
+            const cell = event.target.closest('.er-detailclick');
+            if (cell) {
+                openDetail(cell);
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter') {
+                return;
+            }
+            const cell = event.target.closest('.er-detailclick');
+            if (cell) {
+                openDetail(cell);
+            }
+        });
+    })();
+</script>

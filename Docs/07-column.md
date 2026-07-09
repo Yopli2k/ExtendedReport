@@ -34,6 +34,8 @@ Estos atributos solo afectan a la salida **HTML en pantalla**; en PDF y CSV se i
     - `"meta"` (solo en `header`): la columna se muestra en el bloque de información superior (empresa, fecha, filtros…), fuera de la tabla de datos. Ver **[22 - Áreas meta y cards](22-areas-meta-cards.md)**.
     - `"cards"` (solo en `footer`): el total de la columna se muestra también como una tarjeta de resumen sobre la tabla. Ver **[22 - Áreas meta y cards](22-areas-meta-cards.md)**.
 
+- **`detailclick`**: si es `true`, la celda es **clicable en el visor HTML** y emite los atributos `data-code` (el campo `code` del registro) y `data-field` (el `fieldname` del widget) para que el visor pueda solicitar al servidor el desglose del valor. Ver **[27 - Visor HTML](27-visor-html.md)**.
+
 - **`hideonview`**: si es `true`, la columna **no se muestra en el visor HTML**. Útil para elementos que solo tienen sentido en papel (número de página, títulos con coordenadas específicas de PDF, etc.).
 
 - **`hideonpdf`**: si es `true`, la columna **no se pinta en el PDF**. Útil para columnas pensadas exclusivamente para la vista HTML.

@@ -44,6 +44,14 @@ class ReportTest extends Controller
     public $empresa;
 
     /**
+     * URL of the endpoint that returns the PDF version of the report.
+     * Read by the ReportHtmlViewer template to print the real PDF instead of the browser's own print.
+     *
+     * @var string
+     */
+    public string $printUrl = '';
+
+    /**
      * Rendered HTML report, shown on screen.
      *
      * @var string
@@ -117,6 +125,7 @@ class ReportTest extends Controller
 
             case 'html-test':
                 $this->reportHtml = $this->renderHtml('ReportTest');
+                $this->printUrl = $this->url() . '?action=print-test';
                 $this->setTemplate('ReportHtmlViewer');
                 break;
 

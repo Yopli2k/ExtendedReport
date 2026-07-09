@@ -139,13 +139,16 @@ class HtmlTemplate extends ExportTemplate
             return [];
         }
 
+        // row identifier for the detailclick cells (empty when the record has none).
+        $code = (string)($data->code ?? '');
+
         // multiline: a single <tr> per record stacking the sub-values by posy.
         if ($stack) {
-            return [$this->rowFromColumns($columns, $tag, $grid, $rowClass)];
+            return [$this->rowFromColumns($columns, $tag, $grid, $rowClass, $code)];
         }
 
         // normal: one <tr> per posy sub-row.
-        return $this->columnsToRows($columns, $tag, $grid, $rowClass);
+        return $this->columnsToRows($columns, $tag, $grid, $rowClass, $code);
     }
 
     /**
@@ -262,9 +265,10 @@ class HtmlTemplate extends ExportTemplate
      * @param string $tag
      * @param array $grid
      * @param string $rowClass
+     * @param string $code row identifier for the detailclick cells
      * @return array
      */
-    protected function columnsToRows(array $columns, string $tag, array $grid, string $rowClass = ''): array
+    protected function columnsToRows(array $columns, string $tag, array $grid, string $rowClass = '', string $code = ''): array
     {
         if (empty($columns)) {
             return [];
@@ -272,7 +276,7 @@ class HtmlTemplate extends ExportTemplate
 
         $rows = [];
         foreach ($this->bucketByPosy($columns) as $bucket) {
-            $rows[] = $this->rowFromColumns($bucket, $tag, $grid, $rowClass);
+            $rows[] = $this->rowFromColumns($bucket, $tag, $grid, $rowClass, $code);
         }
         return $rows;
     }
@@ -347,19 +351,24 @@ class HtmlTemplate extends ExportTemplate
     }
 
     /**
-     * Build a single stacked line (sub-value) inside a cell.
+     * Build a single stacked line (sub-value) inside a cell. When the column is
+     * flagged detailclick and the record has a code, the line carries the data
+     * needed by the viewer to request the detail of the value (code + fieldname).
      *
-     * @param string $value
-     * @param string $class
-     * @param string $style
+     * @param array $column column structure (see ColumnItem::toHtmlData())
+     * @param string $code row identifier for the detailclick cells
      * @return array
      */
-    protected function line(string $value, string $class, string $style): array
+    protected function line(array $column, string $code = ''): array
     {
+        $detailClick = ($column['detailclick'] ?? false) && $code !== '';
         return [
-            'value' => $value,
-            'class' => $class,
-            'style' => $style,
+            'value' => $column['value'],
+            'class' => $column['class'],
+            'style' => $column['style'],
+            'detailclick' => $detailClick,
+            'field' => $detailClick ? $column['fieldname'] : '',
+            'code' => $detailClick ? $code : '',
         ];
     }
 
@@ -504,13 +513,14 @@ class HtmlTemplate extends ExportTemplate
      * @param string $tag
      * @param array $grid
      * @param string $rowClass
+     * @param string $code row identifier for the detailclick cells
      * @return array
      */
-    protected function rowFromColumns(array $columns, string $tag, array $grid, string $rowClass): array
+    protected function rowFromColumns(array $columns, string $tag, array $grid, string $rowClass, string $code = ''): array
     {
         // a lone value spans the whole row (report title, section header...).
         if (count($columns) === 1) {
-            $line = $this->line($columns[0]['value'], $columns[0]['class'], $columns[0]['style']);
+            $line = $this->line($columns[0], $code);
             return ['class' => $rowClass, 'cells' => [$this->cell($tag, [$line], max(1, count($grid)))]];
         }
 
@@ -519,7 +529,7 @@ class HtmlTemplate extends ExportTemplate
             usort($widgets, fn(array $a, array $b) => $a['posy'] <=> $b['posy']);
             $lines = [];
             foreach ($widgets as $column) {
-                $lines[] = $this->line($column['value'], $column['class'], $column['style']);
+                $lines[] = $this->line($column, $code);
             }
             $cells[] = $this->cell($tag, $lines, 1);
         }

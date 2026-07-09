@@ -6,5 +6,7 @@
     "no-export-format": "Formato de exportación no disponible",
     "portrait-test": "Plantilla vertical",
     "print-test": "Imprimir Test de prueba",
-    "report-test": "Testear Informe"
+    "report-test": "Testear Informe",
+    "---NEW---": "---------",
+    "detail-load-error": "No se ha podido obtener el detalle"
 }
