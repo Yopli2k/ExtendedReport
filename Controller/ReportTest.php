@@ -101,7 +101,7 @@ class ReportTest extends Controller
     public function privateCore(&$response, $user, $permissions): void
     {
         parent::privateCore($response, $user, $permissions);
-        $action = $this->request->get('action', '');
+        $action = $this->request->queryOrInput('action', '');
         $this->loadReportData($action);
         $this->execAfterAction($action);
     }

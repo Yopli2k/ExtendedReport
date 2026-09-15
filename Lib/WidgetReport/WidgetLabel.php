@@ -114,7 +114,7 @@ class WidgetLabel extends WidgetItem
     public function getValue(): string
     {
         return $this->translate
-            ? Tools::lang()->trans($this->value)
+            ? Tools::trans($this->value)
             : $this->value;
     }
 
