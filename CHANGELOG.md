@@ -2,6 +2,12 @@
 
 All significant changes to this project will be documented in this file.
 
+## [2.13] - 2026-09-15
+
+### New Features and Improvements
+
+- Refactored the code for core 2026.
+
 ## [2.12] - 2026-07-09
 
 ### New Features and Improvements
