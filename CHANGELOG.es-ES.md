@@ -8,6 +8,14 @@ Todos los cambios notables en este proyecto se documentarán en este archivo.
 
 - Refactorizado el código para el core 2026.
 
+### Corrección de errores
+
+- Las imágenes en formato WEBP ya se dibujan en el PDF. Como rospdf no soporta ese formato, se convierten a PNG antes de insertarlas, conservando la transparencia. Afecta a los widgets `image` e `imageproduct`.
+    - Las miniaturas generadas a partir de un WEBP se guardan como `<nombre>_webp_<ancho>x<alto>.png` en `MyFiles/Tmp/Thumbnails/`.
+- Corregido el widget `image` con `resize="true"`: la llamada interna a la generación de la miniatura pasaba un parámetro de más y provocaba un error fatal.
+- Corregido el widget `imageproduct` con `resize="false"`: se pasaba la referencia del producto en lugar de la ruta del archivo, por lo que la imagen no llegaba a dibujarse nunca.
+- Las miniaturas en PNG conservan el canal alfa. Antes la transparencia se rellenaba de negro al redimensionar.
+
 ## [2.12] - 2026-07-09
 
 ### Nuevas funcionalidades y mejoras

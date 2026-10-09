@@ -6,7 +6,9 @@ ExtendedReport incluye dos widgets para insertar imágenes en el informe:
 
 ## 🖼️ Widget `image`
 
-Inserta una imagen (JPG, PNG o GIF) en la posición de la columna. El tamaño de dibujo lo determinan el `width` y el `height` de la columna.
+Inserta una imagen (JPG, PNG, GIF o WEBP) en la posición de la columna. El tamaño de dibujo lo determinan el `width` y el `height` de la columna.
+
+Como rospdf no sabe dibujar WEBP, las imágenes en ese formato se convierten automáticamente a PNG (conservando la transparencia) y se guardan en `MyFiles/Tmp/Thumbnails/`.
 
 ```xml
 <column posx="20" posy="20" width="80" height="80">
@@ -16,7 +18,7 @@ Inserta una imagen (JPG, PNG o GIF) en la posición de la columna. El tamaño de
 
 Atributos específicos:
 - **`value`** o **`fieldname`**: ruta del archivo de imagen. Con `value` se usa una ruta fija; con `fieldname` se obtiene la ruta del campo del registro.
-- **`resize`**: si es `true`, genera una miniatura ajustada al `width`/`height` de la columna y la cachea en `MyFiles/Tmp/Thumbnails/`. Por defecto `false`.
+- **`resize`**: si es `true`, genera una miniatura ajustada al `width`/`height` de la columna y la cachea en `MyFiles/Tmp/Thumbnails/`. Por defecto `false`. Las miniaturas de origen WEBP se guardan como `<nombre>_webp_<ancho>x<alto>.png`.
 - **`align`**: alineación de la imagen dentro de la celda. Por defecto `center`.
 - **`angle`**: rotación en grados (0–360). Por defecto `0`.
 - **`padding`**: margen interior. Por defecto `5`.

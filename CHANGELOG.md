@@ -8,6 +8,14 @@ All significant changes to this project will be documented in this file.
 
 - Refactored the code for core 2026.
 
+### Bug Fixes
+
+- WEBP images are now drawn in the PDF. Since rospdf does not support that format, they are converted to PNG before being inserted, keeping the transparency. Affects the `image` and `imageproduct` widgets.
+    - Thumbnails generated from a WEBP file are stored as `<name>_webp_<width>x<height>.png` in `MyFiles/Tmp/Thumbnails/`.
+- Fixed the `image` widget with `resize="true"`: the internal call that generates the thumbnail passed one argument too many and raised a fatal error.
+- Fixed the `imageproduct` widget with `resize="false"`: the product reference was passed instead of the file path, so the image was never drawn.
+- PNG thumbnails now keep the alpha channel. Transparency was previously filled with black when resizing.
+
 ## [2.12] - 2026-07-09
 
 ### New Features and Improvements
