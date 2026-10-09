@@ -58,11 +58,11 @@ class WidgetImageproduct extends WidgetImage
         }
 
         try {
-            $fileFull = ($this->resize === true)
-                ? $this->getThumbnail($fileFull, $width, $height)
-                : $this->value;
+            $imageFile = ($this->resize === true)
+                ? $this->getThumbnail($fileFull, (int)$width, (int)$height)
+                : $fileFull;
 
-            $this->renderImage($pdf, $fileFull, $posX, $posY, $width, $height);
+            $this->renderImage($pdf, $imageFile, $posX, $posY, $width, $height);
         } catch (Exception $ex) {
         }
     }

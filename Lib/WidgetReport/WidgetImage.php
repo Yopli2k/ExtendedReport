@@ -93,7 +93,7 @@ class WidgetImage extends WidgetItem
 
         try {
             $fileName = ($this->resize === true)
-                ? $this->getThumbnail($this->value, $this->resize, $width, $height)
+                ? $this->getThumbnail($this->value, (int)$width, (int)$height)
                 : $this->value;
 
             $this->renderImage($pdf, $fileName, $posX, $posY, $width, $height);
@@ -116,6 +116,37 @@ class WidgetImage extends WidgetItem
     }
 
     /**
+     * Convert an image to png format, keeping the alpha channel.
+     * Return the new file path.
+     *
+     * @param string $file
+     * @return string
+     */
+    protected function convertToPng(string $file): string
+    {
+        if (false === file_exists(FS_FOLDER . self::THUMBNAIL_PATH)) {
+            mkdir(FS_FOLDER . self::THUMBNAIL_PATH, 0755, true);
+        }
+
+        $newFile = self::THUMBNAIL_PATH . pathinfo($file, PATHINFO_FILENAME) . '_webp.png';
+        if (file_exists(FS_FOLDER . $newFile)) {
+            return FS_FOLDER . $newFile;
+        }
+
+        try {
+            $image = imagecreatefromstring(file_get_contents($file));
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+            imagepng($image, FS_FOLDER . $newFile);
+            imagedestroy($image);
+        } catch (Throwable $th) {
+            return '';
+        }
+
+        return FS_FOLDER . $newFile;
+    }
+
+    /**
      * Generate a thumbnail from the image.
      * Return the thumbnail file path.
      *
@@ -130,12 +161,16 @@ class WidgetImage extends WidgetItem
             mkdir(FS_FOLDER . self::THUMBNAIL_PATH, 0755, true);
         }
 
-        $ext = pathinfo($file, PATHINFO_EXTENSION);
-        if (false === in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        if (false === in_array($ext, ['gif', 'jpeg', 'jpg', 'png', 'webp'])) {
             return '';
         }
 
-        $thumbName = pathinfo($file, PATHINFO_FILENAME) . '_' . $width . 'x' . $height . '.' . $ext;
+        // rospdf no dibuja webp, la miniatura se guarda como png para conservar la transparencia
+        $target = ($ext === 'webp') ? 'png' : $ext;
+        $suffix = ($ext === 'webp') ? '_webp' : '';
+
+        $thumbName = pathinfo($file, PATHINFO_FILENAME) . $suffix . '_' . $width . 'x' . $height . '.' . $target;
         $thumbFile = self::THUMBNAIL_PATH . $thumbName;
         if (file_exists(FS_FOLDER . $thumbFile)) {
             return FS_FOLDER . $thumbFile;
@@ -152,9 +187,10 @@ class WidgetImage extends WidgetItem
                 $height = intval($width / $ratio);
             }
             $thumb = imagecreatetruecolor($width, $height);
+            $this->keepAlphaChannel($thumb, $target, $width, $height);
             imagecopyresampled($thumb, $image, 0, 0, 0, 0, $width, $height, $imageWidth, $imageHeight);
 
-            switch ($ext) {
+            switch ($target) {
                 case 'jpg':
                 case 'jpeg':
                     imagejpeg($thumb, FS_FOLDER . $thumbFile, 90);
@@ -199,6 +235,15 @@ class WidgetImage extends WidgetItem
             return;
         }
 
+        // rospdf no dibuja webp, lo convertimos a png antes de insertarlo
+        if ($imageInfo[2] === IMAGETYPE_WEBP) {
+            $file = $this->convertToPng($file);
+            $imageInfo = empty($file) ? false : getimagesize($file);
+            if ($imageInfo === false) {
+                return;
+            }
+        }
+
         switch ($imageInfo[2]) {
             case IMAGETYPE_JPEG:
                 $pdf->addJpegFromFile($file, $posX, $posY - ($height - 15), $width, $height);
@@ -212,5 +257,25 @@ class WidgetImage extends WidgetItem
                 $pdf->addGifFromFile($file, $posX, $posY - ($height - 15), $width, $height);
                 break;
         }
+    }
+
+    /**
+     * Fill the image with a transparent background, to keep the alpha channel on resize.
+     *
+     * @param resource|GdImage $image
+     * @param string $ext
+     * @param int $width
+     * @param int $height
+     */
+    private function keepAlphaChannel($image, string $ext, int $width, int $height): void
+    {
+        if ($ext !== 'png') {
+            return;
+        }
+
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+        $transparent = imagecolorallocatealpha($image, 255, 255, 255, 127);
+        imagefilledrectangle($image, 0, 0, $width, $height, $transparent);
     }
 }
